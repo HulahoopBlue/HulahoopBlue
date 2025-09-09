@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.ohgiraffers.hulahoopblue.usehistory.model.dao.UseHistoryMapper">
+
+    <resultMap id="menuResultMap" type="com.ohgiraffers.hulahoopblue.usehistory.model.dto.UseHistoryDTO">
+        <id property="memberNo" column="member_no"/>
+        <result property="phoneNum" column="phone_num"/>
+        <result property="categoryCode" column="category_code"/>
+        <result property="merchant" column="merchant"/>
+        <result property="distance" column="distance"/>
+        <result property="paymentDate" column="payment_date"/>
+        <result property="useStartDate" column="use_start_date"/>
+        <result property="useEndDate" column="use_end_date"/>
+        <result property="reservationFlag" column="reservation_flag"/>
+    </resultMap>
+
+    <select id="findAllMenu" resultMap="menuResultMap">
+        select
+               member_no
+                , phone_num
+                , category_code
+                , distance
+                , payment_date
+                , use_start_date
+                , use_end_date
+                , reservation_flag
+          from t_usehistory
+         order by member_no
+    </select>
+
+    <select id="countAllMenu" resultType="_int">
+        SELECT
+        COUNT(*)
+        FROM
+        t_usehistory
+    </select>
+
+    <select id="findAllMenu1" resultMap="menuResultMap">
+        select
+            member_no
+            , phone_num
+            , case when category_code = '001' then '자전거'
+                    when category_code = '002' then '여행사'
+                    when category_code = '003' then '렌트카'
+              else '기타' end as category_code
+            , merchant
+            , distance
+            , payment_date
+            , use_start_date
+            , use_end_date
+            , reservation_flag
+        from t_usehistory
+        order by member_no
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <insert id="registNewMenu" parameterType="com.ohgiraffers.hulahoopblue.usehistory.model.dto.UseHistoryDTO">
+        insert into t_usehistory
+        (
+            member_no
+            , phone_num
+            , category_code
+            , distance
+            , payment_date
+            , use_start_date
+            , usg_end_date
+            , reservation_flag
+        )
+        values
+        (
+          #{ name }
+        , #{ price }
+        , #{ categoryCode }
+        , #{ orderableStatus }
+        )
+    </insert>
+
+    <update id="modifyMenu" parameterType="com.ohgiraffers.hulahoopblue.usehistory.model.dto.UseHistoryDTO">
+
+    </update>
+
+    <delete id="deleteMenu" parameterType="com.ohgiraffers.hulahoopblue.usehistory.model.dto.UseHistoryDTO">
+
+    </delete>
+
+
+
+</mapper>
