@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.hulahoopblue.kakaoapitest.model.dao.KakaoMapper">
+    <resultMap id="kakaoMapSample" type="com.ohgiraffers.hulahoopblue.kakaoapitest.model.dto.KaKaoMapDTO">
+        <id property="bikeNo" column="product_no"/>
+        <result property="franchise" column="merchant"/>
+        <result property="lat" column="lat"/>
+        <result property="lng" column="lng"/>
+        <result property="priority" column="priority"/>
+    </resultMap>
+
+    <select id="selectAllMarkers" resultMap="kakaoMapSample">
+        SELECT
+        product_no,
+        merchant,
+        lat,
+        lng,
+        priority
+        FROM bike_sample
+    </select>
+</mapper>

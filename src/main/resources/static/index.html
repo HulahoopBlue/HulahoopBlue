@@ -6,66 +6,68 @@
     <script src="https://nsp.pay.naver.com/sdk/js/naverpay.min.js"></script>
 </head>
 <body>
-    <h1>Hello, Spring Boot CRUD Project!</h1>
+<h1>Hello, Spring Boot CRUD Project!</h1>
 
-    <main class="frame">
-        <section class="background-text-wrapper">
-            <div class="background-text">
-                <div class="overlap">
-                    <div class="main-text">
-                        <div class="overlap-group">
-                            <h1 class="text-wrapper">JINJIN</h1>
-                            <h1 class="div">RIDE</h1>
-                        </div>
+<main class="frame">
+    <section class="background-text-wrapper">
+        <div class="background-text">
+            <div class="overlap">
+                <div class="main-text">
+                    <div class="overlap-group">
+                        <h1 class="text-wrapper">JINJIN</h1>
+                        <h1 class="div">RIDE</h1>
                     </div>
-                    <div class="overlap-wrapper">
-                        <div class="overlap-group">
-                            <span class="text-wrapper-2" aria-hidden="true">JINJIN</span>
-                            <span class="text-wrapper-3" aria-hidden="true">RIDE</span>
-                        </div>
+                </div>
+                <div class="overlap-wrapper">
+                    <div class="overlap-group">
+                        <span class="text-wrapper-2" aria-hidden="true">JINJIN</span>
+                        <span class="text-wrapper-3" aria-hidden="true">RIDE</span>
                     </div>
                 </div>
             </div>
-        </section>
-        <button onclick="location.href='/useHistory/list'">사용 내역 조회</button>
-        <!-- ✅ 네이버페이 버튼 -->
-        <section style="text-align: center; margin-top: 40px;">
-            <input type="button" id="naverPayBtn" value="네이버페이 결제 버튼">
-        </section>
-    </main>
+        </div>
+    </section>
+    <button onclick="location.href='/useHistory/list'">사용 내역 조회</button>
+    <!-- ✅ 네이버페이 버튼 -->
+    <section style="text-align: center; margin-top: 40px;">
+        <input type="button" id="naverPayBtn" value="네이버페이 결제 버튼">
+    </section>
+</main>
+<!--카카오맵 버튼-->
+<button style="margin-left: 1200px" onclick="location.href='/kakao/kakaoMap'">맵 나오게 하기</button>
 
-    <script>
-        // 네이버페이 초기화는 그대로
-        var oPay = Naver.Pay.create({
-            "mode" : "development",
-            "clientId": "HN3GGCMDdTgGUfl0kFCo",
-            "chainId": "VlFlWlFJVzB2Z2t"
+<script>
+    // 네이버페이 초기화는 그대로
+    var oPay = Naver.Pay.create({
+        "mode" : "development",
+        "clientId": "HN3GGCMDdTgGUfl0kFCo",
+        "chainId": "VlFlWlFJVzB2Z2t"
+    });
+
+    const clientId = 1; // 화면에서 선택했다면 그 값으로 교체
+
+    async function getFee(clientId) {
+        const res = await fetch(`http://localhost:8001/api/client/${clientId}/fee`);
+        if (!res.ok) throw new Error('금액 조회 실패');
+        return await res.json();
+    }
+
+    async function pay() {
+        const fee = await getFee(clientId);     // ✅ DB에서 금액 조회
+        oPay.open({
+            "merchantPayKey": "TEST-" + clientId + "-" + Date.now(),
+            "productName": "노쇼 결제",
+            "productCount": "1",
+            "totalPayAmount": String(fee),
+            "taxScopeAmount": String(fee),
+            "taxExScopeAmount": "0",
+            // ✅ 우리 서버의 리턴 URL에 clientId를 붙여 보냄
+            "returnUrl": `http://localhost:8001/payment/return?clientId=${clientId}`
         });
+    }
 
-        const clientId = 1; // 화면에서 선택했다면 그 값으로 교체
-
-        async function getFee(clientId) {
-            const res = await fetch(`http://localhost:8001/api/client/${clientId}/fee`);
-            if (!res.ok) throw new Error('금액 조회 실패');
-            return await res.json();
-        }
-
-        async function pay() {
-            const fee = await getFee(clientId);     // ✅ DB에서 금액 조회
-            oPay.open({
-                "merchantPayKey": "TEST-" + clientId + "-" + Date.now(),
-                "productName": "노쇼 결제",
-                "productCount": "1",
-                "totalPayAmount": String(fee),
-                "taxScopeAmount": String(fee),
-                "taxExScopeAmount": "0",
-                // ✅ 우리 서버의 리턴 URL에 clientId를 붙여 보냄
-                "returnUrl": `http://localhost:8001/payment/return?clientId=${clientId}`
-            });
-        }
-
-        document.getElementById('naverPayBtn').addEventListener('click', pay);
-    </script>
+    document.getElementById('naverPayBtn').addEventListener('click', pay);
+</script>
 
 </body>
 </html>
