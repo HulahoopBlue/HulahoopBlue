@@ -1,10 +1,10 @@
-package com.ohgiraffers.blue;
+package com.hulahoopblue.blue;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApplicationTests {
+class BlueApplicationTests {
 
     @Test
     void contextLoads() {
