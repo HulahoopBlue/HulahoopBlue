@@ -1,0 +1,1017 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Live Chat</title>
+  <script th:src="@{//dapi.kakao.com/v2/maps/sdk.js(appkey=${kakaoAPIkey})}"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #3f2b4e;
+      font-size: 14px;
+      overflow-x: hidden;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 680px;
+      height: 680px;
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(202, 145, 95, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chat-header {
+      padding: 20px;
+      background:#1f1e31;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .header-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .agent-name {
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .agent-status {
+      font-size: 12px;
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #4ade80;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+      }
+
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+      }
+
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    .header-actions button {
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+
+    .header-actions button:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .header-actions i {
+      font-size: 20px;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background:  #1F1E31FF;
+      overflow-x: hidden;
+
+    }
+
+    .message {
+      max-width: 100%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      position: relative;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .message1 {
+      background-color: #1F1E31FF;
+      max-width: 100%;
+      padding: 12px 16px;
+      position: relative;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.agent {
+      align-self: flex-start;
+      background-color: #c3cdff;
+      color: #333;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .kakao{
+      max-width: 100%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      position: relative;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .kakao.map {
+      width: 100%;
+      align-self: flex-start;
+      background-color: #8ad1ff;
+      color: #333;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05)
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background-color: #316bff;
+      color: white;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 10px rgba(224, 122, 95, 0.2);
+    }
+
+    .time {
+      font-size: 10px;
+      opacity: 0.7;
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    .message-status {
+      display: inline-block;
+      margin-left: 5px;
+      font-size: 12px;
+    }
+
+    .product-preview {
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      background-color: white;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      transform: scale(1);
+      transition: transform 0.3s;
+    }
+
+    .product-preview:hover {
+      transform: scale(1.02);
+    }
+
+    .bike-info {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      background-color: #f8f8f8;
+    }
+
+    .product-info {
+      padding: 12px;
+    }
+
+    .product-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .product-price {
+      color: #e07a5f;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-button {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      gap: 5px;
+    }
+
+    .view-button {
+      background-color: #4ade80;
+      color: #333;
+    }
+
+    .view-button:hover {
+      background-color: #eda951;
+    }
+
+    .add-button {
+      background-color: #e07a5f;
+      color: white;
+    }
+
+    .add-button:hover {
+      background-color: #d16e53;
+    }
+
+    .add-button i {
+      margin-right: 4px;
+    }
+
+
+    .typing-indicator {
+      margin-left: 8px;
+      display: flex;
+      align-items: center;
+      padding: 15px 30px;
+      background-color: #8ad1ff;
+      border-radius: 18px;
+      align-self: flex-start;
+      margin-top: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      max-width: 100px;
+    }
+
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background-color: #e07a5f;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 2px;
+      opacity: 0.4;
+    }
+
+    .typing-indicator span:nth-child(1) {
+      animation: typing 1.5s infinite 0s;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation: typing 1.5s infinite 0.3s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+      animation: typing 1.5s infinite 0.6s;
+    }
+
+    @keyframes typing {
+      0% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+      25% {
+        transform: translateY(-5px);
+        opacity: 1;
+      }
+      50% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+    }
+
+    .chat-footer {
+      padding: 15px 20px;
+      background-color:#1F1E31  ;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .input-container {
+      flex: 1;
+      position: relative;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px 45px 12px 15px;
+      border-radius: 25px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      outline: none;
+      background-color: #f9f4ef;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .input-field:focus {
+      border-color: #e07a5f;
+      box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.1);
+    }
+
+    .quick-actions {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 8px;
+    }
+
+    .quick-action {
+      background: transparent;
+      border: none;
+      color: #777;
+      cursor: pointer;
+      font-size: 16px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s, background-color 0.3s;
+    }
+
+    .quick-action:hover {
+      color: #e07a5f;
+      background-color: rgba(224, 122, 95, 0.1);
+    }
+
+    .send-button {
+      background-color: #e07a5f;
+      border: none;
+      color: white;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.3s, background-color 0.3s;
+      box-shadow: 0 3px 10px rgba(224, 122, 95, 0.3);
+    }
+
+    .send-button:hover {
+      transform: scale(1.05);
+      background-color: #d16e53;
+    }
+
+    .send-button i {
+      font-size: 18px;
+    }
+
+    /* 1) 공통: 이 클래스를 붙인 스크롤만 커스텀 */
+    .custom-scroll{
+      /* Firefox */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.7) rgba(255, 255, 255, 0.001);
+    }
+
+
+    /* 네 기존 코드 수정: 숨기지 말기 */
+    .quick-replies{
+      padding:10px 20px;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      background: #1F1E31FF;
+      /* ↓ 이 두 줄은 그대로 두되 */
+      scrollbar-width: none;   /* none → thin 로 변경해도 됨 */
+      -ms-overflow-style: auto;
+    }
+    .quick-replies::-webkit-scrollbar{ /* ← display:none 제거 */
+      height: 12px;
+    }
+
+    .quick-reply-box {
+      display: flex;
+      text-align: center;
+      gap: 20px;
+    }
+
+    .quick-reply {
+      margin-left: 10px;
+      padding: 10px 30px;
+      border-radius: 15px;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      background-color: rgba(255, 255, 255, 0.22);
+      color: #000000;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 13px;
+    }
+
+    .quick-reply:hover {
+      background-color: rgb(49, 107, 255);
+      color: rgb(255, 255, 255);
+      border-color: #000000;
+    }
+
+    .notification {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      opacity: 1;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+      }
+      10% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+      90% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -10px);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .chat-container {
+        height: 100vh;
+        border-radius: 0;
+        max-width: 100%;
+        width: 500px;
+      }
+
+      .chat-header {
+        border-radius: 0;
+      }
+
+      .message {
+        max-width: 90%;
+      }
+    }
+  </style>
+  <style>
+    /* 폰트(선택) */
+    :root{
+      --bold: 'Oswald', sans-serif;
+      --abril: 'Abril Fatface', serif;
+      --serif: 'Playfair Display', serif;
+      --white:#fff; --main:#92BFB1; --dark:#333;
+    }
+
+    /* 컨테이너 기준 절대배치 */
+    .chat-container{ position: relative; }
+
+    .nav--open{
+      position: absolute; top:0; left:0;
+      height: 100%; width: 300px;
+      background: #1F1E31FF;
+      box-shadow: 2px 2px 15px rgba(0,0,0,.1);
+      transition: transform .4s ease-out, opacity .4s ease-out;
+      transform: translateX(-300px);
+      opacity: 0;
+      z-index: 50;
+    }
+    .nav--open.open{ transform: translateX(0); opacity: 1; }
+    .close{ transform: translateX(-300px); opacity: 0; }
+
+    .nav--open-icon{ text-align: right; padding: 20px; }
+    .nav--open-icon i{ font-size: 1.8em; color: var(--main); cursor: pointer; }
+    .nav--open-icon i:hover{ color: var(--dark); }
+
+    .nav--open-title{
+
+      font-family: var(--serif);
+      font-size: .8em; text-transform: uppercase;
+      color: white;
+      letter-spacing: .2em; text-align: center;
+      margin-top: 5%;
+    }
+
+    .nav--open-menu{
+      height: 100%; display:flex; flex-direction:column;
+      text-align:center; margin-top:30px;
+    }
+    .nav--open-menu a{
+      display:block; font-size: 2em; font-weight: 100;
+      font-family: var(--serif); padding: 15px 0;
+      color: var(--main); text-decoration: none;
+    }
+    .nav--open-menu a:hover{ background: var(--main); color: var(--dark); }
+
+    /* 반투명 배경(컨테이너 내부 한정) */
+    .nav--backdrop{
+      position:absolute; inset:0;
+      background: rgba(0,0,0,.45);
+      opacity:0; pointer-events:none;
+      transition: opacity .25s ease;
+      z-index: 40;
+    }
+    .nav--open.open + .nav--backdrop{ opacity:1; pointer-events:auto; }
+
+    /* 헤더 버튼(선택) */
+    #menuBtn{ background:transparent; border:0; color:#fff; cursor:pointer; }
+    #menuBtn:hover{ opacity:.8; }
+
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div class="chat-container">
+  <div class="notification" id="notification">HULA HOOP</div>
+  <div class="chat-header">
+    <div class="header-info">
+      <div class="header-actions">
+        <button id="menuBtn"><i class="fas fa-ellipsis-v"></i></button>
+      </div>
+      <div>
+        <div class="agent-name">메뉴</div>
+        <div class="agent-status">
+          <span class="status-dot"></span>
+          AI | Online
+        </div>
+      </div>
+    </div>
+    <div class="avatar">
+      <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Support Agent">
+    </div>
+  </div>
+  <div class="chat-body custom-scroll" id="chat-body">
+    <!--    <div class="message agent">-->
+    <!--      <div>안녕하세요! 예약하시고 싶은 것을 말해주세요!</div>-->
+    <!--      <div class="time"></div>-->
+    <!--    </div>-->
+    <!--    <div class="message user">-->
+    <!--      <div>따릉이 예약해줘.</div>-->
+    <!--      <div class="time">10:05 AM <span class="message-status"><i class="fas fa-check-double"></i></span></div>-->
+    <!--    </div>-->
+    <!--    <div class="message agent">-->
+    <!--      <div>예약 확인 중입니다!</div>-->
+    <!--      <div class="time">10:07 AM</div>-->
+    <!--    </div>-->
+    <!--    <div class="kakao map">-->
+    <!--      <div class="product-preview">-->
+    <!--        <div alt="맵" class="bike-info" id="bike-info"></div>-->
+    <!--        <div class="product-info">-->
+    <!--          <div class="product-name">미사역 근처</div>-->
+    <!--          <div class="product-price">현재 사용 가능한 따릉이 수: 10</div>-->
+    <!--          <div class="product-actions">-->
+    <!--            <button class="action-button add-button" id="add-to-cart"></i> 예약하기</button>-->
+    <!--            <button class="action-button view-button"><i class="fas fa-shopping-cart"></i> 결제하기</button>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--      <div class="time">10:sad08 AM</div>-->
+    <!--    </div>-->
+  </div>
+  <div class="message1">
+    <div class="typing-indicator" id="typing-indicator">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <div class="quick-replies custom-scroll">
+    <div class="quick-reply-box">
+      <!--            <button class="quick-reply">따릉이 예약해줘</button>-->
+      <!--            <button class="quick-reply">여행사 예약해줘</button>-->
+      <button class="quick-reply">도움말</button>
+    </div>
+  </div>
+  <div class="chat-footer">
+    <div class="input-container">
+      <input type="text" class="input-field" id="message-input" placeholder="텍스트를 입력해주세요...">
+      <div class="quick-actions">
+        <button class="quick-action"><i class="fas fa-paperclip"></i></button>
+      </div>
+    </div>
+    <button class="send-button" id="send-button">
+      <i class="fas fa-paper-plane"></i>
+    </button>
+  </div>
+  <div class="nav--open close" id="hhNav">
+    <div class="nav--open-icon" id="hhClose"><i class="fas fa-times"></i></div>
+    <div class="nav--open-title">HULA HOOP BLUE</div>
+    <div class="nav--open-menu">
+      <a onclick="location.href='/kakao/useHistory'">이용내역</a>
+      <a href="work.html">work</a>
+      <a href="services.html">services</a>
+      <a href="blog.html">blog</a>
+      <a href="contact.html">contact</a>
+    </div>
+  </div>
+  <div class="nav--backdrop" id="hhBackdrop"></div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const chatBody = document.getElementById('chat-body');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    //
+    const typingIndicator = document.getElementById('typing-indicator');
+    const notification = document.getElementById('notification');
+    const quickReplies = document.querySelectorAll('.quick-reply');
+    //
+
+    typingIndicator.style.display = 'none';
+
+    function addMessage(content, isUser = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user' : 'agent'}`;
+
+      const contentDiv = document.createElement('div');
+      contentDiv.textContent = content;
+
+      const timeDiv = document.createElement('div');
+      timeDiv.className = 'time';
+
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+
+      timeDiv.textContent = `${hours}:${minutes} ${ampm}`;
+
+      if (isUser) {
+        const statusSpan = document.createElement('span');
+        statusSpan.className = 'message-status';
+        statusSpan.innerHTML = '<i class="fas fa-check-double"></i>';
+        timeDiv.appendChild(statusSpan);
+      }
+
+      messageDiv.appendChild(contentDiv);
+      messageDiv.appendChild(timeDiv);
+      chatBody.appendChild(messageDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      return messageDiv;
+    }
+
+    function addAgentResponse(content, delay = 2000) {
+      typingIndicator.style.display = 'flex';
+      chatBody.scrollTop = chatBody.scrollHeight;
+      setTimeout(() => {
+        typingIndicator.style.display = 'none';
+        addMessage(content, false);
+      }, delay);
+    }
+
+    async function sendMessage() {
+      const SERVER_API_URL = "/api/generate";
+
+      const message = messageInput.value.trim();
+      if (!message) {
+        alert("질문을 입력해주세요.");
+        return;
+      }
+
+      const sndMessage = ". 명사만 추출해 주고 명사중에 예약이 있으면 www.HulahoopBlue.com 링크주소 걸어줘.";
+
+      addMessage(message, true);
+      messageInput.value = '';
+
+
+
+      try {
+        const response = await fetch(SERVER_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(sndMessage)
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`서버 요청 실패: ${response.status} - ${errorText}`);
+        }
+
+        const jsonData = await response.json();
+        //const extractedText = jsonData.candidates[0].content.parts[0].text;
+
+        //outputArea.innerHTML = marked.parse(extractedText);
+
+      } catch (error) {
+        console.error('오류 발생:', error);
+        //outputArea.textContent = `오류가 발생했습니다: ${error.message}`;
+      }
+
+
+
+      if (message.includes('따릉') || message.includes('자전거')) {
+        if (typeof window.showBikeCard === 'function') {
+          window.showBikeCard();
+          addAgentResponse('예약 진행 중입니다!');
+        } else {
+          console.warn('showBikeCard 아직 준비 안 됨');
+        }
+        return;
+      }
+
+      if (message.toLowerCase().includes('hi')) {
+        addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다! ex) 따릉이,여행사');
+      } else {
+        addAgentResponse('예약하시고 싶은 것을 정확히 말해주세요!');
+      }
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+    // 퀵리플라이
+    quickReplies.forEach(reply => {
+      reply.addEventListener('click', () => {
+        const txt = reply.textContent.trim();
+        addMessage(txt, true);
+        // if (txt.includes('따릉')) {
+        //     if (typeof window.showBikeCard === 'function') window.showBikeCard();
+        //     return;
+        // }
+        if (txt.includes('도움말')) {
+          addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다! ex) 따릉이/여행사');
+        } else {
+          addAgentResponse('예약하시고 싶은 것을 정확히 말해주세요!');
+        }
+      });
+    });
+
+    setTimeout(() => {
+      addAgentResponse("안녕하세요! 예약하시고 싶은 것을 말해주세요!");
+    }, 1);
+
+    // 버튼 ripple (그대로 유지)
+    const buttons = document.querySelectorAll('.action-button, .send-button');
+    buttons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        const rect = button.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const ripple = document.createElement('span');
+        ripple.style.position = 'absolute';
+        ripple.style.width = '1px';
+        ripple.style.height = '1px';
+        ripple.style.borderRadius = '50%';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.backgroundColor = 'rgba(255,255,255,0.7)';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.style.animation = 'ripple 0.6s linear';
+        ripple.style.pointerEvents = 'none';
+        button.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 2000);
+      });
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatBody = document.getElementById("chat-body");
+
+    // ✅ 누적 카운터를 먼저 선언 (사용 전에)
+    let bikeCardCount = 0;
+
+    // 공용 메시지 유틸
+    const addMessage = ({ text = "", html = "", role = "agent" }) => {
+      if (!text && !html) return;
+      const wrap = document.createElement("div");
+      wrap.className = `message ${role}`;
+      const content = document.createElement("div");
+      if (html) content.innerHTML = html; else content.textContent = text;
+      const time = document.createElement("div");
+      time.className = "time";
+      const now = new Date(); let h = now.getHours(), m = String(now.getMinutes()).padStart(2,"0");
+      const ampm = h >= 12 ? "PM" : "AM"; h = h % 12 || 12;
+      time.textContent = `${h}:${m} ${ampm}`;
+      wrap.appendChild(content); wrap.appendChild(time);
+      chatBody.appendChild(wrap); chatBody.scrollTop = chatBody.scrollHeight;
+    };
+    const addBotMessage = (h)=>addMessage({html:h, role:"agent"});
+
+    // ✅ 전역 공개 함수
+    window.showBikeCard = function () {
+      const uniq = Date.now() + '-' + (++bikeCardCount); // 항상 새 id
+
+      const bubble = document.createElement('div');
+      bubble.className = 'kakao map';
+      bubble.innerHTML = `
+        <div class="product-preview">
+          <div class="bike-info" id="bike-info-${uniq}" style="width:100%; height:260px;"></div>
+          <div class="product-info">
+            <div class="product-name">미사역 근처</div>
+            <div class="product-price" id="bike-count-${uniq}">현재 사용 가능한 따릉이 수: 로딩중…</div>
+            <div class="product-actions">
+              <button class="action-button add-button" id="add-to-cart-${uniq}">예약하기</button>
+              <button class="action-button view-button" id="view-button-${uniq}"><i class="fas fa-shopping-cart"></i>결제하기</button>
+            </div>
+          </div>
+        </div>
+        <div class="time">${(() => { const d=new Date(); let h=d.getHours(), m=String(d.getMinutes()).padStart(2,'0'); const ap=h>=12?'PM':'AM'; h=h%12||12; return `${h}:${m} ${ap}`; })()}</div>
+    `;
+      chatBody.appendChild(bubble);
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      // 방금 만든 요소 핸들
+      const infoBox    = bubble.querySelector(`#bike-info-${uniq}`);
+      const reserveBtn = bubble.querySelector(`#add-to-cart-${uniq}`);
+      const viewBtn    = bubble.querySelector(`#view-button-${uniq}`);
+      const countLabel = bubble.querySelector(`#bike-count-${uniq}`);
+
+      // 초기 버튼 상태
+      viewBtn.disabled = true;  viewBtn.style.opacity = '0.5';  viewBtn.style.cursor = 'not-allowed';
+      reserveBtn.disabled = true; reserveBtn.style.opacity = '0.5'; reserveBtn.style.cursor = 'not-allowed';
+
+      // 카카오맵 생성
+      const map = new kakao.maps.Map(infoBox, {
+        center: new kakao.maps.LatLng(37.5630542, 127.1928256),
+        level: 3
+      });
+      const markerImage = new kakao.maps.MarkerImage(
+              "https://cdn-icons-png.flaticon.com/512/5002/5002382.png",
+              new kakao.maps.Size(40, 50)
+      );
+
+      let lastSelected = null;
+      const fmt = n => Number(n).toFixed(6);
+
+      // 마커 로드
+      fetch('/kakao/markers')
+              .then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+              .then(list => {
+                if (!Array.isArray(list) || list.length === 0) {
+                  countLabel.textContent = '현재 사용 가능한 따릉이 수: 0';
+                  addBotMessage('표시할 자전거가 없습니다.');
+                  return;
+                }
+                countLabel.textContent = `현재 사용 가능한 따릉이 수: ${list.length}`;
+
+                const bounds = new kakao.maps.LatLngBounds();
+                list.forEach(pos => {
+                  if (typeof pos.lat !== 'number' || typeof pos.lng !== 'number') return;
+                  const latlng = new kakao.maps.LatLng(pos.lat, pos.lng);
+                  bounds.extend(latlng);
+                  const marker = new kakao.maps.Marker({ map, position: latlng, title: pos.merchantNum || pos.bikeNo, image: markerImage });
+
+                  kakao.maps.event.addListener(marker, 'click', () => {
+                    lastSelected = {
+                      bikeNo: pos.bikeNo, merchantNum: pos.merchantNum,
+                      lat: pos.lat, lng: pos.lng, priority: pos.priority
+                    };
+
+                    reserveBtn.disabled = false;
+                    reserveBtn.style.opacity = '1';
+                    reserveBtn.style.cursor  = 'pointer';
+
+                    addBotMessage(`선택됨: <b>${pos.bikeNo ?? '-'}</b> / 가맹점 ${pos.merchantNum ?? '-'}`);
+                  });
+                });
+                if (!bounds.isEmpty()) map.setBounds(bounds, 30, 30, 30, 30);
+              })
+              .catch(e => { console.error(e); addBotMessage('마커 로드 실패. 잠시 후 다시 시도해 주세요.'); });
+
+      // 예약 클릭
+      reserveBtn.addEventListener('click', async () => {
+        if (!lastSelected) {
+          addBotMessage('먼저 지도의 자전거를 선택해줘! 🔎');
+          return;
+        }
+        reserveBtn.disabled = true; reserveBtn.style.opacity = '0.6'; reserveBtn.textContent = '예약확인중…';
+
+        const payload = {
+          memberNum: "U000000001",
+          phoneNum:  "01011112222",
+          categoryCd: "B01",
+          merchantNum: lastSelected.merchantNum,
+          reservationStatus: "Y"
+        };
+
+        try {
+          const res = await fetch('/kakao/reservations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          await res.json();
+
+          addBotMessage('<b>✅ 예약완료!</b>');
+          addBotMessage(`🚲 <b>${lastSelected.bikeNo}</b><br>가맹점번호: ${lastSelected.merchantNum}<br>위도: ${fmt(lastSelected.lat)}<br>경도: ${fmt(lastSelected.lng)}`);
+
+          viewBtn.disabled = false; viewBtn.style.opacity = '1'; viewBtn.style.cursor = 'pointer';
+        } catch (e) {
+          console.error(e);
+          addBotMessage('❌ 예약 저장 실패. 잠시 후 다시 시도해줘.');
+          reserveBtn.disabled = false; reserveBtn.style.opacity = '1'; reserveBtn.textContent = '예약하기';
+        } finally {
+          reserveBtn.textContent = '예약하기';
+        }
+      });
+    };
+  });
+
+</script>
+<script>
+  const nav       = document.getElementById('hhNav');
+  const backdrop  = document.getElementById('hhBackdrop');
+  const btnOpen   = document.getElementById('menuBtn');   // 헤더 점3개 버튼
+  const btnClose  = document.getElementById('hhClose');
+
+  const openNav = () => nav.classList.add('open');
+  const closeNav = () => nav.classList.remove('open');
+
+  btnOpen.addEventListener('click', openNav);
+  btnClose.addEventListener('click', closeNav);
+  backdrop.addEventListener('click', closeNav);
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+</script>
+
+
+</body>
+</html>
