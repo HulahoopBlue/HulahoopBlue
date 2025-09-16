@@ -24,8 +24,8 @@ bin/
 *.ipr
 out/
 !**/src/main/**/out/
+application.yml
 !**/src/test/**/out/
-blue/src/main/resources/application.yml
 
 
 ### NetBeans ###
