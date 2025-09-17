@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-    <mapper namespace="com.hulahoopblue.blue.kakaoapitest.model.dao.GeminiApiDAO">
+    <mapper namespace="com.hulahoopblue.blue.model.dao.GeminiApiDAO">
 
    <!-- <resultMap id="geminiApiResultMap" type="com.hulahoopblue.geminiapi.model.DTO.GeminiApiDTO">
         <id property="datatype" column="data_type"/>
@@ -12,7 +12,7 @@
         <result property="etc" column="etc"/>
     </resultMap>-->
 
-        <insert id="geminiApiRegist" parameterType="com.hulahoopblue.blue.kakaoapitest.model.dto.GeminiApiDTO">
+        <insert id="geminiApiRegist" parameterType="com.hulahoopblue.blue.model.dto.GeminiApiDTO">
             INSERT INTO T_ApiAccessHistory
             (
             data_type,
