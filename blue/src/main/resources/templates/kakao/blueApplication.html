@@ -566,6 +566,14 @@
                 </div>
             </div>
         </div>
+        <div>
+            <p><strong th:text="${loginMember.id}">아이디</strong></p>
+            <p><strong th:text="${loginMember.phoneNum}">전화번호</strong></p>
+            <p><strong th:text="${loginMember.memberNum}">회원번호</strong></p>
+            <p><strong th:text="${loginMember.nm}">이름</strong>님</p>
+            <p><strong th:text="${loginMember.email}"></strong></p>
+            <p>남은 세션 시간: <span id="session-timer"></span></p>
+        </div>
         <div class="avatar">
             <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Support Agent">
         </div>
@@ -981,7 +989,31 @@
 
         };
     });
+
+    // 세션로그인 시간
+    let remainingTime = [[${remainingTime}]]; // 서버에서 가져온 초기 세션 시간 (초 단위)
+
+    function startCountdown() {
+        const timerElement = document.getElementById("session-timer");
+
+        const interval = setInterval(() => {
+            if (remainingTime <= 0) {
+                clearInterval(interval);
+                alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                window.location.href = "/auth/logout";
+            } else {
+                const minutes = Math.floor(remainingTime / 60);
+                const seconds = remainingTime % 60;
+                timerElement.textContent = minutes + "분 " + seconds + "초";
+                remainingTime--;
+            }
+        }, 1000);
+    }
+
+    window.onload = startCountdown;
+
 </script>
+
 
 </body>
 </html>
