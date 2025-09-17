@@ -1,10 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>로그인</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #3f2b4e;
+        }
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px #25293f inset !important;
+            -webkit-text-fill-color: #fff !important;
+        }
+
+        .chat-container {
+            width: 680px;
+            height: 680px;
+            background-color: #1f1e31;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 40px 20px 20px 20px; /* 위쪽 40px, 아래 20px */
+            background: #1f1e31;
+            color: white;
+            font-size: 22px;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* 위쪽 정렬로 변경 */
+            align-items: center;
+        }
+
+        /* ======= 로그인 폼 전용 CSS ======= */
+        .login-form {
+            width: 100%;
+            max-width: 500px;
+            min-height: 500px;
+            background: #25293f;
+            padding: 40px 30px 30px 30px; /* 위쪽 padding을 줄여 제목을 위로 */
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* 중앙정렬 -> 위쪽 정렬 */
+        }
+
+        .login-form h2 {
+            color: #fff;
+            margin-top: 0;    /* 위쪽 여백 제거 */
+            margin-bottom: 70px; /* 제목과 첫 인풋 간격 조절 */
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .login-form .input-group {
+            position: relative;
+            margin-bottom: 20px; /* 인풋 그룹 간격 */
+        }
+
+        .login-form .input-group label {
+            position: absolute;
+            top: -18px;
+            left: 0;
+            color: #bbb;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .login-form .input-group input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #555;
+            background: transparent;
+            padding: 10px 0;
+            font-size: 16px;
+            color: #fff;
+            transition: all 0.2s;
+        }
+
+        .login-form .input-group input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .login-form .input-group input:focus {
+            outline: none;
+            border-bottom-color: #5E0F7B;
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px; /* 마지막 인풋과 버튼 간격 */
+            background: linear-gradient(90deg, #5E0F7B, #4269E2);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .login-form button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .login-links {
+            margin-top: 20px; /* 버튼과 링크 간격 */
+            font-size: 13px;
+        }
+
+        .login-links a {
+            color: #007AFF;
+            text-decoration: none;
+            margin: 0 5px;
+            transition: all 0.2s;
+        }
+
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 700px) {
+            .chat-container {
+                width: 90%;
+                height: auto;
+            }
+            .chat-header {
+                border-radius: 16px 16px 0 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    hello blue
+<div class="chat-container">
+    <div class="chat-header">HulahoopBlue</div>
+    <div class="chat-body">
+        <form class="login-form" action="/login" method="post">
+            <h2>로그인</h2>
+
+            <div class="input-group">
+                <input type="text" id="id" name="id" placeholder="아이디" required autocomplete="off" spellcheck="false">
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="pw" name="pw" placeholder="비밀번호" required autocomplete="off" spellcheck="false">
+            </div>
+
+            <button type="submit">로그인</button>
+
+            <div class="login-links">
+                <a href="member/MemberInsert">회원가입</a> |
+                <a href="#">비밀번호 찾기</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- 로그인 실패 메시지 -->
+<div style="color:red;">
+    <span id="errorMsg"></span>
+</div>
+
+<script>
+    // URL 파라미터에 error가 있으면 메시지 표시
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("error")) {
+        document.getElementById("errorMsg").textContent = "아이디 또는 비밀번호가 잘못되었습니다.";
+    }
+</script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === '1') {
+            alert('회원가입이 완료되었습니다!');
+            history.replaceState(null, '', window.location.pathname);
+        }
+    });
+</script>
+
 </body>
 </html>
