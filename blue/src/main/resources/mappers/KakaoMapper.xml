@@ -2,19 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hulahoopblue.blue.kakaoapitest.model.dao.KakaoMapper">
-
-    <!-- T_Bike -->
-    <resultMap id="kakaoMapSample" type="com.hulahoopblue.blue.kakaoapitest.model.dto.KaKaoMapDTO">
-        <id     property="bikeNo"      column="product_num"/>
-        <result property="merchantNum" column="merchant_num"/>
-        <result property="lat"         column="lat"/>
-        <result property="lng"         column="lng"/>
-        <result property="priority"    column="priority"/>
-    </resultMap>
+<mapper namespace="com.hulahoopblue.blue.model.dao.KakaoMapDAO">
 
     <!-- Member -->
-    <resultMap id="memberMap" type="com.hulahoopblue.blue.kakaoapitest.model.dto.MemberDTO">
+    <resultMap id="memberMap" type="com.hulahoopblue.blue.model.dto.MemberDTO">
         <id     property="memberNum"    column="member_num"/>
         <result property="id"            column="id"/>
         <result property="pw"            column="pw"/>
@@ -27,7 +18,7 @@
     </resultMap>
 
     <!-- Merchant -->
-    <resultMap id="MerchantMap" type="com.hulahoopblue.blue.kakaoapitest.model.dto.MerchantDTO">
+    <resultMap id="MerchantMap" type="com.hulahoopblue.blue.model.dto.MerchantDTO">
         <id     property="merchantNum"    column="merchant_num"/>
         <result property="categoryCd"     column="category_cd"/>
         <result property="merchantNm"     column="merchant_nm"/>
@@ -42,7 +33,7 @@
     </resultMap>
 
     <!-- UseHistory -->
-    <resultMap id="UseHistoryMap" type="com.hulahoopblue.blue.kakaoapitest.model.dto.UseHistoryDTO">
+    <resultMap id="UseHistoryMap" type="com.hulahoopblue.blue.model.dto.UseHistoryDTO">
         <id property="transactionNum"        column="transaction_num"/>
         <result property="memberNum"         column="member_num"/>
         <result property="phoneNum"          column="phone_num"/>
@@ -55,22 +46,35 @@
         <result property="reservationStatus" column="reservation_status"/>
     </resultMap>
 
+    <resultMap id="kakaoMapSample" type="com.hulahoopblue.blue.model.dto.KaKaoMapDTO">
+        <id     property="categoryCd"   column="category_cd"/>
+        <result property="productNum"   column="product_num"/>
+        <result property="merchantNum"  column="merchant_num"/>
+        <result property="merchantNm"   column="merchant_nm"/>
+        <result property="lat"          column="lat"/>
+        <result property="lng"          column="lng"/>
+        <result property="priority"     column="priority"/>
+        <result property="cnt"          column="cnt"/>
+    </resultMap>
+
     <!-- markers -->
     <select id="selectAllMarkers" resultMap="kakaoMapSample">
         SELECT
-        product_num,
-        merchant_num,
-        lat,
-        lng,
-        priority
-        FROM T_Bike
+        b.category_cd,
+        a.product_num,
+        a.merchant_num,
+        b.merchant_nm,
+        a.lat,
+        a.lng,
+        a.priority,
+        1 as cnt
+        FROM T_Bike a, t_merchant b
+        where a.merchant_num = b.merchant_num;
     </select>
-
-
 
     <!-- 예약 INSERT  -->
     <!-- KakaoMapper.xml (발췌) -->
-    <insert id="insertUseHistory" parameterType="com.hulahoopblue.blue.kakaoapitest.model.dto.UseHistoryDTO">
+    <insert id="insertUseHistory" parameterType="com.hulahoopblue.blue.model.dto.UseHistoryDTO">
         INSERT INTO T_UseHistory
         (member_num, phone_num, category_cd, merchant_num,
         travel, payment_date_time, use_start_date_time, use_end_date_time, reservation_status)
