@@ -23,15 +23,15 @@ public class KakaoMapController {
         this.kakaoAPIConfig = kakaoAPIConfig;
     }
 
-    @GetMapping("/blueApplication")
-    public String kakao(Model model) {
-
-        //System.out.println("kakaoApiKey : " + kakaoAPIConfig.getKakaoApiKey());
-
-        model.addAttribute("kakaoApikey",kakaoAPIConfig.getKakaoApiKey());
-
-        return "kakao/blueApplication";
-    }
+//    @GetMapping("/blueApplication")
+//    public String kakao(Model model) {
+//
+//        //System.out.println("kakaoApiKey : " + kakaoAPIConfig.getKakaoApiKey());
+//
+//        model.addAttribute("kakaoApikey",kakaoAPIConfig.getKakaoApiKey());
+//
+//        return "kakao/blueApplication";
+//    }
 
     @ResponseBody
     @GetMapping("/markers")
