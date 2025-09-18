@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hulahoopblue.white.member.model.dao.MemberDAO">
+
+    <resultMap id="memberResultMap" type="com.hulahoopblue.white.member.model.dto.MemberDTO">
+        <id property="memberNum" column="member_num"/>
+        <result property="id" column="id"/>
+        <result property="pw" column="pw"/>
+        <result property="email" column="email"/>
+        <result property="nm" column="nm"/>
+        <result property="phoneNum" column="phone_num"/>
+        <result property="address" column="address"/>
+        <result property="msgNotiStatus" column="msg_noti_status"/>
+
+    </resultMap>
+
+        <select id="findAllMember" resultMap="memberResultMap">
+            select
+                 member_num
+               , id
+               , pw
+               , email
+               , nm
+               , phone_num
+               , address
+               , msg_noti_status
+
+            from t_member
+        </select>
+
+    <insert id="insertMember" parameterType="com.hulahoopblue.white.member.model.dto.MemberDTO">
+        INSERT INTO t_member(username, password, email)
+        VALUES(#{username}, #{password}, #{email})
+    </insert>
+
+
+    <!-- 로그인용 조회 -->
+    <select id="selectMemberById" parameterType="string" resultType="com.hulahoopblue.white.member.model.dto.MemberDTO">
+        SELECT member_num,
+        id,
+        pw,
+        email,
+        nm,
+        phone_num,
+        address,
+        msg_noti_status,
+        user_typ AS userTyp  <!-- 중요! userTyp으로 alias -->
+        FROM T_Member
+        WHERE id = #{id}
+    </select>
+
+
+</mapper>

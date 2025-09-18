@@ -1,10 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Example Datatable</title>
+    <script>
+        function checkAccess(buttonType) {
+            // 세션 기반 로그인 정보
+            const loginMember = /*[[${session.loginMember}]]*/ null;
+
+            if (!loginMember) {
+                alert("로그인 후 이용 가능합니다.");
+                window.location.href = "/auth/login";
+                return false;
+            }
+
+            if (loginMember.userTyp != 2) {
+                alert("관리자만 접근 가능합니다.");
+                return false;
+            }
+
+            // 관리자이면 이동
+            if(buttonType === 'usehistory') {
+                window.location.href = '/usehistory/usehistorySelect';
+            } else if(buttonType === 'statistics') {
+                window.location.href = '/statistics/statisticsSelect';
+            }
+        }
+    </script>
 </head>
-<body>
-    hello white
+<body class="bg-gray-50">
+
+<button onclick="checkAccess('usehistory')">이용내역</button>
+<button onclick="checkAccess('statistics')">통계</button>
+<button onclick="location.href='/auth/login'">로그인</button>
+
 </body>
 </html>

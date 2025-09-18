@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hulahoopblue.white.statistics.model.dao.StatisticsMapper">
+
+    <!-- 통계 조회 -->
+    <select id="selectStatistics" resultType="com.hulahoopblue.white.statistics.model.dto.StatisticsDTO">
+        SELECT
+        uh.category_cd AS categoryCd,
+        uh.merchant_num AS merchantNum,
+        m.merchant_nm AS merchantNm,
+        DATE(uh.payment_date_time) AS paymentDateTime, <!-- DATE로 시분초 제거 -->
+        COUNT(*) AS useCnt,
+        SUM(uh.brokerage) AS brokerage,               <!-- 사용금액 = 중개수수료 -->
+        SUM(uh.brokerage) AS useAmt
+        FROM t_usehistory uh
+        JOIN t_merchant m ON uh.merchant_num = m.merchant_num
+        <where>
+            <if test="categoryCd != null and categoryCd != ''">
+                AND uh.category_cd = #{categoryCd}
+            </if>
+            <if test="merchantNum != null and merchantNum != ''">
+                AND uh.merchant_num = #{merchantNum}
+            </if>
+            <if test="startDate != null">
+                AND DATE(uh.payment_date_time) &gt;= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND DATE(uh.payment_date_time) &lt;= #{endDate}
+            </if>
+        </where>
+        GROUP BY uh.category_cd, uh.merchant_num, DATE(uh.payment_date_time)
+        ORDER BY paymentDateTime, merchantNum
+    </select>
+
+    <!-- 카테고리 목록 -->
+    <select id="selectCategoryList" resultType="string">
+        SELECT DISTINCT category_cd
+        FROM t_usehistory
+        ORDER BY category_cd
+    </select>
+
+    <!-- 가맹점 목록 -->
+    <select id="selectMerchantList" resultType="com.hulahoopblue.white.statistics.model.dto.StatisticsDTO">
+        SELECT DISTINCT uh.merchant_num AS merchantNum, m.merchant_nm AS merchantNm, uh.category_cd AS categoryCd
+        FROM t_usehistory uh
+                 JOIN t_merchant m ON uh.merchant_num = m.merchant_num
+        ORDER BY categoryCd, merchantNum
+    </select>
+
+</mapper>
