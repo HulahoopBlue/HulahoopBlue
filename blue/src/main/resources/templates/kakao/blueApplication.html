@@ -468,10 +468,11 @@
         }
 
         .quick-reply {
-            padding: 8px 16px;
-            border-radius: 20px;
+            margin-left: 10px;
+            padding: 10px 30px;
+            border-radius: 15px;
             border: 1px solid rgba(0, 0, 0, 0.3);
-            background-color: rgb(255, 255, 255,0.4);
+            background-color: rgba(255, 255, 255, 0.22);
             color: #000000;
             white-space: nowrap;
             cursor: pointer;
@@ -480,30 +481,24 @@
         }
 
         .quick-reply:hover {
-            background-color:  #F6F6F6;
-            color: rgb(0, 0, 0);
-            border-color: #ffffff;
+            background-color: rgb(49, 107, 255);
+            color: rgb(255, 255, 255);
+            border-color: #000000;
         }
 
         .notification {
             position: absolute;
-            top: 15px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             background-color: rgba(0, 0, 0, 0.7);
             color: white;
-            padding: 8px 16px;
+            padding: 12px 16px;
             border-radius: 20px;
             font-size: 12px;
-            z-index: 100;
-            opacity: 0;
+            opacity: 1;
             transition: opacity 0.3s;
             pointer-events: none;
-        }
-
-        .notification.show {
-            opacity: 1;
-            animation: fadeInOut 3s forwards;
         }
 
         @keyframes fadeInOut {
@@ -542,6 +537,67 @@
             }
         }
     </style>
+    <style>
+        /* 폰트(선택) */
+        :root{
+            /*--bold: 'Oswald', sans-serif;*/
+            /*--abril: 'Abril Fatface', serif;*/
+            /*--serif: 'Playfair Display', serif;*/
+            --white:#fff; --main:#92BFB1; --dark:#333;
+        }
+
+        /* 컨테이너 기준 절대배치 */
+        .chat-container{ position: relative; }
+
+        .nav--open{
+            position: absolute; top:0; left:0;
+            height: 100%; width: 300px;
+            background: #1F1E31FF;
+            box-shadow: 2px 2px 15px rgba(0,0,0,.1);
+            transition: transform .4s ease-out, opacity .4s ease-out;
+            transform: translateX(-300px);
+            opacity: 0;
+            z-index: 50;
+        }
+        .nav--open.open{ transform: translateX(0); opacity: 1; }
+        .close{ transform: translateX(-300px); opacity: 0; }
+
+        .nav--open-icon{ text-align: right; padding: 20px; }
+        .nav--open-icon i{ font-size: 1.8em; color: var(--main); cursor: pointer; }
+        .nav--open-icon i:hover{ color: var(--dark); }
+
+        .nav--open-title{
+
+            font-family: var(--serif);
+            font-size: .8em; text-transform: uppercase;
+            color: white;
+            letter-spacing: .2em; text-align: center;
+            margin-top: 5%;
+        }
+
+        .nav--open-menu{
+            height: 100%; display:flex; flex-direction:column;
+            text-align:center; margin-top:30px;
+        }
+        .nav--open-menu a{
+            display:block; font-size: 2em; font-weight: 100;
+            font-family: var(--serif); padding: 15px 0;
+            color: var(--main); text-decoration: none;
+        }
+        .nav--open-menu a:hover{ background: var(--main); color: var(--dark); }
+
+        /* 반투명 배경(컨테이너 내부 한정) */
+        .nav--backdrop{
+            position:absolute; inset:0;
+            background: rgba(0,0,0,.45);
+            opacity:0; pointer-events:none;
+            transition: opacity .25s ease;
+            z-index: 40;
+        }
+        .nav--open.open + .nav--backdrop{ opacity:1; pointer-events:auto; }
+
+
+    </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 
@@ -552,11 +608,11 @@
 </head>
 <body>
 <div class="chat-container">
-    <div class="notification" id="notification">예약 요청 중!</div>
+    <div class="notification" id="notification">HULA HOOP</div>
     <div class="chat-header">
         <div class="header-info">
             <div class="header-actions">
-                <button><i class="fas fa-ellipsis-v"></i></button>
+                <button id="menuBtn"><i class="fas fa-ellipsis-v" style="font-size: 20px"></i></button>
             </div>
             <div>
                 <div class="agent-name">메뉴</div>
@@ -597,13 +653,25 @@
         <div class="input-container">
             <input type="text" class="input-field" id="message-input" placeholder="텍스트를 입력해주세요...">
             <div class="quick-actions">
-                <button class="quick-action"><i class="fas fa-paperclip"></i></button>
+                <button class="quick-action"><i class="fas fa-solid fa-microphone"></i></button>
             </div>
         </div>
         <button class="send-button" id="send-button">
             <i class="fas fa-paper-plane"></i>
         </button>
     </div>
+    <div class="nav--open close" id="hhNav">
+        <div class="nav--open-icon" id="hhClose"><i class="fas fa-times"></i></div>
+        <div class="nav--open-title">HULA HOOP BLUE</div>
+        <div class="nav--open-menu">
+            <a onclick="location.href='/kakao/useHistory'">이용내역</a>
+            <a href="work.html">예약내역</a>
+            <a href="services.html">취소내역</a>
+            <a href="blog.html">메세지함</a>
+            <a href="contact.html">설정</a>
+        </div>
+    </div>
+    <div class="nav--backdrop" id="hhBackdrop"></div>
 </div>
 
 <script>
@@ -620,7 +688,6 @@
 
         // 초기 상태
         if (typingIndicator) typingIndicator.style.display = 'none';
-        if (notification) notification.classList.remove('show');
 
         // --- 유틸 함수들 ---
         const fmtTime = (d = new Date()) => {
@@ -676,7 +743,7 @@
             addMessage({ text, role: 'user' });
         }
 
-        function addAgentResponse(text, delay = 800) {
+        function addAgentResponse(text, delay = 2000) {
             if (typingIndicator) typingIndicator.style.display = 'flex';
             chatBody.scrollTop = chatBody.scrollHeight;
             setTimeout(() => {
@@ -712,7 +779,7 @@
             if (msg.includes('따릉') || msg.includes('자전거')) {
                 if (typeof window.showBikeCard === 'function') {
                     window.showBikeCard();
-                    addAgentResponse('예약 진행 중입니다!');
+                    addAgentResponse('예약 진행 중입니다! 자전거를 선택해주세요!');
                 } else {
                     addAgentResponse('따릉이 예약 기능을 불러올 수 없습니다.');
                 }
@@ -748,7 +815,7 @@
             });
         });
 
-        setTimeout(() => addAgentResponse('안녕하세요! 예약하시고 싶은 것을 말해주세요!'), 700);
+        setTimeout(() => addAgentResponse('안녕하세요! 예약하시고 싶은 것을 말해주세요!'), 1);
 
         window.showBikeCard = function () {
             bikeCardCount++;
@@ -770,7 +837,7 @@
                 <div class="product-price" id="bike-count-${uniq}">현재 사용 가능한 따릉이 수: 로딩중…</div>
                 <div class="product-actions hidden">
                     <button class="action-button add-button" id="add-to-cart-${uniq}" disabled>예약하기</button>
-                    <button class="action-button pay-button" id="pay-button-${uniq}" disabled>결제하기</button>
+                    <button class="action-button pay-button" id="pay-button-${uniq}" disabled><i class="fas fa-shopping-cart"></i>결제하기</button>
                 </div>
               </div>
             </div>
@@ -1013,7 +1080,20 @@
     window.onload = startCountdown;
 
 </script>
+<script>
+    const nav       = document.getElementById('hhNav');
+    const backdrop  = document.getElementById('hhBackdrop');
+    const btnOpen   = document.getElementById('menuBtn');   // 헤더 점3개 버튼
+    const btnClose  = document.getElementById('hhClose');
 
+    const openNav = () => nav.classList.add('open');
+    const closeNav = () => nav.classList.remove('open');
+
+    btnOpen.addEventListener('click', openNav);
+    btnClose.addEventListener('click', closeNav);
+    backdrop.addEventListener('click', closeNav);
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+</script>
 
 </body>
 </html>
