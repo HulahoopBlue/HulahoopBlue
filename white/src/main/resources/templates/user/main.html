@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 메인 페이지</title>
+    <script>
+        let remainingTime = [[${session.sessionTimeout}]];
+
+        function startCountdown() {
+            const timerElement = document.getElementById("session-timer");
+
+            const interval = setInterval(() => {
+                if (remainingTime <= 0) {
+                    clearInterval(interval);
+                    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                    window.location.href = "/auth/logout";
+                } else {
+                    const minutes = Math.floor(remainingTime / 60);
+                    const seconds = remainingTime % 60;
+                    timerElement.textContent = minutes + "분 " + seconds + "초";
+                    remainingTime--;
+                }
+            }, 1000);
+        }
+
+        window.onload = startCountdown;
+    </script>
+</head>
+<body>
+<h1>관리자 메인 페이지</h1>
+
+<p><strong th:text="${session.loginMember.nm}">관리자</strong>님 환영합니다!</p>
+
+<p>남은 세션 시간: <span id="session-timer"></span></p>
+
+<button onclick="location.href='/usehistory/usehistorySelect'">이용내역</button>
+<button onclick="location.href='/statistics/statisticsSelect'">통계</button>
+
+<form action="/auth/logout" method="get">
+    <button type="submit">로그아웃</button>
+</form>
+</body>
+</html>
