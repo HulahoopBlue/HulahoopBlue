@@ -10,5 +10,6 @@ import java.util.List;
 public interface KakaoMapDAO {
     List<KaKaoMapDTO> selectAllMarkers();
 
+    //useHistory에 있는 dao로 옮길 예정
     int insertUseHistory(UseHistoryDTO dto);
 }
