@@ -3,12 +3,16 @@ package com.hulahoopblue.blue.controller;
 import com.hulahoopblue.blue.config.AddressConfig;
 import com.hulahoopblue.blue.model.dto.MemberDTO;
 import com.hulahoopblue.blue.model.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/member")
 public class MemberController {
@@ -34,6 +38,8 @@ public class MemberController {
         memberService.insertNewMember(newMember);
         return "redirect:/?success=1";
     }
+
+
 
     @GetMapping("/checkId")
     @ResponseBody
@@ -61,15 +67,52 @@ public class MemberController {
         return memberService.findAllMember();
     }
 
+    @GetMapping("/mypage")
+    public String showMyPage(HttpSession session, Model model) {
+        MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/login"; // 로그인 안 되어 있으면 로그인 페이지로
+        }
+
+        model.addAttribute("loginMember", loginMember); // ✅ 로그인한 사용자 정보 전달
+        return "member/mypage";
+    }
+
+
+    @PostMapping("/login")
+    public String login(@RequestParam String id, @RequestParam String pw, HttpSession session, RedirectAttributes rttr) {
+        MemberDTO loginMember = memberService.login(id, pw); // 로그인 로직
+        if (loginMember != null) {
+            session.setAttribute("loginMember", loginMember); // ✅ 전체 정보 저장
+            return "redirect:/member/mypage";
+        } else {
+            rttr.addFlashAttribute("error", "로그인 실패");
+            return "redirect:/login";
+        }
+    }
+
     @GetMapping("/MemberUpdate")
     public void updatePage() {}
 
     @PostMapping("/MemberUpdate")
-    public String updateMember(MemberDTO newMember, RedirectAttributes rttr) {
+//    public String updateMember(MemberDTO newMember,HttpSession session, RedirectAttributes rttr) {
+//        memberService.updateNewMember(newMember);
+//        session.setAttribute("loginMember", memberService.findById(newMember.getId())); // ✅ 세션 갱신
+//        rttr.addFlashAttribute("successMessage", "신규 회원 수정에 성공하였습니다.");
+//
+//        //return "redirect:/login";
+//        return "redirect:/login?successMessage=회원정보가 성공적으로 수정되었습니다.";
+//    }
+
+    public Map<String, String> updateMemberAjax(@RequestBody MemberDTO newMember) {
         memberService.updateNewMember(newMember);
-        rttr.addFlashAttribute("successMessage", "신규 메뉴 수정에 성공하였습니다.");
-        return "redirect:/member/MemberSelect";
+        Map<String, String> result = new HashMap<>();
+        result.put("redirectUrl", "/login?successMessage=회원정보가 성공적으로 수정되었습니다.");
+        return result;
     }
+
+
+
 
     @GetMapping("/MemberDelete")
     public void deletePage() {}
@@ -78,7 +121,12 @@ public class MemberController {
     public String deleteMember(MemberDTO newMember, RedirectAttributes rttr) {
         memberService.deleteNewMember(newMember);
         rttr.addFlashAttribute("successMessage", "신규 회원 삭제에 성공하였습니다.");
-        return "redirect:/member/MemberSelect";
+
+
+        return "redirect:/login";
     }
+
+
+
 }
 
