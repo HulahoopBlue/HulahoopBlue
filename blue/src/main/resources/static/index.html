@@ -194,6 +194,19 @@
 </div>
 
 <script>
+
+    const params = new URLSearchParams(window.location.search);
+    const successMessage = params.get("successMessage");
+
+    if (successMessage) {
+        alert(successMessage);
+    }
+
+
+
+
+
+
     // URL 파라미터에 error가 있으면 메시지 표시
     const params = new URLSearchParams(window.location.search);
     if (params.get("error")) {
