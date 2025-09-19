@@ -3,28 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <title>관리자 메인 페이지</title>
-    <script>
-        let remainingTime = [[${session.sessionTimeout}]];
+    <style>
+        /* ===============================
+           드롭다운 관련 CSS (ModernDropdown 스타일)
+        ================================ */
+        :root {
+            /* Colors */
+            --primary: #2196f3;
+            --primary-glow: rgba(33, 150, 243, 0.4);
+            --background: #0a0a12;
+            --surface: rgba(30, 30, 45, 0.95);
+            --surface-hover: rgba(40, 40, 60, 0.95);
+            --text: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.3);
 
-        function startCountdown() {
-            const timerElement = document.getElementById("session-timer");
+            /* Effects */
+            --glow: 0 0 10px var(--primary-glow);
+            --glass: saturate(180%) blur(10px);
+            --gradient: linear-gradient(135deg, var(--surface), rgba(40, 40, 60, 0.95));
 
-            const interval = setInterval(() => {
-                if (remainingTime <= 0) {
-                    clearInterval(interval);
-                    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-                    window.location.href = "/auth/logout";
-                } else {
-                    const minutes = Math.floor(remainingTime / 60);
-                    const seconds = remainingTime % 60;
-                    timerElement.textContent = minutes + "분 " + seconds + "초";
-                    remainingTime--;
-                }
-            }, 1000);
+            /* Timing */
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-medium: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Dimensions */
+            --border-radius: 8px;
+            --menu-min-width: 220px;
         }
 
-        window.onload = startCountdown;
-    </script>
+        /* 드롭다운 wrapper */
+        .dropdown-wrapper{
+            position: fixed;
+            top: 75px;
+            right: 120px;
+            transform: none;
+            z-index: 1000;
+        }
+
+        .dropdown-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--gradient);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-medium);
+            backdrop-filter: var(--glass);
+            -webkit-backdrop-filter: var(--glass);
+        }
+
+        .dropdown-trigger:hover {
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: auto;
+            right: 0;
+            min-width: var(--menu-min-width);
+            background: var(--gradient);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-medium);
+            backdrop-filter: var(--glass);
+            -webkit-backdrop-filter: var(--glass);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .dropdown-wrapper.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            color: var(--text);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .dropdown-item:hover, .dropdown-item.active {
+            background: var(--surface-hover);
+            color: var(--primary);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 8px 0;
+        }
+    </style>
 </head>
 <body>
 <h1>관리자 메인 페이지</h1>
@@ -33,11 +119,98 @@
 
 <p>남은 세션 시간: <span id="session-timer"></span></p>
 
-<button onclick="location.href='/usehistory/usehistorySelect'">이용내역</button>
-<button onclick="location.href='/statistics/statisticsSelect'">통계</button>
+<!-- 드롭다운 메뉴 -->
+<div class="dropdown-wrapper">
+    <button class="dropdown-trigger">
+        <span id="dropdown-current">대시보드</span> <!-- 현재페이지 이름 표시 -->
+        <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16">
+            <path d="M7 10l5 5 5-5z" fill="currentColor"></path>
+        </svg>
+    </button>
+
+    <div class="dropdown-menu">
+        <div class="dropdown-item" data-href="/dashboard" onclick="location.href='/dashboard'">
+            <span>대시보드</span>
+        </div>
+        <div class="dropdown-item" data-href="/statistics/statisticsSelect" onclick="location.href='/statistics/statisticsSelect'">
+            <span>통계</span>
+        </div>
+        <div class="dropdown-item" data-href="/usehistory/usehistorySelect" onclick="location.href='/usehistory/usehistorySelect'">
+            <span>이용내역</span>
+        </div>
+    </div>
+</div>
 
 <form action="/auth/logout" method="get">
     <button type="submit">로그아웃</button>
 </form>
+
+<script>
+    // 세션 타이머
+    let remainingTime = [[${session.sessionTimeout}]];
+
+    function startCountdown() {
+        const timerElement = document.getElementById("session-timer");
+        const interval = setInterval(() => {
+            if (remainingTime <= 0) {
+                clearInterval(interval);
+                alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                window.location.href = "/auth/logout";
+            } else {
+                const minutes = Math.floor(remainingTime / 60);
+                const seconds = remainingTime % 60;
+                timerElement.textContent = minutes + "분 " + seconds + "초";
+                remainingTime--;
+            }
+        }, 1000);
+    }
+    window.onload = startCountdown;
+
+    // ===============================
+    // ModernDropdown JS
+    // ===============================
+    class ModernDropdown {
+        constructor(element) {
+            this.wrapper = element;
+            this.trigger = element.querySelector('.dropdown-trigger');
+            this.menu = element.querySelector('.dropdown-menu');
+            this.init();
+        }
+
+        init() {
+            // 클릭으로 토글
+            this.trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.wrapper.classList.toggle('active');
+            });
+
+            // 클릭 외부 닫기
+            document.addEventListener('click', (e) => {
+                if (!this.wrapper.contains(e.target)) {
+                    this.wrapper.classList.remove('active');
+                }
+            });
+        }
+    }
+
+    // 페이지 로드 시 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+        const currentPath = window.location.pathname;
+        const items = document.querySelectorAll('.dropdown-item');
+        const currentSpan = document.getElementById('dropdown-current');
+
+        // 현재 페이지 표시
+        items.forEach(item => {
+            if(item.getAttribute('data-href') === currentPath){
+                item.classList.add('active');
+                currentSpan.textContent = item.querySelector('span').textContent;
+            }
+        });
+
+        // ModernDropdown 초기화
+        const dropdowns = document.querySelectorAll('.dropdown-wrapper');
+        dropdowns.forEach(dropdown => new ModernDropdown(dropdown));
+    });
+</script>
 </body>
 </html>
