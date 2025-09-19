@@ -14,8 +14,8 @@ public class UseHistoryService {
         this.useHistoryMapper = useHistoryMapper;
     }
 
-    public List<UseHistoryViewDTO> getUseHistory(String memberNum, String categoryCd,String merchantNm, String fromDate, String toDate) {
+    public List<UseHistoryViewDTO> getUseHistory(String memberNum, String categoryCd,String merchantNm, String fromDate, String toDate, String reservationStatus) {
 
-        return useHistoryMapper.selectUseHistories(memberNum, categoryCd,merchantNm ,fromDate, toDate);
+        return useHistoryMapper.selectUseHistories(memberNum, categoryCd,merchantNm ,fromDate, toDate, reservationStatus);
     }
 }

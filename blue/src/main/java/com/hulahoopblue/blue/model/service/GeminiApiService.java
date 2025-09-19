@@ -42,6 +42,11 @@ public class GeminiApiService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
+//        System.out.println("prompt : " + prompt);
+//        System.out.println("escapedPrompt : " + escapedPrompt);
+//        System.out.println("requestHeader : " + headers);
+//        System.out.println("requestBody : " + requestBody);
+
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
         int result = 0;
