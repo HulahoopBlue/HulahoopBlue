@@ -247,10 +247,15 @@
             background-color: #333;
         }
 
+        .custom-scroll{
+            /* Firefox */
+            scrollbar-width: none;
+            scrollbar-color: rgba(255, 255, 255, 0.7) rgba(255, 255, 255, 0.001);
+        }
     </style>
 </head>
 <body>
-<div class="chat-container">
+<div class="chat-container custom-scroll">
     <div class="chat-header">HulahoopBlue</div>
     <div class="chat-body">
         <form action="/member/MemberInsert" method="post" class="signup-form">
