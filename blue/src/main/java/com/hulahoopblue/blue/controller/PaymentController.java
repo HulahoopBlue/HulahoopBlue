@@ -30,8 +30,6 @@ public class PaymentController {
     public Double getClientFee(@RequestBody Map<String, String> payload) {
         String id = payload.get("merchantNum");
 
-        System.out.println("merchantNum : ");
-
         MerchantDTO merchantDTO = merchantMapper.findClientById(id);
 
         if (merchantDTO == null) {
@@ -46,12 +44,19 @@ public class PaymentController {
                                        @RequestParam(value = "merchantPayKey", required = false) String merchantPayKey,
                                        @RequestParam(value = "resultCode", required = false) String resultCode) {
 
-        String alertMessage = "결제 완료(테스트)";
+        String alertMessage;
         String redirectUrl = "/kakao/blueApplication";
+
+        if ("Success".equals(resultCode)) {
+            alertMessage = "결제가 성공적으로 완료되었습니다.";
+        } else {
+            alertMessage = "결제에 실패했거나 취소되었습니다. 다시 시도해 주세요.";
+        }
 
         return "<!DOCTYPE html><html><body><script>"
                 + "alert('" + alertMessage + "');"
                 + "window.location.href = '" + redirectUrl + "';"
                 + "</script></body></html>";
     }
+
 }
