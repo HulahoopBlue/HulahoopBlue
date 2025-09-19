@@ -1,7 +1,7 @@
-package com.hulahoopblue.blue.useHistory.controller;
+package com.hulahoopblue.blue.controller;
 
-import com.hulahoopblue.blue.useHistory.model.dto.UseHistoryViewDTO;
-import com.hulahoopblue.blue.useHistory.model.service.UseHistoryService;
+import com.hulahoopblue.blue.model.dto.UseHistoryViewDTO;
+import com.hulahoopblue.blue.model.service.UseHistoryService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +25,6 @@ public class UseHistoryController {
     public String useHistory(@RequestParam(required = false) String categoryCd,@RequestParam(required = false) String merchantNm, @RequestParam(required=false) String fromDate,
                              @RequestParam(required=false) String toDate, HttpSession session,Model model) {
 
-        // 세션에서 회원번호 (예: 로그인 시 저장한 키)
         String memberNum = (String) session.getAttribute("LOGIN_MEMBER_NUM");
         if (memberNum == null) {
             // 테스트용 (운영에선 제거)
@@ -34,6 +33,7 @@ public class UseHistoryController {
 
         List<UseHistoryViewDTO> histories =
                 useHistoryService.getUseHistory(memberNum, categoryCd,merchantNm, fromDate,toDate);
+
         model.addAttribute("histories", histories);
         model.addAttribute("categoryCd", categoryCd);
         model.addAttribute("merchantNm",merchantNm);
