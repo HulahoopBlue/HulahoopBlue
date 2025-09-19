@@ -538,12 +538,8 @@
         }
     </style>
     <style>
-        /* 폰트(선택) */
         :root{
-            /*--bold: 'Oswald', sans-serif;*/
-            /*--abril: 'Abril Fatface', serif;*/
-            /*--serif: 'Playfair Display', serif;*/
-            --white:#fff; --main:#92BFB1; --dark:#333;
+            --white:#fff; --main:#8ad1ff; --dark:#333;
         }
 
         /* 컨테이너 기준 절대배치 */
@@ -551,16 +547,16 @@
 
         .nav--open{
             position: absolute; top:0; left:0;
-            height: 100%; width: 300px;
+            height: 50%; width: 200px;
             background: #1F1E31FF;
             box-shadow: 2px 2px 15px rgba(0,0,0,.1);
             transition: transform .4s ease-out, opacity .4s ease-out;
-            transform: translateX(-300px);
+            transform: translateX(-200px);
             opacity: 0;
             z-index: 50;
         }
         .nav--open.open{ transform: translateX(0); opacity: 1; }
-        .close{ transform: translateX(-300px); opacity: 0; }
+        .close{ transform: translateX(-200px); opacity: 0; }
 
         .nav--open-icon{ text-align: right; padding: 20px; }
         .nav--open-icon i{ font-size: 1.8em; color: var(--main); cursor: pointer; }
@@ -572,19 +568,28 @@
             font-size: .8em; text-transform: uppercase;
             color: white;
             letter-spacing: .2em; text-align: center;
-            margin-top: 5%;
         }
 
         .nav--open-menu{
-            height: 100%; display:flex; flex-direction:column;
-            text-align:center; margin-top:30px;
+            height: 100%;
+            display:flex;
+            flex-direction:column;
+            text-align:left;
+            padding-left: 15%;
         }
         .nav--open-menu a{
-            display:block; font-size: 2em; font-weight: 100;
-            font-family: var(--serif); padding: 15px 0;
-            color: var(--main); text-decoration: none;
+            display:block;
+            font-size: 2em;
+            font-weight: 100;
+            font-family: var(--serif);
+            padding: 15px 0;
+            color: var(--main);
+            text-decoration: none;
         }
-        .nav--open-menu a:hover{ background: var(--main); color: var(--dark); }
+        .nav--open-menu a:hover{
+            background: var(--main);
+            color: var(--dark);
+        }
 
         /* 반투명 배경(컨테이너 내부 한정) */
         .nav--backdrop{
@@ -594,8 +599,17 @@
             transition: opacity .25s ease;
             z-index: 40;
         }
-        .nav--open.open + .nav--backdrop{ opacity:1; pointer-events:auto; }
+        .chat-container .nav--open-menu a {
+            color: #f2f2f2;
+            font-size: 14px;
+        }
 
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 15%;
+        }
 
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -661,12 +675,14 @@
         </button>
     </div>
     <div class="nav--open close" id="hhNav">
-        <div class="nav--open-icon" id="hhClose"><i class="fas fa-times"></i></div>
-        <div class="nav--open-title">HULA HOOP BLUE</div>
+        <div class="nav-header">
+            <div class="nav--open-title">HULAHOOPBLUE</div>
+            <div class="nav--open-icon" id="hhClose"><i class="fas fa-times"></i></div>
+        </div>
         <div class="nav--open-menu">
-            <a onclick="location.href='/kakao/useHistory'">이용내역</a>
-            <a href="work.html">예약내역</a>
-            <a href="services.html">취소내역</a>
+            <a onclick="location.href='/kakao/useHistory?reservation_status=N'">이용내역</a>
+            <a onclick="location.href='/kakao/useHistory?reservation_status=Y'">예약내역</a>
+            <a onclick="location.href='/kakao/useHistory?reservation_status=C'">취소내역</a>
             <a href="blog.html">메세지함</a>
             <a href="contact.html">설정</a>
         </div>
@@ -686,10 +702,8 @@
         // 카드 누적 카운터
         let bikeCardCount = 0;
 
-        // 초기 상태
         if (typingIndicator) typingIndicator.style.display = 'none';
 
-        // --- 유틸 함수들 ---
         const fmtTime = (d = new Date()) => {
             let h = d.getHours();
             const m = String(d.getMinutes()).padStart(2, '0');
@@ -777,7 +791,7 @@
             if (msg.includes('따릉') || msg.includes('자전거')) {
                 if (typeof window.showBikeCard === 'function') {
                     window.showBikeCard();
-                    addAgentResponse('예약 진행 중입니다! 자전거를 선택해주세요!');
+                    addAgentResponse('예약 진행 중입니다.<br> 자전거를 선택해주세요!');
                 } else {
                     addAgentResponse('따릉이 예약 기능을 불러올 수 없습니다.');
                 }
@@ -785,7 +799,7 @@
             }
 
             if (msg.toLowerCase().includes('hi') || msg.toLowerCase().includes('hello')) {
-                addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다! 예) 따릉이, 여행사');
+                addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다.<br> 예) 따릉이, 여행사');
             } else {
                 addAgentResponse('예약하시고 싶은 것을 정확히 말해주세요!');
             }
@@ -799,7 +813,7 @@
                 const txt = btn.textContent.trim();
                 addUserMessage(txt);
                 if (txt.includes('도움말')) {
-                    addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다! ex) 따릉이/여행사');
+                    addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다.<br> ex) 따릉이/여행사');
                 } else {
                     if (txt.includes('따릉') || txt.includes('자전거')) {
                         if (typeof window.showBikeCard === 'function') {
@@ -813,7 +827,7 @@
             });
         });
 
-        setTimeout(() => addAgentResponse('안녕하세요! 예약하시고 싶은 것을 말해주세요!'), 1);
+        setTimeout(() => addAgentResponse('안녕하세요!<br> 예약하시고 싶은 것을 말해주세요!'), 1);
 
         window.showBikeCard = function () {
             bikeCardCount++;
@@ -967,7 +981,7 @@
                 // addAgentResponse('예약 진행 중입니다!');
 
                 // addBotMessage(`🚲<br>상품명: ${lastSelected.productNum}<br>가맹점명: ${lastSelected.merchantNm}<br>`);
-                addBotMessage('결제처리후 예약 완료 됩니다. 결제하기 진행해 주세요. \n 예약 진행 중입니다!');
+                addBotMessage('결제처리후 예약 완료 됩니다.<br> 결제하기 진행해 주세요.<br> 예약 진행 중입니다!');
 
                 enableBtn(payBtn);
                 reserveBtn.textContent = '예약하기';
@@ -1020,7 +1034,7 @@
                 });
 
                 const payload = {
-                    memberNum: '[[${loginMember.id}]]',
+                    memberNum: '[[${loginMember.memberNum}]]',
                     phoneNum: '[[${loginMember.phoneNum}]]',
                     categoryCd: lastSelected.categoryCd,
                     merchantNum: lastSelected.merchantNum,
@@ -1038,11 +1052,6 @@
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     const data = await res.json();
 
-                    // addBotMessage(`🚲<br>상품명: ${lastSelected.productNum}<br>가맹점명: ${lastSelected.merchantNm}<br>`);
-                    // addBotMessage('결제처리후 예약 완료 됩니다. 결제하기 진행해 주세요.');
-                    //
-                    // enableBtn(payBtn);
-                    // reserveBtn.textContent = '예약하기';
                 } catch (e) {
                     console.error(e);
                     addBotMessage('❌ 예약 실패. 잠시 후 다시 시도해줘.');

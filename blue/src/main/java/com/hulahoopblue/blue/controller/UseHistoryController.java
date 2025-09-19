@@ -22,25 +22,29 @@ public class UseHistoryController {
     }
 
     @GetMapping("/useHistory")
-    public String useHistory(@RequestParam(required = false) String categoryCd,@RequestParam(required = false) String merchantNm, @RequestParam(required=false) String fromDate,
-                             @RequestParam(required=false) String toDate, HttpSession session,Model model) {
+    public String useHistory(@RequestParam(required = false) String categoryCd,
+                             @RequestParam(required = false) String merchantNm,
+                             @RequestParam(required=false) String fromDate,
+                             @RequestParam(required=false) String toDate,
+                             @RequestParam(required = false) String reservationStatus,
+                             HttpSession session,Model model) {
 
         String memberNum = (String) session.getAttribute("LOGIN_MEMBER_NUM");
         if (memberNum == null) {
-            // 테스트용 (운영에선 제거)
+
             memberNum = "U000000001";
         }
 
         List<UseHistoryViewDTO> histories =
-                useHistoryService.getUseHistory(memberNum, categoryCd,merchantNm, fromDate,toDate);
+                useHistoryService.getUseHistory(memberNum, categoryCd,merchantNm, fromDate,toDate, reservationStatus);
 
         model.addAttribute("histories", histories);
         model.addAttribute("categoryCd", categoryCd);
         model.addAttribute("merchantNm",merchantNm);
         model.addAttribute("fromDate", fromDate);
         model.addAttribute("toDate", toDate);
+        model.addAttribute("reservationStatus", reservationStatus);
 
-        model.addAttribute("histories",histories);
         return "kakao/useHistory";
     }
 }
