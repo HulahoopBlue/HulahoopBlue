@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hulahoopblue.blue.useHistory.model.dao.UseHistoryMapper">
+<mapper namespace="com.hulahoopblue.blue.model.dao.UseHistoryMapper">
 
-    <resultMap id="UseHistoryViewMap" type="com.hulahoopblue.blue.useHistory.model.dto.UseHistoryViewDTO">
+    <resultMap id="UseHistoryViewMap" type="com.hulahoopblue.blue.model.dto.UseHistoryViewDTO">
         <result column="merchant_nm" property="merchantNm"/>
         <result column="use_start_date_time" property="useStartDateTime"/>
         <result column="use_end_date_time" property="useEndDateTime"/>
