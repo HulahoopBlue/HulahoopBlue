@@ -5,7 +5,6 @@ import com.hulahoopblue.blue.model.dto.KaKaoMapDTO;
 import com.hulahoopblue.blue.model.dto.UseHistoryDTO;
 import com.hulahoopblue.blue.model.service.KakaoService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

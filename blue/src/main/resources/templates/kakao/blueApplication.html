@@ -731,7 +731,6 @@
         }
 
         function addBotMessage(htmlOrText) {
-            // 간단 판단: < 가 있으면 html로 넣음
             if (typeof htmlOrText === 'string' && htmlOrText.includes('<')) {
                 addMessage({ html: htmlOrText, role: 'agent' });
             } else {
@@ -752,7 +751,6 @@
             }, delay);
         }
 
-        // --- 전송 처리 ---
         async function sendMessage() {
             const msg = (messageInput && messageInput.value || '').trim();
             if (!msg) {
@@ -878,7 +876,7 @@
 
             const markerImage = new kakao.maps.MarkerImage(
                 "https://cdn-icons-png.flaticon.com/512/5002/5002382.png",
-                new kakao.maps.Size(40, 50)
+                new kakao.maps.Size(20, 30)
             );
 
             let lastSelected = null;
@@ -910,7 +908,6 @@
                         const marker = new kakao.maps.Marker({
                             map,
                             position: latlng,
-                            title: pos.productNum || '',
                             image: markerImage
                         });
 
@@ -967,35 +964,14 @@
 
                 disableBtn(reserveBtn);
                 reserveBtn.textContent = '예약확인중…';
+                // addAgentResponse('예약 진행 중입니다!');
 
-                const payload = {
-                    memberNum: "U000000001",
-                    phoneNum: "01011112222",
-                    categoryCd: lastSelected.categoryCd,
-                    merchantNum: lastSelected.merchantNum,
-                    reservationStatus: "Y"
-                };
+                // addBotMessage(`🚲<br>상품명: ${lastSelected.productNum}<br>가맹점명: ${lastSelected.merchantNm}<br>`);
+                addBotMessage('결제처리후 예약 완료 됩니다. 결제하기 진행해 주세요. \n 예약 진행 중입니다!');
 
-                try {
-                    const res = await fetch('/kakao/reservations', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify(payload)
-                    });
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
-                    const data = await res.json();
+                enableBtn(payBtn);
+                reserveBtn.textContent = '예약하기';
 
-                    addBotMessage(`🚲<br>상품명: ${lastSelected.productNum}<br>가맹점명: ${lastSelected.merchantNm}<br>`);
-                    addBotMessage('결제처리후 예약 완료 됩니다. 결제하기 진행해 주세요.');
-
-                    enableBtn(payBtn);
-                    reserveBtn.textContent = '예약하기';
-                } catch (e) {
-                    console.error(e);
-                    addBotMessage('❌ 예약 실패. 잠시 후 다시 시도해줘.');
-                    enableBtn(reserveBtn);
-                    reserveBtn.textContent = '예약하기';
-                }
             });
 
             var oPay = Naver.Pay.create({
@@ -1004,10 +980,8 @@
                 "chainId": "VlFlWlFJVzB2Z2t"
             });
 
-
-
             async function getFee(productNum, merchantNum) {
-                console.log("getFee 함수 호출됨");
+
                 const res = await fetch('http://localhost:8001/payment/fee', {
                     method: 'POST',
                     headers: {
@@ -1024,7 +998,6 @@
             }
 
             async function pay() {
-                // 사용자가 상품을 선택했는지 확인합니다.
                 if (!lastSelected || !lastSelected.productNum || !lastSelected.merchantNum) {
                     addBotMessage('먼저 결제할 상품을 선택해주세요.');
                     return;
@@ -1033,16 +1006,11 @@
                 const productNum = lastSelected.productNum;
                 const merchantNum = lastSelected.merchantNum;
 
-                // 백엔드에 두 값을 모두 전달하여 수수료를 조회합니다.
                 const fee = await getFee(productNum, merchantNum);
-
-                // 고유한 결제 번호를 한 번만 생성
                 const purchaseNum = Date.now();
 
-                console.log("purchaseNum : " + purchaseNum);
-
                 oPay.open({
-                    "merchantPayKey": "TEST-" + purchaseNum, // 고유한 값으로 변경
+                    "merchantPayKey": "TEST-" + purchaseNum,
                     "productName": "수수료 결제",
                     "productCount": "1",
                     "totalPayAmount": String(fee),
@@ -1050,6 +1018,38 @@
                     "taxExScopeAmount": "0",
                     "returnUrl": `http://localhost:8001/payment/return?clientId=${productNum}`
                 });
+
+                const payload = {
+                    memberNum: '[[${loginMember.id}]]',
+                    phoneNum: '[[${loginMember.phoneNum}]]',
+                    categoryCd: lastSelected.categoryCd,
+                    merchantNum: lastSelected.merchantNum,
+                    brokerage: fee,
+                    reservationStatus: "Y"
+                };
+
+                try {
+                    const res = await fetch('/kakao/reservations', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+
+                    // addBotMessage(`🚲<br>상품명: ${lastSelected.productNum}<br>가맹점명: ${lastSelected.merchantNm}<br>`);
+                    // addBotMessage('결제처리후 예약 완료 됩니다. 결제하기 진행해 주세요.');
+                    //
+                    // enableBtn(payBtn);
+                    // reserveBtn.textContent = '예약하기';
+                } catch (e) {
+                    console.error(e);
+                    addBotMessage('❌ 예약 실패. 잠시 후 다시 시도해줘.');
+                    enableBtn(reserveBtn);
+                    reserveBtn.textContent = '예약하기';
+                }
+
             }
 
             payBtn.addEventListener('click', pay);
@@ -1057,7 +1057,6 @@
         };
     });
 
-    // 세션로그인 시간
     let remainingTime = [[${remainingTime}]]; // 서버에서 가져온 초기 세션 시간 (초 단위)
 
     function startCountdown() {
