@@ -1,35 +1,28 @@
 package com.hulahoopblue.white.merchant.model.dto;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 public class MerchantDTO {
-    private String merchantNum;   // 고유 가맹점 식별번호
-    private String categoryCd;    // 가맹점 카테고리 코드
-    private String merchantNm;    // 가맹점 이름
-    private String apiKey;        // 발급 Key
-    private String businessNum;   // 사업자 등록 번호
-    private LocalDate regDateTime;    // 등록일자
-    private LocalDate modifyDateTime; // 수정일자
-    private LocalDate endDateTime;    // 종료일자
-    private BigDecimal brokerageRate; // 중개수수료율
-    private BigDecimal brokerage;     // 중개수수료 금액
-    private String contractStatus;    // 계약 상태
+    private String categoryCd;
+    private String merchantNum;
+    private String merchantNm;
+    private String apiKey;
+    private String businessNum;
+    private Timestamp regDateTime;
+    private Timestamp modifyDateTime;
+    private Timestamp endDateTime;
+    private Double brokerageRate;
+    private Double brokerage;
+    private String contractStatus;
 
-    public MerchantDTO() {}
 
-    public MerchantDTO(String merchantNum, String categoryCd, String merchantNm, String apiKey, String businessNum, LocalDate regDateTime, LocalDate modifyDateTime, LocalDate endDateTime, BigDecimal brokerageRate, BigDecimal brokerage, String contractStatus) {
-        this.merchantNum = merchantNum;
+    // Getters and Setters
+    public String getCategoryCd() {
+        return categoryCd;
+    }
+
+    public void setCategoryCd(String categoryCd) {
         this.categoryCd = categoryCd;
-        this.merchantNm = merchantNm;
-        this.apiKey = apiKey;
-        this.businessNum = businessNum;
-        this.regDateTime = regDateTime;
-        this.modifyDateTime = modifyDateTime;
-        this.endDateTime = endDateTime;
-        this.brokerageRate = brokerageRate;
-        this.brokerage = brokerage;
-        this.contractStatus = contractStatus;
     }
 
     public String getMerchantNum() {
@@ -38,14 +31,6 @@ public class MerchantDTO {
 
     public void setMerchantNum(String merchantNum) {
         this.merchantNum = merchantNum;
-    }
-
-    public String getCategoryCd() {
-        return categoryCd;
-    }
-
-    public void setCategoryCd(String categoryCd) {
-        this.categoryCd = categoryCd;
     }
 
     public String getMerchantNm() {
@@ -72,43 +57,43 @@ public class MerchantDTO {
         this.businessNum = businessNum;
     }
 
-    public LocalDate getRegDateTime() {
+    public Timestamp getRegDateTime() {
         return regDateTime;
     }
 
-    public void setRegDateTime(LocalDate regDateTime) {
+    public void setRegDateTime(Timestamp regDateTime) {
         this.regDateTime = regDateTime;
     }
 
-    public LocalDate getModifyDateTime() {
+    public Timestamp getModifyDateTime() {
         return modifyDateTime;
     }
 
-    public void setModifyDateTime(LocalDate modifyDateTime) {
+    public void setModifyDateTime(Timestamp modifyDateTime) {
         this.modifyDateTime = modifyDateTime;
     }
 
-    public LocalDate getEndDateTime() {
+    public Timestamp getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(LocalDate endDateTime) {
+    public void setEndDateTime(Timestamp endDateTime) {
         this.endDateTime = endDateTime;
     }
 
-    public BigDecimal getBrokerageRate() {
+    public Double getBrokerageRate() {
         return brokerageRate;
     }
 
-    public void setBrokerageRate(BigDecimal brokerageRate) {
+    public void setBrokerageRate(Double brokerageRate) {
         this.brokerageRate = brokerageRate;
     }
 
-    public BigDecimal getBrokerage() {
+    public Double getBrokerage() {
         return brokerage;
     }
 
-    public void setBrokerage(BigDecimal brokerage) {
+    public void setBrokerage(Double brokerage) {
         this.brokerage = brokerage;
     }
 
@@ -118,22 +103,5 @@ public class MerchantDTO {
 
     public void setContractStatus(String contractStatus) {
         this.contractStatus = contractStatus;
-    }
-
-    @Override
-    public String toString() {
-        return "MerchantDTO{" +
-                "merchantNum='" + merchantNum + '\'' +
-                ", categoryCd='" + categoryCd + '\'' +
-                ", merchantNm='" + merchantNm + '\'' +
-                ", apiKey='" + apiKey + '\'' +
-                ", businessNum='" + businessNum + '\'' +
-                ", regDateTime=" + regDateTime +
-                ", modifyDateTime=" + modifyDateTime +
-                ", endDateTime=" + endDateTime +
-                ", brokerageRate=" + brokerageRate +
-                ", brokerage=" + brokerage +
-                ", contractStatus='" + contractStatus + '\'' +
-                '}';
     }
 }
