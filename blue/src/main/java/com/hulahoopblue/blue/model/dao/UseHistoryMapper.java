@@ -8,5 +8,5 @@ import java.util.List;
 @Mapper
 public interface UseHistoryMapper {
 
-    List<UseHistoryViewDTO> selectUseHistories(String memberNum, String categoryCd,String merchantNm, String fromDate, String toDate);
+    List<UseHistoryViewDTO> selectUseHistories(String memberNum, String categoryCd,String merchantNm, String fromDate, String toDate, String reservationStatus);
 }
