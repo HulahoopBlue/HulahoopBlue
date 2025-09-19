@@ -27,6 +27,7 @@ public class AuthController {
 
     // 로그인 페이지 - static/index.html 사용
     @GetMapping("/login")
+
     public String loginPage() {
         return "forward:/index.html";  // static/index.html 보여줌
     }

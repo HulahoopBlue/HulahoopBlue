@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #3f2b4e;
+        }
+
+        .chat-container {
+            width: 680px;
+            height: 680px;
+            background-color: #1f1e31;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: #1f1e31;
+            color: white;
+            font-size: 22px;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .signup-form {
+            width: 100%;
+            max-width: 500px;
+            max-height: 500px;
+            background: #25293f;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .signup-form h2 {
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group input {
+            flex: 1;
+            border: none;
+            border-bottom: 2px solid #555;
+            background: transparent;
+            padding: 8px 10px;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-bottom-color: #5E0F7B;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #5E0F7B, #4269E2);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-top: 10px;
+        }
+
+        .signup-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        ul {
+            text-align: left;
+            color: white;
+            margin-bottom: 20px;
+            list-style: none;
+        }
+
+        ul li {
+            margin-bottom: 6px;
+        }
+
+        @media (max-width: 700px) {
+            .chat-container {
+                width: 90%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-header">마이페이지</div>
+    <div class="chat-body">
+        <div class="signup-form">
+            <h2>내 정보 수정</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <form th:action="@{/member/MemberUpdate}" method="post" style="flex: 1;">
+                    <input type="hidden" name="memberNum" th:value="${loginMember.memberNum}" />
+                    <!--                    <input type="hidden" name="id" th:value="${loginMember.id}" />-->
+                    <input type="hidden" id="id" name="id" th:value="${loginMember.id}" />
+
+
+                    <div class="input-group"><input type="text" name="nm" th:value="${loginMember.nm}" placeholder="이름" /></div>
+                    <div class="input-group"><input type="text" name="email" th:value="${loginMember.email}" placeholder="이메일" /></div>
+                    <div class="input-group"><input type="text" name="phoneNum" th:value="${loginMember.phoneNum}" placeholder="전화번호" /></div>
+                    <div class="input-group"><input type="text" name="address" th:value="${loginMember.address}" placeholder="주소" /></div>
+                    <div class="input-group"><input type="text" name="msgNotiStatus" th:value="${loginMember.msgNotiStatus}" placeholder="메시지 알림 상태" /></div>
+
+                    <div style="display: flex; justify-content: space-between; gap: 10px;">
+<!--                        <button type="submit" class="signup-btn" style="width: 48%;">수정</button>-->
+                        <button type="button" id="updateBtn" class="signup-btn" style="width: 48%;">수정</button>
+
+                </form>
+
+                <form th:action="@{/member/MemberDelete}" method="post" style="width: 48%;">
+                    <input type="hidden" name="memberNum" th:value="${loginMember.memberNum}" />
+                    <button type="submit" class="signup-btn" onclick="return confirm('정말 탈퇴하시겠습니까?')">삭제</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    document.getElementById("updateBtn").addEventListener("click", function () {
+        const data = {
+            id: document.getElementById("id").value,
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            phoneNum: document.getElementById("phoneNum").value,
+            address: document.getElementById("address").value,
+            msgNotiStatus: document.getElementById("msgNotiStatus").value
+        };
+
+        fetch('/member/MemberUpdate', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(res => res.json())
+            .then(data => {
+                window.location.href = data.redirectUrl;
+            });
+    });
+
+</script>
+
+</body>
+</html>
