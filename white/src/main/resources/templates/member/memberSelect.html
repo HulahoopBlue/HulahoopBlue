@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>개인회원관리</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
+</head>
+<body class="bg-gray-50">
+
+<!-- 상단 바 -->
+<div class="topbar bg-gray-200 p-2 flex justify-between">
+    <span id="loginUserName"></span>
+    <span>남은 세션 시간: <span id="session-timer"></span></span>
+</div>
+
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h2 class="text-2xl font-bold mb-4">개인회원관리</h2>
+
+    <!-- 검색 필터 영역 -->
+    <div id="custom-toolbar" class="flex flex-col sm:flex-row items-center justify-start gap-3 mb-6">
+        <label for="categorySelect">카테고리:</label>
+        <select id="categorySelect" class="border border-gray-300 rounded-xl px-3 py-2 bg-white"></select>
+
+        <label for="merchantSelect">가맹점:</label>
+        <select id="merchantSelect" class="border border-gray-300 rounded-xl px-3 py-2 bg-white"></select>
+
+        <label for="searchText">검색:</label>
+        <input type="text" id="searchText" placeholder="검색어 입력" class="border border-gray-300 rounded-xl px-3 py-2 bg-white">
+
+        <button id="searchBtn" class="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700">검색</button>
+        <button id="resetBtn" class="px-4 py-2 rounded-xl bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300">초기화</button>
+    </div>
+
+    <!-- 테이블 영역 -->
+    <table id="example" class="table-auto w-full">
+        <thead class="bg-gray-100">
+        <tr>
+            <th>이름</th>
+            <th>아이디</th>
+            <th>전화번호</th>
+            <th>이메일</th>
+            <th>주소</th>
+            <th>유저타입</th>
+            <th>수정</th>
+        </tr>
+        </thead>
+        <tbody id="resultTable"></tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+<script th:inline="javascript">
+    const loginMember = /*[[${session.loginMember}]]*/ null;
+    let remainingTime = /*[[${session.sessionTimeout}]]*/ 1800;
+
+    if (!loginMember) {
+        alert("로그인 후 이용 가능합니다.");
+        window.location.href = "/auth/login";
+    } else if (loginMember.userTyp != 2) {
+        alert("관리자만 접근 가능합니다.");
+        window.location.href = "/auth/login";
+    } else {
+        document.getElementById("loginUserName").textContent = loginMember.nm + " (" + loginMember.id + ")";
+    }
+
+    function startCountdown() {
+        const timerElement = document.getElementById("session-timer");
+        const interval = setInterval(() => {
+            if (remainingTime <= 0) {
+                clearInterval(interval);
+                alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                window.location.href = "/auth/logout";
+            } else {
+                const minutes = Math.floor(remainingTime / 60);
+                const seconds = remainingTime % 60;
+                timerElement.textContent = minutes + "분 " + seconds + "초";
+                remainingTime--;
+            }
+        }, 1000);
+    }
+    window.onload = startCountdown;
+
+    let allMerchants = [];
+    let table;
+
+    function updateMerchantSelect() {
+        const merchantSelect = document.getElementById('merchantSelect');
+        merchantSelect.innerHTML = `<option value="">전체</option>`;
+        allMerchants.forEach(merchant => {
+            merchantSelect.innerHTML += `<option value="${merchant.merchantNum}">${merchant.merchantNm}</option>`;
+        });
+    }
+
+    function searchMembers() {
+        const categoryCd = document.getElementById('categorySelect').value;
+        const merchantNum = document.getElementById('merchantSelect').value;
+        const searchText = document.getElementById('searchText').value;
+
+        const params = new URLSearchParams();
+        if (categoryCd) params.append('categoryCd', categoryCd);
+        if (merchantNum) params.append('merchantNum', merchantNum);
+        if (searchText) params.append('searchText', searchText);
+
+        fetch('/member/search?' + params)
+            .then(res => res.json())
+            .then(data => {
+                table.clear();
+                data.forEach(item => {
+                    table.row.add([
+                        item.nm,
+                        item.id,
+                        item.phoneNum || '-',
+                        item.email || '-',
+                        item.address || '-',
+                        item.userTyp,
+                        `<button class="px-2 py-1 bg-blue-500 text-white rounded">수정</button>`
+                    ]);
+                });
+                table.draw();
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // 카테고리 조회
+        fetch('/member/categories')
+            .then(res => res.json())
+            .then(data => {
+                const categorySelect = document.getElementById('categorySelect');
+                categorySelect.innerHTML = `<option value="">전체</option>`;
+                data.forEach(cat => categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`);
+            });
+
+        // 가맹점 조회
+        fetch('/member/merchants')
+            .then(res => res.json())
+            .then(data => {
+                allMerchants = data;
+                updateMerchantSelect();
+                searchMembers();
+            });
+
+        // DataTable 초기화
+        table = $('#example').DataTable({
+            pageLength: 10,
+            lengthMenu: [10, 15, 20],
+            lengthChange: true,
+            dom: 'lrtip',
+            language: {
+                search: "검색:",
+                info: "총 _TOTAL_개 중 _START_–_END_",
+                infoEmpty: "0개",
+                zeroRecords: "결과가 없습니다"
+            }
+        });
+
+        document.getElementById('searchBtn').addEventListener('click', searchMembers);
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            document.getElementById('categorySelect').value = '';
+            document.getElementById('merchantSelect').value = '';
+            document.getElementById('searchText').value = '';
+            searchMembers();
+        });
+    });
+</script>
+
+</body>
+</html>
