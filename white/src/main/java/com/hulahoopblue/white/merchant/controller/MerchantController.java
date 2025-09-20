@@ -31,4 +31,9 @@ public class MerchantController {
     public List<MerchantDTO> searchMerchants(@RequestParam Map<String, String> params) {
         return merchantService.searchMerchants(params);
     }
+    @GetMapping("/merchantSelect")
+    public String merchantSelectPage() {
+        return "merchant/merchantSelect";  // templates/merchant/merchantSelect.html
+    }
+
 }

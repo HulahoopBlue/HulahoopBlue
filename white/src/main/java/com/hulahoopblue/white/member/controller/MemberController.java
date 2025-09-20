@@ -2,13 +2,12 @@ package com.hulahoopblue.white.member.controller;
 
 import com.hulahoopblue.white.member.model.dto.MemberDTO;
 import com.hulahoopblue.white.member.model.service.MemberService;
+import com.hulahoopblue.white.merchant.model.dto.MerchantDTO;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -22,25 +21,34 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("/MemberSelect")
-    public String findMemberList(Model model) {
-
-        List<MemberDTO> memberList = memberService.findAllMember();
-
-        for (MemberDTO members : memberList) {
-            System.out.println(members);
-        }
-
-        model.addAttribute("memberList", memberList);
-
-        return "member/MemberSelect";
+    // 회원관리 페이지
+    @GetMapping("/memberSelect")
+    public String memberPage() {
+        return "member/memberSelect"; // templates/member/memberSelect.html
     }
 
-    @GetMapping("/MemberInsert")
-    public void memberInsertPage() {
+    // 회원 조회 (JSON)
+    @GetMapping(value = "/search", produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public List<MemberDTO> searchMembers(
+            @RequestParam(required = false) String categoryCd,
+            @RequestParam(required = false) String merchantNum,
+            @RequestParam(required = false) String searchText
+    ) {
+        return memberService.getMembers(categoryCd, merchantNum, searchText);
     }
 
+    // 카테고리 조회 (JSON)
+    @GetMapping(value = "/categories", produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public List<String> categories() {
+        return memberService.getCategoryList();
+    }
 
-
-
+    // 가맹점 조회 (JSON)
+    @GetMapping(value = "/merchants", produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public List<MerchantDTO> merchants() {
+        return memberService.getMerchantList();
+    }
 }
