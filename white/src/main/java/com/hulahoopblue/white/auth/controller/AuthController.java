@@ -22,8 +22,9 @@ public class AuthController {
     // 로그인 페이지
     @GetMapping("/login")
     public String loginPage() {
-        return "login/Login";  // templates/login/Login.html
+        return "redirect:/index.html";  // static/index.html로 리디렉션
     }
+
 
     // 로그인 처리
     @PostMapping("/login")
@@ -32,7 +33,7 @@ public class AuthController {
 
         // 로그인 실패 또는 관리자가 아닌 경우
         if(member == null || member.getUserTyp() != 2) {
-            return "redirect:/auth/login?error";
+            return "redirect:/index.html?error=true"; // /index.html로 직접 error=true 전달
         }
 
         // 관리자 로그인 성공
@@ -47,6 +48,7 @@ public class AuthController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/auth/login";
+        return "redirect:/index.html";  // 기존 /auth/login → /index.html
     }
+
 }
