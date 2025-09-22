@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>회원 상세정보</title>
+  <style>
+    body { font-family: sans-serif; background: #f9f9f9; margin: 0; text-align: center; }
+    h1 { background: #27ae60; color: #fff; margin: 0; padding: 20px; }
+    table {
+      margin: 40px auto; border-collapse: collapse; width: 60%; max-width: 500px; background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,.1);
+    }
+    th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+    th { background: #ecf0f1; width: 120px; }
+    a.btn {
+      display: inline-block; margin: 20px; padding: 10px 20px; background: #27ae60;
+      color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>회원 상세정보</h1>
+
+<table id="infoTable"></table>
+
+<a href="index.html" class="btn">메인으로</a>
+
+<script>
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  const userId = getQueryParam('uid');
+  const apiKey = 'travelkidari_web_key_1234';
+  const table = document.getElementById('infoTable');
+
+  async function fetchUserInfo(uid) {
+    if (!uid) {
+      table.innerHTML = '<tr><td colspan="2">사용자 ID가 없습니다.</td></tr>';
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/v1/users/profile/${uid}`, {
+        method: 'GET',
+        headers: {
+          'X-API-KEY': apiKey,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const user = await response.json();
+        const rows = [
+          ['아이디', user.userId],
+          ['이름', user.userName],
+          ['전화번호', user.userPhone],
+          ['이메일', user.userEmail],
+          ['주소', user.userAddress || '-'],
+          ['성별', user.userGender || '-'],
+          ['회원 등급', user.userRole || '-']
+        ];
+        table.innerHTML = rows.map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('');
+      } else {
+        const errorText = await response.text();
+        table.innerHTML = `<tr><td colspan="2">사용자 정보 조회 실패: ${response.status} - ${errorText}</td></tr>`;
+      }
+    } catch (error) {
+      table.innerHTML = `<tr><td colspan="2">네트워크 오류: ${error.message}</td></tr>`;
+    }
+  }
+
+  fetchUserInfo(userId);
+</script>
+
+</body>
+</html>
