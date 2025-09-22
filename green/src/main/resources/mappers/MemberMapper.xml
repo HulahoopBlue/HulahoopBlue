@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.hulahoopblue.white.member.model.dao.MemberMapper">
+<mapper namespace="com.hulahoopblue.green.member.model.dao.MemberMapper">
 
-    <select id="selectMemberById" parameterType="string" resultType="com.hulahoopblue.white.member.model.dto.MemberDTO">
+    <select id="selectMemberById" parameterType="string" resultType="com.hulahoopblue.green.member.model.dto.MemberDTO">
         SELECT
             member_num,
             id,
@@ -15,12 +15,12 @@
             phone_num AS phoneNum,
             address,
             msg_noti_status,
-            user_typ AS userTyp
-        FROM t_member
+            user_typ AS userTyp,
+            merchant_num AS merchantNum  FROM t_member
         WHERE id = #{id}
     </select>
 
-    <select id="selectAllMembers" resultType="com.hulahoopblue.white.member.model.dto.MemberDTO">
+    <select id="selectAllMembers" resultType="com.hulahoopblue.green.member.model.dto.MemberDTO">
         SELECT
             member_num,
             id,
@@ -28,11 +28,11 @@
             phone_num AS phoneNum,
             email,
             address,
-            user_typ AS userTyp
-        FROM t_member
+            user_typ AS userTyp,
+            merchant_num AS merchantNum  FROM t_member
     </select>
 
-    <select id="selectMembersByCriteria" resultType="com.hulahoopblue.white.member.model.dto.MemberDTO">
+    <select id="selectMembersByCriteria" resultType="com.hulahoopblue.green.member.model.dto.MemberDTO">
         SELECT
         member_num,
         id,
@@ -40,18 +40,14 @@
         phone_num AS phoneNum,
         email,
         address,
-        user_typ AS userTyp
-        FROM t_member
+        user_typ AS userTyp,
+        merchant_num AS merchantNum  FROM t_member
         <where>
-            <if test="categoryCd != null and categoryCd != ''">
-                AND user_typ = #{categoryCd}
+            <if test="userTyp != null and userTyp != ''">
+                AND user_typ = #{userTyp}
             </if>
             <if test="merchantNum != null and merchantNum != ''">
-                AND member_num IN (
-                SELECT member_num
-                FROM t_merchant_member
-                WHERE merchant_num = #{merchantNum}
-                )
+                AND merchant_num = #{merchantNum}
             </if>
             <if test="searchText != null and searchText != ''">
                 AND (
@@ -64,7 +60,7 @@
         </where>
     </select>
 
-    <select id="selectMerchantList" resultType="com.hulahoopblue.white.merchant.model.dto.MerchantDTO">
+    <select id="selectMerchantList" resultType="com.hulahoopblue.green.merchant.model.dto.MerchantDTO">
         SELECT
             merchant_num,
             merchant_nm
