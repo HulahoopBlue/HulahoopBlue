@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title> 키다리여행사</title>
+    <title> 더바이크렌탈</title>
     <style>
         body {
             font-family: 'sans-serif';
@@ -177,7 +177,7 @@
 </head>
 <body>
 
-<header style="text-align: left; padding: 0 25px;"><img src="logo.png" width="120px"> 트래블키다리</header>
+<header style="text-align: left; padding: 0 25px;">더바이크렌탈</header>
 
 <div class="top-right" id="loginArea">
     <input type="text" id="loginId" placeholder="아이디">
@@ -199,43 +199,42 @@
 </div>
 
 <div class="color" style="text-align: left;">
-    <div class="menu-item">유럽
+    <div class="menu-item">자전거 종류
         <div class="submenu">
-            <a href="https://www.france.fr/" target="_blank">프랑스</a>
-            <a href="https://www.germany.travel/kr/home.html" target="_blank">독일</a>
-            <a href="https://www.italia.it" target="_blank">이탈리아</a>
+            <a href="#">산악자전거</a>
+            <a href="#">로드바이크</a>
+            <a href="#">전기자전거</a>
         </div>
     </div>
-    <div class="menu-item">아시아
+    <div class="menu-item">추천 코스
         <div class="submenu">
-            <a href="https://www.japan.travel/ko/kr/" target="_blank">일본</a>
-            <a href="https://www.tourismthailand.org/home" target="_blank">태국</a>
-            <a href="https://vietnam.travel/" target="_blank">베트남</a>
+            <a href="#">한강 코스</a>
+            <a href="#">북한강 코스</a>
+            <a href="#">남한강 코스</a>
         </div>
     </div>
-    <div class="menu-item">아프리카
+    <div class="menu-item">렌탈 가이드
         <div class="submenu">
-            <a href="https://www.egypt.travel/" target="_blank">이집트</a>
-            <a href="https://www.visitmorocco.com/en" target="_blank">모로코</a>
+            <a href="#">이용 안내</a>
+            <a href="#">자주 묻는 질문</a>
         </div>
     </div>
-    <div class="menu-item">오세아니아
+    <div class="menu-item">지점 안내
         <div class="submenu">
-            <a href="https://www.australia.com/en" target="_blank">호주</a>
-            <a href="https://www.newzealand.com/int/" target="_blank">뉴질랜드</a>
+            <a href="#">서울점</a>
+            <a href="#">경기점</a>
         </div>
     </div>
-    <div class="menu-item">북미
+    <div class="menu-item">이벤트
         <div class="submenu">
-            <a href="https://www.visittheusa.com/" target="_blank">미국</a>
-            <a href="https://www.visittheusa.com/" target="_blank">미국</a>
-            <a href="https://travel.destinationcanada.com/" target="_blank">캐나다</a>
+            <a href="#">진행중 이벤트</a>
+            <a href="#">종료된 이벤트</a>
         </div>
     </div>
-    <div class="menu-item">남미
+    <div class="menu-item">고객센터
         <div class="submenu">
-            <a href="https://www.visitbrasil.com/" target="_blank">브라질</a>
-            <a href="https://www.peru.travel/en" target="_blank">페루</a>
+            <a href="#">공지사항</a>
+            <a href="#">1:1 문의</a>
         </div>
     </div>
 </div>
@@ -360,22 +359,22 @@
     document.getElementById('loginBtn').addEventListener('click', login);
     document.getElementById('logoutBtn').addEventListener('click', logout);
 
-    // 슬라이드 쇼 관련 스크립트 (기존 코드 유지)
+    // 슬라이드 쇼 관련 스크립트 (변경된 내용)
     const images = [
         {
-            src: 'https://picsum.photos/id/1056/1600/900',
-            linkCaption: '<a href="https://www.france.fr" target="_blank" rel="noopener noreferrer">이번 여행지는 프랑스입니다!</a>',
-            textCaption: '지금 예약해보세요.'
+            src: '1.jpg',
+            linkCaption: '<a href="#">자전거와 함께하는 새로운 모험!</a>',
+            textCaption: '최신 로드바이크를 만나보세요.'
         },
         {
-            src: 'https://picsum.photos/id/1018/1600/900',
-            linkCaption: '<a href="https://www.germany.travel" target="_blank" rel="noopener noreferrer">자연과 도시의 조화,<br>독일을 만나보세요.</a>',
-            textCaption: '환상적인 여행이 기다리고 있습니다.'
+            src: '2.jpg',
+            linkCaption: '<a href="#">도심 속 시원한 바람,<br>한강 코스로 떠나보세요.</a>',
+            textCaption: '다양한 자전거로 편안하게 즐기세요.'
         },
         {
-            src: 'https://picsum.photos/id/1043/1600/900',
-            linkCaption: '<a href="https://www.italia.it" target="_blank" rel="noopener noreferrer">예술과 유산의 나라,<br>이탈리아로 떠나보세요.</a>',
-            textCaption: '역사와 문화가 살아 숨쉬는 곳입니다.'
+            src: '3.jpg',
+            linkCaption: '<a href="#">탁 트인 길을 달리며<br>자유를 만끽하세요.</a>',
+            textCaption: '지금 바로 예약하고 출발!'
         }
     ];
 
