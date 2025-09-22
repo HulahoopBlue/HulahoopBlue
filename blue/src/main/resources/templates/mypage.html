@@ -74,6 +74,7 @@
             margin-bottom: 20px;
             display: flex;
             align-items: center;
+            padding: 0 10px;
         }
 
         .input-group input {
@@ -84,6 +85,7 @@
             padding: 8px 10px;
             font-size: 16px;
             color: #fff;
+            width: 100%;
         }
 
         .input-group input::placeholder {
@@ -95,8 +97,15 @@
             border-bottom-color: #5E0F7B;
         }
 
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
         .signup-btn {
-            width: 100%;
+            width: 180px; /* 버튼의 너비를 고정값으로 설정 */
             padding: 14px;
             background: linear-gradient(90deg, #5E0F7B, #4269E2);
             border: none;
@@ -107,7 +116,6 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            margin-top: 10px;
         }
 
         .signup-btn:hover {
@@ -140,26 +148,21 @@
     <div class="chat-body">
         <div class="signup-form">
             <h2>내 정보 수정</h2>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                <form th:action="@{/member/MemberUpdate}" method="post" style="flex: 1;">
-                    <input type="hidden" name="memberNum" th:value="${loginMember.memberNum}" />
-                    <!--                    <input type="hidden" name="id" th:value="${loginMember.id}" />-->
-                    <input type="hidden" id="id" name="id" th:value="${loginMember.id}" />
+            <form id="updateForm" method="post">
+                <input type="hidden" name="memberNum" th:value="${loginMember.memberNum}" />
+                <input type="hidden" id="id" name="id" th:value="${loginMember.id}" />
 
+                <div class="input-group"><input type="text" id="nm" name="nm" th:value="${loginMember.nm}" placeholder="이름" /></div>
+                <div class="input-group"><input type="text" id="email" name="email" th:value="${loginMember.email}" placeholder="이메일" /></div>
+                <div class="input-group"><input type="text" id="phoneNum" name="phoneNum" th:value="${loginMember.phoneNum}" placeholder="전화번호" /></div>
+                <div class="input-group"><input type="text" id="address" name="address" th:value="${loginMember.address}" placeholder="주소" /></div>
+                <div class="input-group"><input type="text" id="msgNotiStatus" name="msgNotiStatus" th:value="${loginMember.msgNotiStatus}" placeholder="메시지 알림 상태" /></div>
+            </form>
 
-                    <div class="input-group"><input type="text" name="nm" th:value="${loginMember.nm}" placeholder="이름" /></div>
-                    <div class="input-group"><input type="text" name="email" th:value="${loginMember.email}" placeholder="이메일" /></div>
-                    <div class="input-group"><input type="text" name="phoneNum" th:value="${loginMember.phoneNum}" placeholder="전화번호" /></div>
-                    <div class="input-group"><input type="text" name="address" th:value="${loginMember.address}" placeholder="주소" /></div>
-                    <div class="input-group"><input type="text" name="msgNotiStatus" th:value="${loginMember.msgNotiStatus}" placeholder="메시지 알림 상태" /></div>
+            <div class="button-group">
+                <button type="button" id="updateBtn" class="signup-btn">수정</button>
 
-                    <div style="display: flex; justify-content: space-between; gap: 10px;">
-<!--                        <button type="submit" class="signup-btn" style="width: 48%;">수정</button>-->
-                        <button type="button" id="updateBtn" class="signup-btn" style="width: 48%;">수정</button>
-
-                </form>
-
-                <form th:action="@{/member/MemberDelete}" method="post" style="width: 48%;">
+                <form th:action="@{/member/MemberDelete}" method="post">
                     <input type="hidden" name="memberNum" th:value="${loginMember.memberNum}" />
                     <button type="submit" class="signup-btn" onclick="return confirm('정말 탈퇴하시겠습니까?')">삭제</button>
                 </form>
@@ -172,7 +175,7 @@
     document.getElementById("updateBtn").addEventListener("click", function () {
         const data = {
             id: document.getElementById("id").value,
-            name: document.getElementById("name").value,
+            nm: document.getElementById("nm").value,
             email: document.getElementById("email").value,
             phoneNum: document.getElementById("phoneNum").value,
             address: document.getElementById("address").value,
@@ -184,13 +187,26 @@
             body: JSON.stringify(data),
             headers: { 'Content-Type': 'application/json' }
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('네트워크 응답이 올바르지 않습니다.');
+                }
+                return res.json();
+            })
             .then(data => {
-                window.location.href = data.redirectUrl;
+                // 서버에서 받은 JSON 데이터에 "redirectUrl"이 있다면 페이지 이동
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    console.error('서버 응답 오류:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch 요청 중 오류 발생:', error);
+                alert('회원 정보 수정에 실패했습니다. 다시 시도해 주세요.');
             });
     });
 
 </script>
-
 </body>
 </html>

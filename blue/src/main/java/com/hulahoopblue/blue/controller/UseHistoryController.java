@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/kakao")
+@RequestMapping("/")
 public class UseHistoryController {
 
     private final UseHistoryService useHistoryService;
@@ -45,6 +45,6 @@ public class UseHistoryController {
         model.addAttribute("toDate", toDate);
         model.addAttribute("reservationStatus", reservationStatus);
 
-        return "kakao/useHistory";
+        return "useHistory";
     }
 }

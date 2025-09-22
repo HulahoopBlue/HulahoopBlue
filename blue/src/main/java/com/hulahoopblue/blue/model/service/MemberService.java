@@ -25,12 +25,12 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateNewMember(MemberDTO updateMember) {
+    public void updateMember(MemberDTO updateMember) {
         memberMapper.updateNewMember(updateMember);
     }
 
     @Transactional
-    public void deleteNewMember(MemberDTO newMember) { memberMapper.deleteNewMember(newMember); }
+    public void deleteMember(MemberDTO newMember) { memberMapper.deleteNewMember(newMember); }
 
     // 로그인용 조회
     public MemberDTO findById(String id) {
