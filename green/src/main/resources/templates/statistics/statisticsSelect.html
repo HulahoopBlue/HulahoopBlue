@@ -33,12 +33,6 @@
   <h2 class="text-2xl font-bold mb-4">통계 조회</h2>
 
   <div id="custom-toolbar" class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
-    <label for="categorySelect">카테고리:</label>
-    <select id="categorySelect" class="border border-gray-300 rounded-xl px-3 py-2 bg-white"></select>
-
-    <label for="merchantSelect">가맹점:</label>
-    <select id="merchantSelect" class="border border-gray-300 rounded-xl px-3 py-2 bg-white"></select>
-
     <label for="startDate">시작일:</label>
     <input type="date" id="startDate" class="border border-gray-300 rounded-xl px-3 py-2 bg-white">
 
@@ -48,7 +42,6 @@
     <button id="searchBtn" class="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700">조회</button>
     <button id="resetBtn" class="px-4 py-2 rounded-xl bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300">초기화</button>
   </div>
-
   <table id="example" class="table-auto w-full">
     <thead>
     <tr>
@@ -73,20 +66,11 @@
     <div class="icon"></div>
   </button>
   <div class="dropdown-menu">
-    <div class="dropdown-item" data-href="/dashboard" onclick="location.href='/dashboard'">
-      <span>대시보드</span>
-    </div>
     <div class="dropdown-item" data-href="/statistics/statisticsSelect" onclick="location.href='/statistics/statisticsSelect'">
       <span>통계</span>
     </div>
     <div class="dropdown-item" data-href="/usehistory/usehistorySelect" onclick="location.href='/usehistory/usehistorySelect'">
       <span>이용내역</span>
-    </div>
-    <div class="dropdown-item" data-href="/merchant/merchantSelect" onclick="location.href='/merchant/merchantSelect'">
-      <span>가맹점관리</span>
-    </div>
-    <div class="dropdown-item" data-href="/member/memberSelect" onclick="location.href='/member/memberSelect'">
-      <span>개인회원관리</span>
     </div>
     <div class="dropdown-divider"></div>
     <div class="dropdown-item" onclick="location.href='/auth/logout'">
@@ -105,8 +89,8 @@
   if (!loginMember) {
     alert("로그인 후 이용 가능합니다.");
     window.location.href = "/auth/login";
-  } else if (loginMember.userTyp != 2) {
-    alert("관리자만 접근 가능합니다.");
+  } else if (loginMember.userTyp != 3) {
+    alert("가맹점 관리자만 접근 가능합니다.");
     window.location.href = "/auth/login";
   } else {
     document.getElementById("loginUserName").textContent = loginMember.nm + " (" + loginMember.id + ")";
@@ -129,7 +113,6 @@
   }
   window.onload = startCountdown;
 
-  let allMerchants = [];
   let table;
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -138,74 +121,55 @@
     document.getElementById('startDate').valueAsDate = sixMonthsAgo;
     document.getElementById('endDate').valueAsDate = today;
 
-    fetch('/usehistory/categories')
-            .then(res => res.json())
-            .then(data => {
-              const categorySelect = document.getElementById('categorySelect');
-              categorySelect.innerHTML = `<option value="">전체</option>`;
-              data.forEach(cat => categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`);
-            });
-
-    fetch('/usehistory/merchants')
-            .then(res => res.json())
-            .then(data => {
-              allMerchants = data;
-              updateMerchantSelect();
-              searchStatistics();
-            });
-
-    table = $('#example').DataTable({
-      pageLength: 10,
-      lengthMenu: [10, 15, 20],
-      lengthChange: true,
-      dom: 'lrtip',
-      language: {
-        search: "검색:",
-        info: "총 _TOTAL_개 중 _START_–_END_",
-        infoEmpty: "0개",
-        zeroRecords: "결과가 없습니다"
-      },
-      paging: true,
-      pagingType: 'simple',
-      drawCallback: function(settings) {
-        var api = this.api();
-        var pageInfo = api.page.info();
-        const currentPage = pageInfo.pages === 0 ? 1 : pageInfo.page + 1;
-        const totalPages = pageInfo.pages === 0 ? 1 : pageInfo.pages;
-        $('#example_paginate').html(`
-                    <div class="flex items-center justify-center gap-2 mt-4">
-                        <button id="prevPage" class="px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300" ${pageInfo.page === 0 ? 'disabled' : ''}>이전</button>
-                        <span class="font-semibold text-gray-700">${currentPage} / ${totalPages}</span>
-                        <button id="nextPage" class="px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300" ${pageInfo.page + 1 === pageInfo.pages ? 'disabled' : ''}>다음</button>
-                    </div>
-                `);
-        $('#prevPage').off('click').on('click', () => api.page('previous').draw('page'));
-        $('#nextPage').off('click').on('click', () => api.page('next').draw('page'));
-      }
-    });
+    searchStatistics(); // ✅ 페이지 로딩 시 자동으로 통계 조회
   });
 
-  document.getElementById('categorySelect').addEventListener('change', updateMerchantSelect);
-
-  function updateMerchantSelect() {
-    const categoryCd = document.getElementById('categorySelect').value;
-    const merchantSelect = document.getElementById('merchantSelect');
-    merchantSelect.innerHTML = `<option value="">전체</option>`;
-    const filtered = categoryCd ? allMerchants.filter(m => m.categoryCd === categoryCd) : allMerchants;
-    filtered.forEach(m => merchantSelect.innerHTML += `<option value="${m.merchantNum}">${m.merchantNm}</option>`);
-  }
+  table = $('#example').DataTable({
+    pageLength: 10,
+    lengthMenu: [10, 15, 20],
+    lengthChange: true,
+    dom: 'lrtip',
+    language: {
+      search: "검색:",
+      info: "총 _TOTAL_개 중 _START_–_END_",
+      infoEmpty: "0개",
+      zeroRecords: "결과가 없습니다"
+    },
+    paging: true,
+    pagingType: 'simple',
+    drawCallback: function(settings) {
+      var api = this.api();
+      var pageInfo = api.page.info();
+      const currentPage = pageInfo.pages === 0 ? 1 : pageInfo.page + 1;
+      const totalPages = pageInfo.pages === 0 ? 1 : pageInfo.pages;
+      $('#example_paginate').html(`
+                <div class="flex items-center justify-center gap-2 mt-4">
+                    <button id="prevPage" class="px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300" ${pageInfo.page === 0 ? 'disabled' : ''}>이전</button>
+                    <span class="font-semibold text-gray-700">${currentPage} / ${totalPages}</span>
+                    <button id="nextPage" class="px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300" ${pageInfo.page + 1 === pageInfo.pages ? 'disabled' : ''}>다음</button>
+                </div>
+            `);
+      $('#prevPage').off('click').on('click', () => api.page('previous').draw('page'));
+      $('#nextPage').off('click').on('click', () => api.page('next').draw('page'));
+    }
+  });
 
   document.getElementById('searchBtn').addEventListener('click', searchStatistics);
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    const today = new Date();
+    const sixMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
+    document.getElementById('startDate').valueAsDate = sixMonthsAgo;
+    document.getElementById('endDate').valueAsDate = today;
+    searchStatistics();
+  });
 
   function searchStatistics() {
-    const categoryCd = document.getElementById('categorySelect').value;
-    const merchantNum = document.getElementById('merchantSelect').value;
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
+    const merchantNum = loginMember.merchantNum;
 
     const params = new URLSearchParams();
-    if (categoryCd) params.append('categoryCd', categoryCd);
-    if (merchantNum) params.append('merchantNum', merchantNum);
+    params.append('merchantNum', merchantNum);
     if (startDate) params.append('startDate', startDate);
     if (endDate) params.append('endDate', endDate);
 
@@ -229,16 +193,6 @@
               document.getElementById('totalAmt').textContent = parseInt(totalAmt);
             });
   }
-
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    const today = new Date();
-    const sixMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
-    document.getElementById('startDate').valueAsDate = sixMonthsAgo;
-    document.getElementById('endDate').valueAsDate = today;
-    document.getElementById('categorySelect').value = '';
-    document.getElementById('merchantSelect').value = '';
-    searchStatistics();
-  });
 </script>
 <script th:src="@{/js/script.js}"></script>
 

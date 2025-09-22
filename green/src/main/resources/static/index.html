@@ -1,10 +1,192 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>가맹점 로그인</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #E8F5E9; /* 연한 초록색 계열 배경 */
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+            -webkit-text-fill-color: #333 !important;
+        }
+
+        .chat-container {
+            width: 680px;
+            max-width: 95%;
+            height: auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 40px 20px 20px 20px;
+            background: #4CAF50; /* 메인 초록색 */
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .login-form {
+            width: 100%;
+            max-width: 500px;
+            background: #F9FBE7; /* 아주 연한 노랑-초록색 */
+            padding: 40px 30px 30px 30px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .login-form h2 {
+            color: #2E7D32; /* 진한 초록색 */
+            margin-top: 0;
+            margin-bottom: 50px;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .login-form .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .login-form .input-group input {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #fff;
+            padding: 12px 15px;
+            font-size: 16px;
+            color: #333;
+            transition: all 0.2s;
+        }
+
+        .login-form .input-group input:focus {
+            outline: none;
+            border-color: #4CAF50; /* 초점 시 메인 컬러 */
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* 초록색 그림자 */
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px;
+            background: #4CAF50; /* 메인 초록색 */
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .login-form button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .login-links {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #2E7D32; /* 진한 초록색 */
+        }
+
+        .login-links a {
+            color: #4CAF50; /* 메인 초록색 */
+            text-decoration: none;
+            margin: 0 5px;
+            transition: all 0.2s;
+        }
+
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 700px) {
+            .chat-container {
+                width: 90%;
+                height: auto;
+            }
+            .chat-header {
+                border-radius: 16px 16px 0 0;
+            }
+        }
+
+        /* 로그인 실패 메시지 */
+        #errorMsg {
+            color: #ff4d4f;
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
-    hello green
+
+<div class="chat-container">
+    <div class="chat-header">가맹점 로그인</div>
+    <div class="chat-body">
+        <form class="login-form" action="/auth/login" method="post">
+            <h2>로그인</h2>
+
+            <div class="input-group">
+                <input type="text" id="id" name="id" placeholder="아이디" required autocomplete="off" spellcheck="false">
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="pw" name="pw" placeholder="비밀번호" required autocomplete="off" spellcheck="false">
+            </div>
+
+            <button type="submit">로그인</button>
+        </form>
+        <div id="errorMsg"></div>
+    </div>
+</div>
+
+<script>
+    // URL 파라미터가 ?error 또는 ?error=값 둘 다 처리
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("error")) {
+        document.getElementById("errorMsg").textContent = "아이디 또는 비밀번호가 잘못되었습니다.";
+    }
+</script>
+
 </body>
 </html>
