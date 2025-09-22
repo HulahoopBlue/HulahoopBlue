@@ -1,55 +1,86 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hulahoopblue.white.member.model.dao.MemberDAO">
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-    <resultMap id="memberResultMap" type="com.hulahoopblue.white.member.model.dto.MemberDTO">
-        <id property="memberNum" column="member_num"/>
-        <result property="id" column="id"/>
-        <result property="pw" column="pw"/>
-        <result property="email" column="email"/>
-        <result property="nm" column="nm"/>
-        <result property="phoneNum" column="phone_num"/>
-        <result property="address" column="address"/>
-        <result property="msgNotiStatus" column="msg_noti_status"/>
+<mapper namespace="com.hulahoopblue.white.member.model.dao.MemberMapper">
 
-    </resultMap>
-
-        <select id="findAllMember" resultMap="memberResultMap">
-            select
-                 member_num
-               , id
-               , pw
-               , email
-               , nm
-               , phone_num
-               , address
-               , msg_noti_status
-
-            from t_member
-        </select>
-
-    <insert id="insertMember" parameterType="com.hulahoopblue.white.member.model.dto.MemberDTO">
-        INSERT INTO t_member(username, password, email)
-        VALUES(#{username}, #{password}, #{email})
-    </insert>
-
-
-    <!-- 로그인용 조회 -->
+    <!-- ID로 단일 회원 조회 (로그인용) -->
     <select id="selectMemberById" parameterType="string" resultType="com.hulahoopblue.white.member.model.dto.MemberDTO">
-        SELECT member_num,
-        id,
-        pw,
-        email,
-        nm,
-        phone_num,
-        address,
-        msg_noti_status,
-        user_typ AS userTyp  <!-- 중요! userTyp으로 alias -->
-        FROM T_Member
+        SELECT
+            member_num,
+            id,
+            pw,
+            email,
+            nm,
+            phone_num,
+            address,
+            msg_noti_status,
+            user_typ AS userTyp
+        FROM t_member
         WHERE id = #{id}
     </select>
 
+    <!-- 전체 회원 조회 -->
+    <select id="selectAllMembers" resultType="com.hulahoopblue.white.member.model.dto.MemberDTO">
+        SELECT
+            member_num,
+            id,
+            nm,
+            phone_num,
+            email,
+            address,
+            user_typ AS userTyp
+        FROM t_member
+    </select>
+
+    <!-- 조건별 회원 조회 (카테고리, 가맹점, 검색어) -->
+    <select id="selectMembersByCriteria" resultType="com.hulahoopblue.white.member.model.dto.MemberDTO">
+        SELECT
+        member_num,
+        id,
+        nm,
+        phone_num,
+        email,
+        address,
+        user_typ AS userTyp
+        FROM t_member
+        <where>
+            <if test="categoryCd != null and categoryCd != ''">
+                AND user_typ = #{categoryCd}
+            </if>
+            <if test="merchantNum != null and merchantNum != ''">
+                AND member_num IN (
+                SELECT member_num
+                FROM t_merchant_member
+                WHERE merchant_num = #{merchantNum}
+                )
+            </if>
+            <if test="searchText != null and searchText != ''">
+                AND (
+                id LIKE CONCAT('%', #{searchText}, '%') OR
+                nm LIKE CONCAT('%', #{searchText}, '%') OR
+                email LIKE CONCAT('%', #{searchText}, '%') OR
+                phone_num LIKE CONCAT('%', #{searchText}, '%')
+                )
+            </if>
+        </where>
+    </select>
+
+    <!-- 가맹점 목록 조회 -->
+    <select id="selectMerchantList" resultType="com.hulahoopblue.white.merchant.model.dto.MerchantDTO">
+        SELECT
+            merchant_num,
+            merchant_nm
+        FROM t_merchant
+        ORDER BY merchant_nm
+    </select>
+
+    <!-- 회원 카테고리 목록 조회 -->
+    <select id="selectCategoryList" resultType="Integer">
+        SELECT DISTINCT user_typ
+        FROM t_member
+        ORDER BY user_typ
+    </select>
 
 </mapper>
