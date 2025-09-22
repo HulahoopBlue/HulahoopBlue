@@ -68,8 +68,9 @@
         a.lng,
         a.priority,
         1 as cnt
-        FROM T_Bike a, t_merchant b
-        where a.merchant_num = b.merchant_num;
+        FROM T_product a, t_merchant b
+        where a.merchant_num = b.merchant_num
+        AND b.category_cd like concat(#{productType}, '%');
     </select>
 
     <!-- 예약 INSERT  -->

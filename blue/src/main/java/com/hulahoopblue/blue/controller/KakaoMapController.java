@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/kakao")
+@RequestMapping("/")
 public class KakaoMapController {
 
     private final KakaoService kakaoService;
@@ -22,21 +22,11 @@ public class KakaoMapController {
         this.kakaoAPIConfig = kakaoAPIConfig;
     }
 
-//    @GetMapping("/blueApplication")
-//    public String kakao(Model model) {
-//
-//        //System.out.println("kakaoApiKey : " + kakaoAPIConfig.getKakaoApiKey());
-//
-//        model.addAttribute("kakaoApikey",kakaoAPIConfig.getKakaoApiKey());
-//
-//        return "kakao/blueApplication";
-//    }
-
     @ResponseBody
     @GetMapping("/markers")
-    public List<KaKaoMapDTO> markers(){
+    public List<KaKaoMapDTO> markers(@RequestParam("productType") String productType){
 
-        return kakaoService.getAllMarkers();
+        return kakaoService.getAllMarkers(productType);
     }
 
     @PostMapping("/reservations")
