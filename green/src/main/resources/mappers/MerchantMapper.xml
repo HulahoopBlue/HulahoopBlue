@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hulahoopblue.green.merchant.model.dao.MerchantDAO">
+
+    <resultMap id="merchantResultMap" type="com.hulahoopblue.green.merchant.model.dto.MerchantDTO">
+        <id property="merchantNum" column="merchant_num"/>
+        <result property="categoryCd" column="category_cd"/>
+        <result property="merchantNm" column="merchant_nm"/>
+        <result property="apiKey" column="api_key"/>
+        <result property="businessNum" column="business_num"/>
+        <result property="regDateTime" column="reg_date_time"/>
+        <result property="modifyDateTime" column="modify_date_time"/>
+        <result property="endDateTime" column="end_date_time"/>
+        <result property="brokerageRate" column="brokerage_rate"/>
+        <result property="brokerage" column="brokerage"/>
+        <result property="contractStatus" column="contract_status"/>
+    </resultMap>
+
+    <select id="findAllMerchants" resultMap="merchantResultMap">
+        SELECT *
+        FROM t_merchant
+    </select>
+
+    <select id="findMerchantsByCriteria" resultMap="merchantResultMap">
+        SELECT *
+        FROM t_merchant
+        <where>
+            <if test="params.categoryCd != null and params.categoryCd != ''">
+                AND category_cd = #{params.categoryCd}
+            </if>
+            <if test="params.merchantNm != null and params.merchantNm != ''">
+                AND merchant_nm LIKE CONCAT('%', #{params.merchantNm}, '%')
+            </if>
+            <if test="params.businessNum != null and params.businessNum != ''">
+                AND business_num LIKE CONCAT('%', #{params.businessNum}, '%')
+            </if>
+            <if test="params.contractStatus != null and params.contractStatus != ''">
+                AND contract_status = #{params.contractStatus}
+            </if>
+            <if test="params.startDate != null and params.startDate != '' and params.endDate != null and params.endDate != ''">
+                AND reg_date_time BETWEEN #{params.startDate} AND CONCAT(#{params.endDate}, ' 23:59:59')
+            </if>
+        </where>
+        ORDER BY reg_date_time DESC
+    </select>
+</mapper>
