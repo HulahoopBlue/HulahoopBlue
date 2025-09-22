@@ -1,6 +1,6 @@
-package com.ohgiraffers.travelkidari.config;
+package com.ohgiraffers.bicycle.config;
 
-import com.ohgiraffers.travelkidari.interceptor.ApiKeyInterceptor;
+import com.ohgiraffers.bicycle.interceptor.ApiKeyInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
