@@ -63,11 +63,15 @@
 </div>
 
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h2 class="text-2xl font-bold mb-4">가맹점 목록1</h2>
+    <h2 class="text-2xl font-bold mb-4">가맹점 목록</h2>
 
     <div id="custom-toolbar" class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6 flex-wrap">
         <label for="categorySelect">카테고리:</label>
-        <select id="categorySelect" class="border border-gray-300 rounded-xl px-3 py-2 bg-white"></select>
+        <select id="categorySelect" class="border border-gray-300 rounded-xl px-3 py-2 bg-white">
+            <option value="">전체</option>
+            <option value="B01">자전거</option>
+            <option value="T01">여행사</option>
+        </select>
 
         <label for="merchantNm">가맹점명:</label>
         <input type="text" id="merchantNm" class="w-[10%] border border-gray-300 rounded-xl px-3 py-2 bg-white" placeholder="">
@@ -158,6 +162,8 @@
         const formatDate = (date) => date.toISOString().slice(0, 10);
         document.getElementById('endDate').value = formatDate(today);
 
+        // 카테고리를 동적으로 불러오는 코드 삭제
+        /*
         fetch('/merchant/categories')
             .then(res => res.json())
             .then(data => {
@@ -165,6 +171,7 @@
                 categorySelect.innerHTML = `<option value="">전체</option>`;
                 data.forEach(cat => categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`);
             });
+        */
 
         searchMerchants();
     });
@@ -232,10 +239,32 @@
                             { data: 'merchantNm' },
                             { data: 'businessNum' },
                             { data: 'apiKey' },
-                            { data: 'categoryCd' },
+                            {
+                                data: 'categoryCd',
+                                render: function(data, type, row) {
+                                    if (data === 'B01') {
+                                        return '자전거';
+                                    } else if (data === 'T01') {
+                                        return '여행사';
+                                    }
+                                    return data;
+                                }
+                            },
                             { data: 'brokerageRate' },
                             { data: 'brokerage' },
-                            { data: 'contractStatus' },
+                            {
+                                data: 'contractStatus',
+                                render: function(data, type, row) {
+                                    if (data === 'U') {
+                                        return '계약중';
+                                    } else if (data === 'C') {
+                                        return '해지';
+                                    } else if (data === 'T') {
+                                        return '종료';
+                                    }
+                                    return data;
+                                }
+                            },
                             {
                                 data: 'regDateTime',
                                 render: function(data) {
