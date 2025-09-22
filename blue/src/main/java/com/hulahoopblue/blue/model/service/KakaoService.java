@@ -15,9 +15,9 @@ public class KakaoService {
         this.kakaoMapDAO = kakaoMapDAO;
     }
 
-    public List<KaKaoMapDTO> getAllMarkers() {
+    public List<KaKaoMapDTO> getAllMarkers(String productType) {
 
-        return kakaoMapDAO.selectAllMarkers();
+        return kakaoMapDAO.selectAllMarkers(productType);
     }
 
     public int reserveBike(UseHistoryDTO dto) {

@@ -8,8 +8,7 @@ import java.util.List;
 
 @Mapper
 public interface KakaoMapDAO {
-    List<KaKaoMapDTO> selectAllMarkers();
+    List<KaKaoMapDTO> selectAllMarkers(String productType);
 
-    //useHistory에 있는 dao로 옮길 예정
     int insertUseHistory(UseHistoryDTO dto);
 }
