@@ -43,15 +43,15 @@
   <input type="tel" id="phone" placeholder="010-1234-5678">
   <div id="phoneError" class="error"></div>
 
-  <label for="useremail">이메일 (선택)</label>
-  <input type="email" id="useremail">
+  <label for="email">이메일 *</label>
+  <input type="email" id="email">
   <div id="emailError" class="error"></div>
 
-  <label for="useraddress">주소 (선택)</label>
-  <input type="text" id="useraddress">
+  <label for="address">주소 (선택)</label>
+  <input type="text" id="address">
 
-  <label for="usergender">성별 (선택)</label>
-  <select id="usergender">
+  <label for="gender">성별 (선택)</label>
+  <select id="gender">
     <option value="">선택안함</option>
     <option value="남성">남성</option>
     <option value="여성">여성</option>
@@ -65,54 +65,80 @@
     document.querySelectorAll('.error').forEach(el => el.textContent = '');
   }
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     clearErrors();
 
+    // 입력값 가져오기
     const uid = document.getElementById('userid').value.trim();
     const pw = document.getElementById('password').value.trim();
     const nm = document.getElementById('name').value.trim();
     const ph = document.getElementById('phone').value.trim();
-    const em = document.getElementById('useremail').value.trim();
-    const addr = document.getElementById('useraddress').value.trim();
-    const gen = document.getElementById('usergender').value;
+    const em = document.getElementById('email').value.trim();
+    const addr = document.getElementById('address').value.trim();
+    const gen = document.getElementById('gender').value;
 
-    const userData = {
-      userId: uid,
-      userPassword: pw,
-      userName: nm,
-      userPhone: ph.replace(/-/g, ''),
-      userEmail: em,
-      userAddress: addr,
-      userGender: gen
-    };
+    let ok = true;
 
-    try {
-      const response = await fetch('/api/v1/users/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userData)
-      });
-
-      const responseText = await response.text();
-
-      if (response.ok) {
-        try {
-          const result = JSON.parse(responseText);
-          alert(result.message);
-          window.location.href = 'index.html';
-        } catch (jsonError) {
-          alert(`회원가입 성공: ${responseText}`);
-        }
-      } else {
-        alert(`회원가입 실패: ${responseText}`);
-      }
-
-    } catch (error) {
-      alert(`네트워크 오류: ${error.message}`);
+    // 클라이언트 측 유효성 검사
+    if (!uid) {
+      document.getElementById('useridError').textContent = '아이디를 입력하세요.';
+      ok = false;
     }
+    if (!pw) {
+      document.getElementById('passwordError').textContent = '비밀번호를 입력하세요.';
+      ok = false;
+    } else if (pw.length < 6) {
+      document.getElementById('passwordError').textContent = '6자 이상 입력하세요.';
+      ok = false;
+    }
+    if (!nm) {
+      document.getElementById('nameError').textContent = '이름을 입력하세요.';
+      ok = false;
+    }
+    const phoneRx = /^010-\d{4}-\d{4}$/;
+    if (!phoneRx.test(ph)) {
+      document.getElementById('phoneError').textContent = '예: 010-1234-5678';
+      ok = false;
+    }
+    if (!em) {
+      document.getElementById('emailError').textContent = '이메일을 입력하세요.';
+      ok = false;
+    } else if (!em.includes('@')) {
+      document.getElementById('emailError').textContent = '올바른 이메일 형식';
+      ok = false;
+    }
+    if (!ok) return;
+
+    // 백엔드 API 호출
+    fetch('/api/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userid: uid,
+        password: pw,
+        name: nm,
+        phone: ph,
+        email: em,
+        address: addr,
+        gender: gen
+      })
+    })
+            .then(response => {
+              if (!response.ok) {
+                return response.text().then(text => { throw new Error(text) });
+              }
+              return response.text();
+            })
+            .then(data => {
+              alert(data);
+              window.location.href = 'index.html';
+            })
+            .catch(error => {
+              alert('회원가입 실패: ' + error.message);
+            });
   }
 </script>
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>가맹점 목록</title>
-
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
     <style>
         :root {
             --primary: #2196f3;
@@ -116,6 +116,32 @@
         <tbody id="resultTable"></tbody>
     </table>
 </div>
+
+
+<div class="dropdown-wrapper">
+    <button class="dropdown-trigger">
+        <div class="icon"></div>
+    </button>
+    <div class="dropdown-menu">
+        <div class="dropdown-item" data-href="/dashboard" onclick="location.href='/dashboard'">
+            <span>대시보드</span>
+        </div>
+        <div class="dropdown-item" data-href="/statistics/statisticsSelect" onclick="location.href='/statistics/statisticsSelect'">
+            <span>통계</span>
+        </div>
+        <div class="dropdown-item" data-href="/usehistory/usehistorySelect" onclick="location.href='/usehistory/usehistorySelect'">
+            <span>이용내역</span>
+        </div>
+        <div class="dropdown-item" data-href="/merchant/merchantSelect" onclick="location.href='/merchant/merchantSelect'">
+            <span>가맹점 목록</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" onclick="location.href='/auth/logout'">
+            <span>로그아웃</span>
+        </div>
+    </div>
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
@@ -338,6 +364,8 @@
             .catch(error => console.error('Error fetching merchants:', error));
     }
 </script>
+<script th:src="@{/js/script.js}"></script>
+
 
 </body>
 </html>
