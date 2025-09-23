@@ -11,243 +11,244 @@
 </head>
 
 <body>
-    <div class="chat-container">
-        <div class="notification" id="notification">HulaHoopBlue</div>
+<div class="chat-container">
+    <div class="notification" id="notification">HulaHoopBlue</div>
 
-        <div class="chat-header">
-            <div class="header-left">
-                <button id="menuBtn">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
-            </div>
-
-            <div class="header-center">
-                <p>HulaHoopBlue</p>
-                <div class="user-info">
-                    <p th:text="${loginMember.id}">아이디</p>
-                    <p th:text="${loginMember.phoneNum}">전화번호</p>
-                    <p th:text="${loginMember.memberNum}">회원번호</p>
-                    <p th:text="${loginMember.nm}">이름</p>
-                    <p>남은 세션 시간: <span id="session-timer"></span></p>
-                </div>
-            </div>
-
-            <div class="header-right">
-                <div class="avatar">
-                    <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Support Agent">
-                </div>
-            </div>
-
-        </div>
-        <div class="nav--open" id="hhNav">
-            <div class="nav-header">
-                <div class="nav--open-title">HulaHoopBlue</div>
-                <div class="nav--open-icon" id="hhClose"><i class="fas fa-times"></i></div>
-            </div>
-            <div class="nav--open-menu">
-                <a th:href="@{/useHistory(reservation_status='N')}">이용내역</a>
-                <a th:href="@{/useHistory(reservation_status='Y')}">예약내역</a>
-                <a th:href="@{/useHistory(reservation_status='C')}">취소내역</a>
-                <a href="javascript:alert('이용준비중입니다.')">메세지함</a>
-
-
-                <a th:href="@{member/mypage}">설정</a>
-            </div>
-        </div>
-
-        <div class="chat-body custom-scroll" id="chat-body">
-
-        </div>
-        <div class="message1">
-            <div class="typing-indicator" id="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-        <div class="quick-replies custom-scroll">
-            <div class="quick-reply-box">
-                <button class="quick-reply">도움말</button>
-            </div>
-        </div>
-
-        <div class="chat-footer">
-            <div class="input-container">
-                <input type="text" class="input-field" id="message-input" placeholder="텍스트를 입력해주세요...">
-                <div class="quick-actions">
-                    <button class="quick-action"><i class="fas fa-solid fa-microphone"></i></button>
-                </div>
-            </div>
-
-            <button class="send-button" id="send-button">
-                <i class="fas fa-paper-plane"></i>
+    <div class="chat-header">
+        <div class="header-left">
+            <button id="menuBtn">
+                <i class="fas fa-ellipsis-v"></i>
             </button>
+        </div>
+
+        <div class="header-center">
+            <p>HulaHoopBlue</p>
+            <div class="user-info">
+                <p th:text="${loginMember.id}">아이디</p>
+                <p th:text="${loginMember.phoneNum}">전화번호</p>
+                <p th:text="${loginMember.memberNum}">회원번호</p>
+                <p th:text="${loginMember.nm}">이름</p>
+                <p>남은 세션 시간: <span id="session-timer"></span></p>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="avatar">
+                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Support Agent">
+            </div>
+        </div>
+
+    </div>
+    <div class="nav--open" id="hhNav">
+        <div class="nav-header">
+            <div class="nav--open-title">HulaHoopBlue</div>
+            <div class="nav--open-icon" id="hhClose"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="nav--open-menu">
+            <a th:href="@{/useHistory(reservation_status='N')}">이용내역</a>
+            <a th:href="@{/useHistory(reservation_status='Y')}">예약내역</a>
+            <a th:href="@{/useHistory(reservation_status='C')}">취소내역</a>
+            <a href="javascript:alert('이용준비중입니다.')">메세지함</a>
+
+
+            <a th:href="@{member/mypage}">설정</a>
+            <a th:href="@{/logout}">로그아웃</a>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatBody = document.getElementById('chat-body');
-            const messageInput = document.getElementById('message-input');
-            const sendButton = document.getElementById('send-button');
-            const typingIndicator = document.getElementById('typing-indicator');
-            const quickReplyButtons = document.querySelectorAll('.quick-reply');
+    <div class="chat-body custom-scroll" id="chat-body">
 
-            // 카드 누적 카운터
-            let bikeCardCount = 0;
+    </div>
+    <div class="message1">
+        <div class="typing-indicator" id="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <div class="quick-replies custom-scroll">
+        <div class="quick-reply-box">
+            <button class="quick-reply">도움말</button>
+        </div>
+    </div>
 
-            if (typingIndicator) typingIndicator.style.display = 'none';
+    <div class="chat-footer">
+        <div class="input-container">
+            <input type="text" class="input-field" id="message-input" placeholder="텍스트를 입력해주세요...">
+            <div class="quick-actions">
+                <button class="quick-action"><i class="fas fa-solid fa-microphone"></i></button>
+            </div>
+        </div>
 
-            const fmtTime = (d = new Date()) => {
-                let h = d.getHours();
-                const m = String(d.getMinutes()).padStart(2, '0');
-                const ap = h >= 12 ? 'PM' : 'AM';
-                h = h % 12 || 12;
-                return `${h}:${m} ${ap}`;
-            };
+        <button class="send-button" id="send-button">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
 
-            function addMessage({ text = '', html = '', role = 'agent' } = {}) {
-                if (!text && !html) return;
-                const wrap = document.createElement('div');
-                wrap.className = `message ${role}`;
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const chatBody = document.getElementById('chat-body');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const quickReplyButtons = document.querySelectorAll('.quick-reply');
 
-                const content = document.createElement('div');
-                if (html) content.innerHTML = html;
-                else content.textContent = text;
+        // 카드 누적 카운터
+        let bikeCardCount = 0;
 
-                const time = document.createElement('div');
-                time.className = 'time';
-                time.textContent = fmtTime();
+        if (typingIndicator) typingIndicator.style.display = 'none';
 
-                // 사용자 메시지일 때 체크 아이콘 추가
-                if (role === 'user') {
-                    const statusSpan = document.createElement('span');
-                    statusSpan.className = 'message-status';
-                    statusSpan.innerHTML = ' <i class="fas fa-check-double"></i>'; // 앞에 공백
-                    time.appendChild(statusSpan);
+        const fmtTime = (d = new Date()) => {
+            let h = d.getHours();
+            const m = String(d.getMinutes()).padStart(2, '0');
+            const ap = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return `${h}:${m} ${ap}`;
+        };
+
+        function addMessage({ text = '', html = '', role = 'agent' } = {}) {
+            if (!text && !html) return;
+            const wrap = document.createElement('div');
+            wrap.className = `message ${role}`;
+
+            const content = document.createElement('div');
+            if (html) content.innerHTML = html;
+            else content.textContent = text;
+
+            const time = document.createElement('div');
+            time.className = 'time';
+            time.textContent = fmtTime();
+
+            // 사용자 메시지일 때 체크 아이콘 추가
+            if (role === 'user') {
+                const statusSpan = document.createElement('span');
+                statusSpan.className = 'message-status';
+                statusSpan.innerHTML = ' <i class="fas fa-check-double"></i>'; // 앞에 공백
+                time.appendChild(statusSpan);
+            }
+
+            wrap.appendChild(content);
+            wrap.appendChild(time);
+            chatBody.appendChild(wrap);
+            chatBody.scrollTop = chatBody.scrollHeight;
+            return wrap;
+        }
+
+        function addBotMessage(htmlOrText) {
+            if (typeof htmlOrText === 'string' && htmlOrText.includes('<')) {
+                addMessage({ html: htmlOrText, role: 'agent' });
+            } else {
+                addMessage({ text: String(htmlOrText), role: 'agent' });
+            }
+        }
+
+        function addUserMessage(text) {
+            addMessage({ text, role: 'user' });
+        }
+
+        function addAgentResponse(text, delay = 2000) {
+            if (typingIndicator) typingIndicator.style.display = 'flex';
+            chatBody.scrollTop = chatBody.scrollHeight;
+            setTimeout(() => {
+                if (typingIndicator) typingIndicator.style.display = 'none';
+                addBotMessage(text);
+            }, delay);
+        }
+
+        async function sendMessage() {
+            const msg = (messageInput && messageInput.value || '').trim();
+            if (!msg) {
+                alert('질문을 입력해주세요.');
+                return;
+            }
+
+            addUserMessage(msg);
+            if (messageInput) messageInput.value = '';
+
+            (async () => {
+                try {
+                    const SERVER_API_URL = '/api/generate';
+                    await fetch(SERVER_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt: msg })
+                    }).catch(() => {});
+                } catch (e) {
+                    console.warn('서버 호출 실패(무시):', e);
                 }
+            })();
 
-                wrap.appendChild(content);
-                wrap.appendChild(time);
-                chatBody.appendChild(wrap);
-                chatBody.scrollTop = chatBody.scrollHeight;
-                return wrap;
-            }
+            if (msg.includes('자전거') || msg.includes('여행사')) {
+                if (typeof window.showProduct === 'function') {
+                    let productType = '';
 
-            function addBotMessage(htmlOrText) {
-                if (typeof htmlOrText === 'string' && htmlOrText.includes('<')) {
-                    addMessage({ html: htmlOrText, role: 'agent' });
-                } else {
-                    addMessage({ text: String(htmlOrText), role: 'agent' });
-                }
-            }
-
-            function addUserMessage(text) {
-                addMessage({ text, role: 'user' });
-            }
-
-            function addAgentResponse(text, delay = 2000) {
-                if (typingIndicator) typingIndicator.style.display = 'flex';
-                chatBody.scrollTop = chatBody.scrollHeight;
-                setTimeout(() => {
-                    if (typingIndicator) typingIndicator.style.display = 'none';
-                    addBotMessage(text);
-                }, delay);
-            }
-
-            async function sendMessage() {
-                const msg = (messageInput && messageInput.value || '').trim();
-                if (!msg) {
-                    alert('질문을 입력해주세요.');
-                    return;
-                }
-
-                addUserMessage(msg);
-                if (messageInput) messageInput.value = '';
-
-                (async () => {
-                    try {
-                        const SERVER_API_URL = '/api/generate';
-                        await fetch(SERVER_API_URL, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ prompt: msg })
-                        }).catch(() => {});
-                    } catch (e) {
-                        console.warn('서버 호출 실패(무시):', e);
+                    if (msg.includes('자전거')) {
+                        productType = 'B';
+                    } else if (msg.includes('여행사')) {
+                        productType = 'T';
                     }
-                })();
+                    else {
+                        addAgentResponse('지원하지 않는 서비스입니다.<br> 예) 자전거, 여행사');
+                        return;
+                    }
 
-                if (msg.includes('자전거') || msg.includes('여행사')) {
+                    window.showProduct(productType);
+                    addAgentResponse('예약 진행중입니다.<br> 상품을 선택해주세요!');
+                } else {
+                    addAgentResponse('예약 기능을 불러올 수 없습니다.');
+                }
+                return;
+            }
+
+            if (msg.toLowerCase().includes('hi') || msg.toLowerCase().includes('hello')) {
+                addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다.<br> 예) 자전거, 여행사');
+            } else {
+                addAgentResponse('예약하시고 싶은 것을 정확히 말해주세요!');
+            }
+        }
+
+        if (sendButton) sendButton.addEventListener('click', sendMessage);
+        if (messageInput) messageInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+
+        quickReplyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const txt = btn.textContent.trim();
+                addUserMessage(txt);
+                if (txt.includes('도움말')) {
+                    addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다.<br> ex) 자전거/여행사');
+                } else {
                     if (typeof window.showProduct === 'function') {
                         let productType = '';
-
-                        if (msg.includes('자전거')) {
+                        if (txt.includes('자전거')) {
                             productType = 'B';
-                        } else if (msg.includes('여행사')) {
+                        } else if (txt.includes('여행사')) {
                             productType = 'T';
                         }
-                        else {
-                            addAgentResponse('지원하지 않는 서비스입니다.<br> 예) 자전거, 여행사');
-                            return;
-                        }
-
                         window.showProduct(productType);
-                        addAgentResponse('예약 진행중입니다.<br> 상품을 선택해주세요!');
+                        addAgentResponse('예약 진행중입니다!');
                     } else {
-                        addAgentResponse('예약 기능을 불러올 수 없습니다.');
+                        addAgentResponse('예약하시고 싶은 것을 정확히 말해주세요!');
                     }
-                    return;
                 }
+            });
+        });
 
-                if (msg.toLowerCase().includes('hi') || msg.toLowerCase().includes('hello')) {
-                    addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다.<br> 예) 자전거, 여행사');
-                } else {
-                    addAgentResponse('예약하시고 싶은 것을 정확히 말해주세요!');
-                }
+        setTimeout(() => addAgentResponse('안녕하세요!<br> 예약하시고 싶은 것을 말해주세요!'), 1);
+
+        window.showProduct = function (productType) {
+            bikeCardCount++;
+            const uniq = Date.now() + '-' + bikeCardCount;
+
+            if (!window.kakao || !kakao.maps) {
+                addBotMessage('카카오 맵 로드 실패: Kakao SDK가 로드되어 있지 않습니다.');
+                return;
             }
 
-            if (sendButton) sendButton.addEventListener('click', sendMessage);
-            if (messageInput) messageInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
-
-            quickReplyButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const txt = btn.textContent.trim();
-                    addUserMessage(txt);
-                    if (txt.includes('도움말')) {
-                        addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다.<br> ex) 자전거/여행사');
-                    } else {
-                        if (typeof window.showProduct === 'function') {
-                            let productType = '';
-                            if (txt.includes('자전거')) {
-                                productType = 'B';
-                            } else if (txt.includes('여행사')) {
-                                productType = 'T';
-                            }
-                            window.showProduct(productType);
-                            addAgentResponse('예약 진행중입니다!');
-                        } else {
-                            addAgentResponse('예약하시고 싶은 것을 정확히 말해주세요!');
-                        }
-                    }
-                });
-            });
-
-            setTimeout(() => addAgentResponse('안녕하세요!<br> 예약하시고 싶은 것을 말해주세요!'), 1);
-
-            window.showProduct = function (productType) {
-                bikeCardCount++;
-                const uniq = Date.now() + '-' + bikeCardCount;
-
-                if (!window.kakao || !kakao.maps) {
-                    addBotMessage('카카오 맵 로드 실패: Kakao SDK가 로드되어 있지 않습니다.');
-                    return;
-                }
-
-                const bubble = document.createElement('div');
-                bubble.className = 'kakao map';
-                const timeStr = fmtTime();
-                bubble.innerHTML = `
+            const bubble = document.createElement('div');
+            bubble.className = 'kakao map';
+            const timeStr = fmtTime();
+            bubble.innerHTML = `
                         <div class="product-preview">
                             <div class="bike-info" id="bike-info-${uniq}" style="width:100%; height:260px;"></div>
                             <div class="product-info">
@@ -261,280 +262,280 @@
                         </div>
                         <div class="time">${timeStr}</div>
                     `;
-                chatBody.appendChild(bubble);
-                chatBody.scrollTop = chatBody.scrollHeight;
+            chatBody.appendChild(bubble);
+            chatBody.scrollTop = chatBody.scrollHeight;
 
-                const infoBox = bubble.querySelector(`#bike-info-${uniq}`);
-                const productName = bubble.querySelector(`#product-name-${uniq}`);
-                const actionsDiv = bubble.querySelector('.product-actions');
-                const reserveBtn = bubble.querySelector(`#add-to-cart-${uniq}`);
-                const payBtn = bubble.querySelector(`#pay-button-${uniq}`);
-                const countLabel = bubble.querySelector(`#bike-count-${uniq}`);
+            const infoBox = bubble.querySelector(`#bike-info-${uniq}`);
+            const productName = bubble.querySelector(`#product-name-${uniq}`);
+            const actionsDiv = bubble.querySelector('.product-actions');
+            const reserveBtn = bubble.querySelector(`#add-to-cart-${uniq}`);
+            const payBtn = bubble.querySelector(`#pay-button-${uniq}`);
+            const countLabel = bubble.querySelector(`#bike-count-${uniq}`);
 
-                const disableBtn = btn => {
-                    if (btn) {
-                        btn.disabled = true;
-                        btn.style.opacity = '0.5';
-                        btn.style.cursor = 'not-allowed';
-                    }
-                };
-                const enableBtn = btn => {
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.style.opacity = '1';
-                        btn.style.cursor = 'pointer';
-                    }
-                };
-
-                disableBtn(reserveBtn);
-                disableBtn(payBtn);
-
-                const map = new kakao.maps.Map(infoBox, {
-                    center: new kakao.maps.LatLng(37.5630542, 127.1928256),
-                    level: 3
-                });
-
-                let markerImage = '';
-
-                if (productType == 'T') {
-                    markerImage = new kakao.maps.MarkerImage(
-                        "/img/airplane.png",
-                        new kakao.maps.Size(25, 25)
-                    );
+            const disableBtn = btn => {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                    btn.style.cursor = 'not-allowed';
                 }
-                else {
-                    markerImage = new kakao.maps.MarkerImage(
-                        "/img/bicycle.png",
-                        new kakao.maps.Size(25, 25)
-                    );
+            };
+            const enableBtn = btn => {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
                 }
+            };
 
-                let lastSelected = null;
-                const fmt = n => (typeof n === 'number' ? Number(n).toFixed(6) : n);
+            disableBtn(reserveBtn);
+            disableBtn(payBtn);
 
-                fetch(`/markers?productType=${productType}`)
-                    .then(r => {
-                        if (!r.ok) throw new Error('마커 로드 실패: ' + r.status);
-                        return r.json();
-                    })
-                    .then(list => {
-                        if (!Array.isArray(list) || list.length === 0) {
-                            countLabel.textContent = '현재 사용 가능한 상품 수: 0';
-                            addBotMessage('표시할 상품이 없습니다.');
-                            return;
-                        }
+            const map = new kakao.maps.Map(infoBox, {
+                center: new kakao.maps.LatLng(37.5630542, 127.1928256),
+                level: 3
+            });
 
-                        countLabel.textContent = `현재 사용 가능한 상품 수: ${list.length}`;
-                        const bounds = new kakao.maps.LatLngBounds();
+            let markerImage = '';
 
-                        list.forEach(pos => {
-                            const lat = Number(pos.lat);
-                            const lng = Number(pos.lng);
-                            if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+            if (productType == 'T') {
+                markerImage = new kakao.maps.MarkerImage(
+                    "/img/airplane.png",
+                    new kakao.maps.Size(20, 30)
+                );
+            }
+            else {
+                markerImage = new kakao.maps.MarkerImage(
+                    "/img/bicycle.png",
+                    new kakao.maps.Size(20, 30)
+                );
+            }
 
-                            const latlng = new kakao.maps.LatLng(lat, lng);
-                            bounds.extend(latlng);
+            let lastSelected = null;
+            const fmt = n => (typeof n === 'number' ? Number(n).toFixed(6) : n);
 
-                            const marker = new kakao.maps.Marker({
-                                map,
-                                position: latlng,
-                                image: markerImage
-                            });
+            fetch(`/markers?productType=${productType}`)
+                .then(r => {
+                    if (!r.ok) throw new Error('마커 로드 실패: ' + r.status);
+                    return r.json();
+                })
+                .then(list => {
+                    if (!Array.isArray(list) || list.length === 0) {
+                        countLabel.textContent = '현재 사용 가능한 상품 수: 0';
+                        addBotMessage('표시할 상품이 없습니다.');
+                        return;
+                    }
 
-                            const infoHtml = `
+                    countLabel.textContent = `현재 사용 가능한 상품 수: ${list.length}`;
+                    const bounds = new kakao.maps.LatLngBounds();
+
+                    list.forEach(pos => {
+                        const lat = Number(pos.lat);
+                        const lng = Number(pos.lng);
+                        if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+
+                        const latlng = new kakao.maps.LatLng(lat, lng);
+                        bounds.extend(latlng);
+
+                        const marker = new kakao.maps.Marker({
+                            map,
+                            position: latlng,
+                            image: markerImage
+                        });
+
+                        const infoHtml = `
                                     <div style="padding:4px; font-size:10px;">
                                         <strong>가맹점명: ${pos.merchantNm || '기타'}</strong><br/>
                                         <strong>상품 수: ${pos.cnt ?? pos.cnt ?? '-'}대</strong>
                                     </div>
                                 `;
 
-                            const infowindow = new kakao.maps.InfoWindow({content: infoHtml});
+                        const infowindow = new kakao.maps.InfoWindow({content: infoHtml});
 
-                            kakao.maps.event.addListener(marker, 'mouseover', () => infowindow.open(map, marker));
-                            kakao.maps.event.addListener(marker, 'mouseout', () => infowindow.close());
+                        kakao.maps.event.addListener(marker, 'mouseover', () => infowindow.open(map, marker));
+                        kakao.maps.event.addListener(marker, 'mouseout', () => infowindow.close());
 
-                            kakao.maps.event.addListener(marker, 'click', () => {
-                                lastSelected = {
-                                    categoryCd: pos.categoryCd || '-',
-                                    productNum: pos.productNum || '-',
-                                    merchantNum: pos.merchantNum || '-',
-                                    merchantNm: pos.merchantNm || '-',
-                                    lat,
-                                    lng,
-                                    raw: pos
-                                };
+                        kakao.maps.event.addListener(marker, 'click', () => {
+                            lastSelected = {
+                                categoryCd: pos.categoryCd || '-',
+                                productNum: pos.productNum || '-',
+                                merchantNum: pos.merchantNum || '-',
+                                merchantNm: pos.merchantNm || '-',
+                                lat,
+                                lng,
+                                raw: pos
+                            };
 
-                                actionsDiv.classList.remove('hidden');
+                            actionsDiv.classList.remove('hidden');
 
-                                productName.innerHTML = `상품명: <b>${lastSelected.productNum}</b><br>가맹점명: <b>${lastSelected.merchantNm}</b>`;
-                                enableBtn(reserveBtn);
-                                enableBtn(payBtn);
+                            productName.innerHTML = `상품명: <b>${lastSelected.productNum}</b><br>가맹점명: <b>${lastSelected.merchantNm}</b>`;
+                            enableBtn(reserveBtn);
+                            enableBtn(payBtn);
 
-                            });
                         });
-
-                        try {
-                            map.setBounds(bounds);
-                        } catch (e) {
-                            console.warn('map.setBounds 실패:', e);
-                        }
-                    })
-                    .catch(e => {
-                        console.error(e);
-                        countLabel.textContent = '현재 사용 가능한 상품 수: 불러오기 실패';
-                        addBotMessage('상품 불러오기 실패.<br> 잠시 후 다시 시도해 주세요.');
-                        return;
                     });
-
-                reserveBtn.addEventListener('click', async () => {
-                    if (!lastSelected) {
-                        addBotMessage('먼저 지도의 상품을 선택해 주세요 🔎');
-                        return;
-                    }
-
-                    disableBtn(reserveBtn);
-                    reserveBtn.textContent = '예약확인중…';
-                    addBotMessage('결제처리후 예약 완료 됩니다.<br> 결제하기 진행해 주세요.<br> 예약 진행중입니다!');
-                    enableBtn(payBtn);
-                    reserveBtn.textContent = '예약하기';
-
-                });
-
-                var oPay = Naver.Pay.create({
-                    "mode" : "development",
-                    "clientId": "HN3GGCMDdTgGUfl0kFCo",
-                    "chainId": "VlFlWlFJVzB2Z2t"
-                });
-
-                async function getFee(productNum, merchantNum) {
-                    const res = await fetch('http://localhost:8001/payment/fee', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            id: productNum,
-                            merchantNum: merchantNum
-                        })
-                    });
-
-                    if (!res.ok) throw new Error('금액 조회 실패');
-                    return await res.json();
-                }
-
-                async function pay() {
-                    if (!lastSelected || !lastSelected.productNum || !lastSelected.merchantNum) {
-                        addBotMessage('먼저 결제할 상품을 선택해주세요.');
-                        return;
-                    }
-
-                    const productNum = lastSelected.productNum;
-                    const merchantNum = lastSelected.merchantNum;
-
-                    const fee = await getFee(productNum, merchantNum);
-                    const purchaseNum = Date.now();
-
-                    oPay.open({
-                        "merchantPayKey": "TEST-" + purchaseNum,
-                        "productName": "수수료 결제",
-                        "productCount": "1",
-                        "totalPayAmount": String(fee),
-                        "taxScopeAmount": String(fee),
-                        "taxExScopeAmount": "0",
-                        "returnUrl": `http://localhost:8001/payment/return?clientId=${productNum}`
-                    });
-
-                    const payload = {
-                        memberNum: '[[${loginMember.memberNum}]]',
-                        phoneNum: '[[${loginMember.phoneNum}]]',
-                        categoryCd: lastSelected.categoryCd,
-                        merchantNum: lastSelected.merchantNum,
-                        brokerage: fee,
-                        reservationStatus: "Y"
-                    };
 
                     try {
-                        const res = await fetch('/reservations', {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify(payload)
-                        });
-
-                        if (!res.ok) throw new Error('HTTP ' + res.status);
-                        const data = await res.json();
-
+                        map.setBounds(bounds);
                     } catch (e) {
-                        console.error(e);
-                        addBotMessage('❌ 예약 실패. 잠시 후 다시 시도해줘.');
-                        enableBtn(reserveBtn);
-                        reserveBtn.textContent = '예약하기';
+                        console.warn('map.setBounds 실패:', e);
                     }
+                })
+                .catch(e => {
+                    console.error(e);
+                    countLabel.textContent = '현재 사용 가능한 상품 수: 불러오기 실패';
+                    addBotMessage('상품 불러오기 실패.<br> 잠시 후 다시 시도해 주세요.');
+                    return;
+                });
 
+            reserveBtn.addEventListener('click', async () => {
+                if (!lastSelected) {
+                    addBotMessage('먼저 지도의 상품을 선택해 주세요 🔎');
+                    return;
                 }
-                payBtn.addEventListener('click', pay);
-            };
-        });
 
-        let remainingTime = [[${remainingTime}]]; // 서버에서 가져온 초기 세션 시간 (초 단위)
+                disableBtn(reserveBtn);
+                reserveBtn.textContent = '예약확인중…';
+                addBotMessage('결제처리후 예약 완료 됩니다.<br> 결제하기 진행해 주세요.<br> 예약 진행중입니다!');
+                enableBtn(payBtn);
+                reserveBtn.textContent = '예약하기';
 
-        function startCountdown() {
-            const timerElement = document.getElementById("session-timer");
+            });
 
-            const interval = setInterval(() => {
-                if (remainingTime <= 0) {
-                    clearInterval(interval);
-                    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-                    window.location.href = "/logout";
-                } else {
-                    const minutes = Math.floor(remainingTime / 60);
-                    const seconds = remainingTime % 60;
-                    timerElement.textContent = minutes + "분 " + seconds + "초";
-                    remainingTime--;
-                }
-            }, 1000);
-        }
+            var oPay = Naver.Pay.create({
+                "mode" : "development",
+                "clientId": "HN3GGCMDdTgGUfl0kFCo",
+                "chainId": "VlFlWlFJVzB2Z2t"
+            });
 
-        window.onload = startCountdown;
+            async function getFee(productNum, merchantNum) {
+                const res = await fetch('http://localhost:8001/payment/fee', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: productNum,
+                        merchantNum: merchantNum
+                    })
+                });
 
-        const nav = document.getElementById('hhNav');
-        const btnOpen = document.getElementById('menuBtn');
-        const btnClose = document.getElementById('hhClose');
-
-        const openNav = () => nav.classList.add('open');
-        const closeNav = () => nav.classList.remove('open');
-
-        // 마우스가 메뉴 버튼이나 메뉴 리스트 영역에 있을 때 메뉴가 열리도록 수정
-        let timeoutId;
-
-        // 메뉴 버튼과 메뉴 리스트 컨테이너에 이벤트 리스너 추가
-        btnOpen.addEventListener('mouseenter', () => {
-            clearTimeout(timeoutId);
-            openNav();
-        });
-
-        nav.addEventListener('mouseenter', () => {
-            clearTimeout(timeoutId);
-        });
-
-        btnOpen.addEventListener('mouseleave', () => {
-            timeoutId = setTimeout(() => {
-                closeNav();
-            }, 300);
-        });
-
-        nav.addEventListener('mouseleave', () => {
-            timeoutId = setTimeout(() => {
-                closeNav();
-            }, 300);
-        });
-
-        // 닫기 버튼과 ESC 키 기능은 그대로 유지
-        btnClose.addEventListener('click', closeNav);
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeNav();
+                if (!res.ok) throw new Error('금액 조회 실패');
+                return await res.json();
             }
-        });
-    </script>
+
+            async function pay() {
+                if (!lastSelected || !lastSelected.productNum || !lastSelected.merchantNum) {
+                    addBotMessage('먼저 결제할 상품을 선택해주세요.');
+                    return;
+                }
+
+                const productNum = lastSelected.productNum;
+                const merchantNum = lastSelected.merchantNum;
+
+                const fee = await getFee(productNum, merchantNum);
+                const purchaseNum = Date.now();
+
+                oPay.open({
+                    "merchantPayKey": "TEST-" + purchaseNum,
+                    "productName": "수수료 결제",
+                    "productCount": "1",
+                    "totalPayAmount": String(fee),
+                    "taxScopeAmount": String(fee),
+                    "taxExScopeAmount": "0",
+                    "returnUrl": `http://localhost:8001/payment/return?clientId=${productNum}`
+                });
+
+                const payload = {
+                    memberNum: '[[${loginMember.memberNum}]]',
+                    phoneNum: '[[${loginMember.phoneNum}]]',
+                    categoryCd: lastSelected.categoryCd,
+                    merchantNum: lastSelected.merchantNum,
+                    brokerage: fee,
+                    reservationStatus: "Y"
+                };
+
+                try {
+                    const res = await fetch('/reservations', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+
+                } catch (e) {
+                    console.error(e);
+                    addBotMessage('❌ 예약 실패. 잠시 후 다시 시도해줘.');
+                    enableBtn(reserveBtn);
+                    reserveBtn.textContent = '예약하기';
+                }
+
+            }
+            payBtn.addEventListener('click', pay);
+        };
+    });
+
+    let remainingTime = [[${remainingTime}]]; // 서버에서 가져온 초기 세션 시간 (초 단위)
+
+    function startCountdown() {
+        const timerElement = document.getElementById("session-timer");
+
+        const interval = setInterval(() => {
+            if (remainingTime <= 0) {
+                clearInterval(interval);
+                alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                window.location.href = "/logout";
+            } else {
+                const minutes = Math.floor(remainingTime / 60);
+                const seconds = remainingTime % 60;
+                timerElement.textContent = minutes + "분 " + seconds + "초";
+                remainingTime--;
+            }
+        }, 1000);
+    }
+
+    window.onload = startCountdown;
+
+    const nav = document.getElementById('hhNav');
+    const btnOpen = document.getElementById('menuBtn');
+    const btnClose = document.getElementById('hhClose');
+
+    const openNav = () => nav.classList.add('open');
+    const closeNav = () => nav.classList.remove('open');
+
+    // 마우스가 메뉴 버튼이나 메뉴 리스트 영역에 있을 때 메뉴가 열리도록 수정
+    let timeoutId;
+
+    // 메뉴 버튼과 메뉴 리스트 컨테이너에 이벤트 리스너 추가
+    btnOpen.addEventListener('mouseenter', () => {
+        clearTimeout(timeoutId);
+        openNav();
+    });
+
+    nav.addEventListener('mouseenter', () => {
+        clearTimeout(timeoutId);
+    });
+
+    btnOpen.addEventListener('mouseleave', () => {
+        timeoutId = setTimeout(() => {
+            closeNav();
+        }, 300);
+    });
+
+    nav.addEventListener('mouseleave', () => {
+        timeoutId = setTimeout(() => {
+            closeNav();
+        }, 300);
+    });
+
+    // 닫기 버튼과 ESC 키 기능은 그대로 유지
+    btnClose.addEventListener('click', closeNav);
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeNav();
+        }
+    });
+</script>
 </body>
 </html>
