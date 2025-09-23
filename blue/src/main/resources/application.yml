@@ -1,1 +1,32 @@
-spring.application.name=white
+## server port config
+server:
+  port: 8001
+
+  ##driver config
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hulahoopbluedb
+    username: ohgiraffers
+    password: ohgiraffers
+
+## mybatis config
+mybatis:
+  mapper-locations: mappers/**/*.xml
+
+  ##kakao api key
+kakao:
+  api:
+    key: "dab04b243508e1047dda877dbd43ae9a"
+
+## Gemini api key / url
+Gemini:
+  api:
+    key: 'AIzaSyDJ9jacZZzm36NTWI6wfAUODO2hFwmeTgs'
+    url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent'
+
+## address api key / url
+address:
+  api-key: devU01TX0FVVEgyMDI1MDkwNzE3MzQ1ODExNjE1NTY=
+  api-url: https://business.juso.go.kr/addrlink/addrLinkApi.do
+
