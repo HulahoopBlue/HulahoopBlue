@@ -1,16 +1,16 @@
-package com.ohgiraffers.travelkidari.controller;
-import com.ohgiraffers.travelkidari.dto.ReservationRequestDTO;
-import com.ohgiraffers.travelkidari.service.ReservationService;
+package com.ohgiraffers.bicycle.controller;
+
+import com.ohgiraffers.bicycle.dto.ReservationRequestDTO;
+import com.ohgiraffers.bicycle.entity.Reservation;
+import com.ohgiraffers.bicycle.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/reservations")
-
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -20,6 +20,16 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
+    // ✅ GET API 추가: 사용자 ID로 예약 내역을 조회
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<Reservation>> getReservationsByUserId(@PathVariable String userId) {
+        try {
+            List<Reservation> reservations = reservationService.getReservationsByUserId(userId);
+            return ResponseEntity.ok(reservations);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 
     @PostMapping
     public ResponseEntity<String> createReservation(@RequestBody ReservationRequestDTO requestDTO) {
@@ -32,3 +42,4 @@ public class ReservationController {
             return ResponseEntity.internalServerError().body("An unexpected error occurred.");
         }
     }
+}

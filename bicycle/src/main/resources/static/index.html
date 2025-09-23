@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title> 더바이크렌탈</title>
+    <style>
+        body {
+            font-family: 'sans-serif';
+            font-style: normal;
+            font-size: 15px;
+            margin: 0;
+            text-align: center;
+        }
+        header {
+            font-size: 2.0em;
+            color: #06e4b4;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+            padding: 30%;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+        .top-right {
+            position: absolute;
+            top: 30px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            margin: 0px 30px;
+            gap: 5px;
+            flex-direction: row;
+            align-items: center;
+            transform: scale(0.8);
+            transform-origin: bottom left;
+        }
+        .top-right input {
+            height: 25px;
+            width: 100px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .top-right button {
+            height: 25px;
+            padding: 10 15px;
+            background: #27ae60;
+            color: #fff;
+            border: 0;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+        .join:hover {
+            color: #999933;
+        }
+        .join {
+            color: #373636;
+            font-size: 1.0em;
+        }
+        .color {
+            background: #fff;
+            color: #373636;
+            padding: 10px;
+            font-size: 1.0em;
+            position: relative;
+        }
+        .menu-item {
+            margin: 0 20px;
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+        }
+        .menu-item:hover {
+            color: #27ae60;
+        }
+        .submenu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #ffffff;
+            border: 1px solid #ccc;
+            min-width: 120px;
+            z-index: 1000;
+        }
+        .submenu a {
+            display: block;
+            padding: 8px 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        .submenu a:hover {
+            background-color: #eee;
+        }
+        .menu-item:hover .submenu {
+            display: block;
+        }
+        .error {
+            color: red;
+            font-size: .9em;
+        }
+        .slider-wrapper {
+            position: relative;
+            height: 70vh;
+            overflow: hidden;
+            background: #000;
+        }
+        .slider {
+            display: flex;
+            height: 100%;
+            transition: transform 1s ease;
+        }
+        .slider img {
+            flex-shrink: 0;
+            width: 100vw;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        .caption-wrapper {
+            position: absolute;
+            top: 15%;
+            left: 5%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: none;
+            pointer-events: auto;
+            z-index: 10;
+        }
+        .caption {
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            padding: 30px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+        #captionLink {
+            font-size: 3em;
+        }
+        #captionLink a {
+            color: #06e4b4;
+            text-decoration: none;
+        }
+        #captionText {
+            font-size: 1.5em;
+        }
+        .caption-wrapper.show {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        .nav-buttons {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        .nav-buttons button {
+            margin: 0 10px;
+            padding: 10px 15px;
+            font-size: 1em;
+            background: #27ae60;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .page-indicator {
+            display: inline-block;
+            color: #fff;
+            margin-left: 20px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+
+<header style="text-align: left; padding: 0 25px;">더바이크렌탈</header>
+
+<div class="top-right" id="loginArea">
+    <input type="text" id="loginId" placeholder="아이디">
+    <input type="password" id="loginPw" placeholder="비밀번호">
+    <button id="loginBtn">로그인</button>
+    <div id="loginError" class="error"></div>
+    <a href="signup.html"><button>회원가입</button></a>
+</div>
+
+<div class="top-right" id="welcomeMessage" style="display: none; flex-direction: column; font-weight: bold; color: green; top: 34px; right:100px;">
+    <span id="welcomeText"></span>
+    <span id="remainTimeText" style="font-size: 0.9em; color: #333;"></span>
+</div>
+
+
+<div class="top-right" id="logoutArea" style="display: none;">
+    <button id="logoutBtn">로그아웃</button>
+    <button id="reservationBtn">예약내역 보기</button>
+</div>
+
+<div class="color" style="text-align: left;">
+    <div class="menu-item">자전거 종류
+        <div class="submenu">
+            <a href="#">산악자전거</a>
+            <a href="#">로드바이크</a>
+            <a href="#">전기자전거</a>
+        </div>
+    </div>
+    <div class="menu-item">추천 코스
+        <div class="submenu">
+            <a href="#">한강 코스</a>
+            <a href="#">북한강 코스</a>
+            <a href="#">남한강 코스</a>
+        </div>
+    </div>
+    <div class="menu-item">렌탈 가이드
+        <div class="submenu">
+            <a href="#">이용 안내</a>
+            <a href="#">자주 묻는 질문</a>
+        </div>
+    </div>
+    <div class="menu-item">지점 안내
+        <div class="submenu">
+            <a href="#">서울점</a>
+            <a href="#">경기점</a>
+        </div>
+    </div>
+    <div class="menu-item">이벤트
+        <div class="submenu">
+            <a href="#">진행중 이벤트</a>
+            <a href="#">종료된 이벤트</a>
+        </div>
+    </div>
+    <div class="menu-item">고객센터
+        <div class="submenu">
+            <a href="#">공지사항</a>
+            <a href="#">1:1 문의</a>
+        </div>
+    </div>
+</div>
+
+<div class="slider-wrapper">
+    <div class="slider" id="slider"></div>
+    <div class="caption-wrapper" id="captionWrapper">
+        <div class="caption" id="captionLink"></div>
+        <div class="caption" id="captionText"></div>
+    </div>
+    <div class="nav-buttons">
+        <button onclick="handleManualSlide('prev')">이전</button>
+        <button onclick="handleManualSlide('next')">다음</button>
+        <span class="page-indicator" id="pageIndicator">1 / 1</span>
+    </div>
+</div>
+
+<script>
+    // ✅ 쿠키에서 currentUser 값을 가져오는 함수
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        if (match) return match[2];
+        return null;
+    }
+
+    // ✅ 남은 로그인 유지시간 표시 함수
+    function startRemainTimer() {
+        const remainText = document.getElementById('remainTimeText');
+        const expireTime = parseInt(localStorage.getItem('expireTime') || 0);
+
+        function update() {
+            const now = Date.now();
+            const remain = Math.max(0, expireTime - now);
+            const mins = Math.floor(remain / 60000);
+            const secs = Math.floor((remain % 60000) / 1000);
+            remainText.textContent = `로그인 유지시간은 ${mins}분 ${secs}초 남았습니다.`;
+
+            if (remain <= 0) {
+                clearInterval(timer);
+                logout();
+            }
+        }
+
+        update();
+        const timer = setInterval(update, 1000);
+    }
+
+    // ✅ 로그인 상태를 확인하고 화면을 전환하는 함수
+    function checkLoginStatus() {
+        const currentUser = getCookie('currentUser');
+        if (currentUser) {
+            document.getElementById('loginArea').style.display = 'none';
+            document.getElementById('welcomeMessage').style.display = 'flex';
+            document.getElementById('logoutArea').style.display = 'flex';
+            document.getElementById('welcomeText').textContent = `${currentUser} 님이 로그인 되었습니다.`;
+
+            // 예약내역 보기 버튼 URL 업데이트
+            const reservationBtn = document.getElementById('reservationBtn');
+            if(reservationBtn) {
+                reservationBtn.setAttribute('onclick', `location.href='reservation.html?uid=${currentUser}'`);
+            }
+
+            startRemainTimer();
+        } else {
+            document.getElementById('loginArea').style.display = 'flex';
+            document.getElementById('welcomeMessage').style.display = 'none';
+            document.getElementById('logoutArea').style.display = 'none';
+        }
+    }
+
+    // ✅ 로그인 함수: 백엔드와 연동하고 상태를 업데이트
+    function login() {
+        const userid = document.getElementById('loginId').value.trim();
+        const password = document.getElementById('loginPw').value.trim();
+        const errorBox = document.getElementById('loginError');
+        errorBox.textContent = '';
+
+        if (!userid || !password) {
+            errorBox.textContent = '아이디와 비밀번호를 모두 입력하세요.';
+            return;
+        }
+
+        fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userid: userid, password: password })
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    return response.text().then(text => { throw new Error(text) });
+                }
+            })
+            .then(data => {
+                alert('로그인 성공!');
+                const expire = new Date();
+                expire.setTime(expire.getTime() + (10 * 60 * 1000)); // 10분 유지
+                document.cookie = `currentUser=${data}; path=/; expires=${expire.toUTCString()}`;
+                localStorage.setItem('expireTime', expire.getTime());
+
+                checkLoginStatus(); // ✅ 로그인 성공 후 상태 업데이트
+            })
+            .catch(error => {
+                alert('로그인 실패: ' + error.message);
+            });
+    }
+
+    // ✅ 로그아웃 함수
+    function logout() {
+        document.cookie = 'currentUser=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC';
+        localStorage.removeItem('expireTime');
+        location.reload();
+    }
+
+    // 페이지 로딩 시 로그인 상태 확인
+    checkLoginStatus();
+
+    // 이벤트 리스너 연결
+    document.getElementById('loginBtn').addEventListener('click', login);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    // 슬라이드 쇼 관련 스크립트 (변경된 내용)
+    const images = [
+        {
+            src: '1.jpg',
+            linkCaption: '<a href="#">자전거와 함께하는 새로운 모험!</a>',
+            textCaption: '최신 로드바이크를 만나보세요.'
+        },
+        {
+            src: '2.jpg',
+            linkCaption: '<a href="#">도심 속 시원한 바람,<br>한강 코스로 떠나보세요.</a>',
+            textCaption: '다양한 자전거로 편안하게 즐기세요.'
+        },
+        {
+            src: '3.jpg',
+            linkCaption: '<a href="#">탁 트인 길을 달리며<br>자유를 만끽하세요.</a>',
+            textCaption: '지금 바로 예약하고 출발!'
+        }
+    ];
+
+    const slider = document.getElementById('slider');
+    const captionWrapper = document.getElementById('captionWrapper');
+    const captionLink = document.getElementById('captionLink');
+    const captionText = document.getElementById('captionText');
+    const pageIndicator = document.getElementById('pageIndicator');
+    let currentIndex = 0;
+    let isTransitioning = false;
+    let autoSlideTimer;
+
+    function initializeSlider() {
+        images.forEach((img, i) => {
+            const imageElement = document.createElement('img');
+            imageElement.src = img.src;
+            imageElement.alt = `slide${i + 1}`;
+            slider.appendChild(imageElement);
+        });
+        const clone = document.createElement('img');
+        clone.src = images[0].src;
+        clone.alt = `slide1-clone`;
+        slider.appendChild(clone);
+    }
+
+    function updatePageIndicator() {
+        pageIndicator.textContent = `${(currentIndex % images.length) + 1} / ${images.length}`;
+    }
+
+    function updateCaptions() {
+        captionLink.innerHTML = images[currentIndex % images.length].linkCaption;
+        captionText.innerHTML = images[currentIndex % images.length].textCaption;
+        captionWrapper.classList.add('show');
+    }
+
+    function resetCaptions() {
+        captionWrapper.classList.remove('show');
+        captionWrapper.style.transition = 'none';
+        captionWrapper.style.opacity = '0';
+        captionWrapper.style.transform = 'translateX(100%)';
+    }
+
+    function showSlide(index, withTransition = true) {
+        resetCaptions();
+        slider.style.transition = withTransition ? 'transform 1s ease' : 'none';
+        slider.style.transform = `translateX(-${index * 100}vw)`;
+        updatePageIndicator();
+        setTimeout(() => {
+            captionWrapper.style.transition = 'opacity 1s ease, transform 1s ease';
+            updateCaptions();
+        }, 1000);
+    }
+
+    function nextSlide() {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        currentIndex++;
+        showSlide(currentIndex);
+        if (currentIndex === images.length) {
+            setTimeout(() => {
+                slider.style.transition = 'none';
+                currentIndex = 0;
+                showSlide(currentIndex, false);
+                isTransitioning = false;
+            }, 1000);
+        } else {
+            setTimeout(() => { isTransitioning = false; }, 1000);
+        }
+    }
+
+    function prevSlide() {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        if (currentIndex === 0) {
+            currentIndex = images.length - 1;
+            slider.style.transition = 'none';
+            slider.style.transform = `translateX(-${images.length * 100}vw)`;
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    slider.style.transition = 'transform 1s ease';
+                    showSlide(currentIndex);
+                });
+            });
+            setTimeout(() => { isTransitioning = false; }, 1000);
+        } else {
+            currentIndex--;
+            showSlide(currentIndex);
+            setTimeout(() => { isTransitioning = false; }, 1000);
+        }
+    }
+
+    function handleManualSlide(direction) {
+        if (isTransitioning) return;
+        clearTimeout(autoSlideTimer);
+        direction === 'next' ? nextSlide() : prevSlide();
+        autoSlideTimer = setTimeout(autoSlide, 5000);
+    }
+
+    function autoSlide() {
+        nextSlide();
+        autoSlideTimer = setTimeout(autoSlide, 5000);
+    }
+
+    initializeSlider();
+    showSlide(currentIndex);
+    autoSlideTimer = setTimeout(autoSlide, 5000);
+</script>
+
+</body>
+</html>
