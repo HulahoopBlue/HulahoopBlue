@@ -37,7 +37,7 @@ body { min-height: 100vh; background: linear-gradient(180deg, #EDFAFF 0%, #F0FFF
     top: 50%;
     right: 20px;
     transform: translateY(-50%);
-    z-index: 1000;
+    z-index: 1050;
 }
 
 .dropdown-trigger {
@@ -74,6 +74,7 @@ body { min-height: 100vh; background: linear-gradient(180deg, #EDFAFF 0%, #F0FFF
 }
 
 .dropdown-menu {
+    display: block;
     position: absolute;
     top: 50%;
     left: auto;
