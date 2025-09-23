@@ -295,11 +295,11 @@
 
             <div class="checkbox-row">
                 <div class="checkbox-group">
-                    <input type="checkbox" id="terms" required>
+                    <input type="checkbox" id="terms" required onclick = "showPrivacyPopup()">
                     <label for="terms">개인정보수집 동의 (필수)</label>
                 </div>
                 <div class="checkbox-group">
-                    <input type="checkbox" id="agreement" required>
+                    <input type="checkbox" id="agreement" required onclick = "showAgreementPopup()">
                     <label for="agreement">이용약관 동의 (필수)</label>
                 </div>
             </div>
@@ -463,5 +463,45 @@
         document.getElementById('pwConfirmInput').addEventListener('input', checkPasswordMatch);
     });
 </script>
+
+<script>
+    function showPrivacyPopup() {
+        const checkbox = document.getElementById("terms");
+        if (checkbox.checked) {
+            const messages = [
+                "입력하신 개인정보는 회원가입 및 서비스 제공을 위해 수집되며, 동의 없이 제공되지 않습니다.",
+                "회원가입 시 수집되는 개인정보는 서비스 제공과 본인 확인을 위해 사용되며, 제3자에게 제공되지 않습니다.",
+                "성명, 연락처 등 개인정보는 회원관리 및 서비스 이용을 위해 수집되며, 동의 없이 외부에 제공되지 않습니다.",
+                "귀하의 개인정보는 본 서비스 운영을 위한 목적으로만 사용되며, 법적 근거 없이 외부로 유출되지 않습니다.",
+                "개인정보는 회원 식별, 서비스 제공 및 고객 응대를 위해 수집되며, 동의 없이 다른 용도로 사용되지 않습니다.",
+                "회원가입을 위해 수집된 개인정보는 안전하게 관리되며, 동의 없이 제3자에게 공유되지 않습니다.",
+                "수집된 개인정보는 서비스 이용에 필요한 최소한의 정보이며, 동의 없이는 처리되지 않습니다."
+            ];
+
+            const fullMessage = messages.join("\n\n"); // ✅ 문장 사이에 줄바꿈 두 번
+            alert(fullMessage);
+
+        }
+    }
+
+    function showAgreementPopup() {
+        const checkbox = document.getElementById("agreement");
+        if (checkbox.checked) {
+            const messages = [
+                "본 서비스 이용을 위해 약관에 동의하셔야 하며, 동의하지 않을 경우 회원가입이 제한됩니다.",
+                "서비스 이용 시 적용되는 약관에 동의하셔야 하며, 동의하지 않으면 서비스 이용이 불가능합니다.",
+                "이용약관은 서비스 제공 및 사용자 보호를 위한 기준이며, 동의하지 않으면 가입이 제한됩니다.",
+                "회원가입 전 이용약관을 반드시 확인하시고, 동의하셔야 정상적인 서비스 이용이 가능합니다.",
+                "서비스 이용을 위한 기본 약관에 동의하셔야 하며, 미동의 시 회원가입이 진행되지 않습니다.",
+                "이용약관은 서비스 운영의 기준이며, 동의하지 않으면 회원가입 및 이용이 제한될 수 있습니다.",
+                "서비스 이용 시 발생할 수 있는 책임과 권리를 규정한 약관에 동의하셔야 가입이 가능합니다."
+            ];
+            const fullMessage = messages.join("\n\n");
+            alert(fullMessage);
+        }
+    }
+
+</script>
+
 </body>
 </html>
