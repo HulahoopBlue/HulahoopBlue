@@ -25,8 +25,20 @@
 <body class="bg-gray-50">
 
 <div class="topbar">
-  <span id="loginUserName"></span>
-  <span>남은 세션 시간: <span id="session-timer"></span></span>
+  <!-- 왼쪽: 로고 (대쉬보드로 이동) -->
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <a href="/statistics/statisticsSelect">
+      <img src="/img/KakaoTalk_20250923_160454217.png" alt="로고" style="height: 30px; cursor: pointer;">
+    </a>
+  </div>
+
+  <!-- 오른쪽: 관리자 이름 + 세션 시간 -->
+  <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.4;">
+    <span id="loginUserName" style="font-size: 14px; font-weight: bold;"></span>
+    <span style="font-size: 12px;">
+            남은 세션 시간: <span id="session-timer"></span>
+                        </span>
+  </div>
 </div>
 
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
