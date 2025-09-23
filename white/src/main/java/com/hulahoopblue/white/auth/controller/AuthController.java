@@ -41,7 +41,7 @@ public class AuthController {
         session.setMaxInactiveInterval(30 * 60); // 세션 30분 유지
         session.setAttribute("sessionTimeout", session.getMaxInactiveInterval()); // 세션 타이머용
 
-        return "redirect:/main";
+        return "redirect:/dashboard/dashboardSelect";
     }
 
     // 로그아웃 처리
