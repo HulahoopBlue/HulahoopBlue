@@ -16,21 +16,9 @@ public class PaymentController {
         this.merchantMapper = merchantMapper;
     }
 
-//    @GetMapping("/{id}/fee")
-//    public Double getClientFee(@PathVariable String id) {
-//        MerchantDTO merchantDTO = merchantMapper.findClientById(id);
-//
-//        if (merchantDTO == null) {
-//            throw new RuntimeException("❌ 해당 ID의 고객사가 존재하지 않습니다: " + id);
-//        }
-//        return merchantDTO.getBrokerage();
-//    }
-
     @PostMapping("/fee")
     public Double getClientFee(@RequestBody Map<String, String> payload) {
         String id = payload.get("merchantNum");
-
-        System.out.println("merchantNum : ");
 
         MerchantDTO merchantDTO = merchantMapper.findClientById(id);
 
@@ -46,12 +34,19 @@ public class PaymentController {
                                        @RequestParam(value = "merchantPayKey", required = false) String merchantPayKey,
                                        @RequestParam(value = "resultCode", required = false) String resultCode) {
 
-        String alertMessage = "결제 완료(테스트)";
-        String redirectUrl = "/kakao/blueApplication";
+        String alertMessage;
+        String redirectUrl = "/blueApplication";
+
+        if ("Success".equals(resultCode)) {
+            alertMessage = "결제가 성공적으로 완료되었습니다.";
+        } else {
+            alertMessage = "결제에 실패했거나 취소되었습니다. 다시 시도해 주세요.";
+        }
 
         return "<!DOCTYPE html><html><body><script>"
                 + "alert('" + alertMessage + "');"
                 + "window.location.href = '" + redirectUrl + "';"
                 + "</script></body></html>";
     }
+
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hulahoopblue.blue.useHistory.model.dao.UseHistoryMapper">
+<mapper namespace="com.hulahoopblue.blue.model.dao.UseHistoryMapper">
 
-    <resultMap id="UseHistoryViewMap" type="com.hulahoopblue.blue.useHistory.model.dto.UseHistoryViewDTO">
+    <resultMap id="UseHistoryViewMap" type="com.hulahoopblue.blue.model.dto.UseHistoryViewDTO">
         <result column="merchant_nm" property="merchantNm"/>
         <result column="use_start_date_time" property="useStartDateTime"/>
         <result column="use_end_date_time" property="useEndDateTime"/>
@@ -19,9 +19,8 @@
         FROM t_usehistory a
         JOIN t_merchant b ON a.merchant_num = b.merchant_num
         <where>
-            a.reservation_status = 'N'
             <if test="memberNum != null and memberNum != ''">
-                AND a.member_num = #{memberNum}
+                a.member_num = #{memberNum}
             </if>
             <if test="categoryCd != null and categoryCd != ''">
                 AND b.category_cd LIKE CONCAT(#{categoryCd}, '%')
@@ -37,6 +36,9 @@
             <if test="toDate != null and toDate != ''">
                 AND a.use_end_date_time &lt;=
                 STR_TO_DATE(CONCAT(#{toDate}, ' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="reservationStatus != null and reservationStatus != ''">
+                AND a.reservation_status = #{reservationStatus}
             </if>
         </where>
         ORDER BY a.use_start_date_time DESC

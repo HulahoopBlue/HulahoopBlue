@@ -27,6 +27,7 @@ public class AuthController {
 
     // 로그인 페이지 - static/index.html 사용
     @GetMapping("/login")
+
     public String loginPage() {
         return "forward:/index.html";  // static/index.html 보여줌
     }
@@ -40,7 +41,7 @@ public class AuthController {
             session.setAttribute("loginMember", member);
             session.setMaxInactiveInterval(30 * 60);  // 30분 유지
             session.setAttribute("sessionTimeout", session.getMaxInactiveInterval());
-            return "redirect:/kakao/blueApplication";
+            return "redirect:/blueApplication";
         }
 
         return "redirect:/login?error"; // 실패 시 index.html 로 돌아감
@@ -54,12 +55,12 @@ public class AuthController {
     }
 
     // 채팅 페이지
-    @GetMapping("/kakao/blueApplication")
+    @GetMapping("/blueApplication")
     public String chatDesign(HttpSession session, Model model) {
         MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
 
         if (loginMember == null) {
-            return "redirect:/"; // 세션 없으면 로그인 페이지로
+            return "redirect:/";
         }
 
         Integer remainingTime = (Integer) session.getAttribute("sessionTimeout");
@@ -68,6 +69,6 @@ public class AuthController {
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("remainingTime", remainingTime);
 
-        return "/kakao/blueApplication";
+        return "/blueApplication";
     }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hulahoopblue.green.statistics.model.mapper.StatisticsMapper">
+    <select id="selectStatisticsByMerchantName" resultType="com.hulahoopblue.green.statistics.model.dto.StatisticsDTO">
+        SELECT
+        m.merchant_nm AS merchantNm,
+        DATE(tuh.payment_date_time) AS paymentDateTime,
+        COUNT(tuh.transaction_num) AS useCnt,
+        SUM(tuh.brokerage) AS brokerage
+        FROM t_usehistory tuh
+        INNER JOIN t_merchant m ON tuh.merchant_num = m.merchant_num WHERE 1=1
+        <if test="categoryCd != null and categoryCd != ''">
+            AND m.category_cd = #{categoryCd}
+        </if>
+        <if test="merchantNm != null and merchantNm != ''">
+            AND m.merchant_nm = #{merchantNm}
+        </if>
+        <if test="startDate != null">
+            AND tuh.payment_date_time &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND tuh.payment_date_time &lt;= #{endDate}
+        </if>
+        <if test="userMerchantNum != null and userMerchantNum != ''">
+            AND tuh.merchant_num = #{userMerchantNum}
+        </if>
+        GROUP BY DATE(tuh.payment_date_time), m.merchant_nm
+        ORDER BY paymentDateTime DESC
+    </select>
+    <select id="selectCategoryList" resultType="string">
+        SELECT DISTINCT category_cd
+        FROM t_merchant ORDER BY category_cd
+    </select>
+    <select id="selectMerchantList" resultType="com.hulahoopblue.green.statistics.model.dto.StatisticsDTO">
+        SELECT
+            merchant_num AS merchantNum,
+            merchant_nm AS merchantNm,
+            category_cd AS categoryCd
+        FROM t_merchant ORDER BY merchant_nm
+    </select>
+</mapper>

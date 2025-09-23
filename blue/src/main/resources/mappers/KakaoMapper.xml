@@ -39,7 +39,7 @@
         <result property="phoneNum"          column="phone_num"/>
         <result property="categoryCd"        column="category_cd"/>
         <result property="merchantNum"       column="merchant_num"/>
-        <result property="travel"            column="travel"/>
+        <result property="brokerage"         column="brokerage"/>
         <result property="paymentDateTime"   column="payment_date_time"   jdbcType="TIMESTAMP"/>
         <result property="useStartDateTime"  column="use_start_date_time" jdbcType="TIMESTAMP"/>
         <result property="useEndDateTime"    column="use_end_date_time"   jdbcType="TIMESTAMP"/>
@@ -68,8 +68,9 @@
         a.lng,
         a.priority,
         1 as cnt
-        FROM T_Bike a, t_merchant b
-        where a.merchant_num = b.merchant_num;
+        FROM T_product a, t_merchant b
+        where a.merchant_num = b.merchant_num
+        AND b.category_cd like concat(#{productType}, '%');
     </select>
 
     <!-- 예약 INSERT  -->
@@ -77,9 +78,9 @@
     <insert id="insertUseHistory" parameterType="com.hulahoopblue.blue.model.dto.UseHistoryDTO">
         INSERT INTO T_UseHistory
         (member_num, phone_num, category_cd, merchant_num,
-        travel, payment_date_time, use_start_date_time, use_end_date_time, reservation_status)
+        brokerage, payment_date_time, use_start_date_time, use_end_date_time, reservation_status)
         VALUES
         (#{memberNum}, #{phoneNum}, #{categoryCd}, #{merchantNum},
-        #{travel}, #{paymentDateTime}, #{useStartDateTime}, #{useEndDateTime}, #{reservationStatus})
+        #{brokerage}, #{paymentDateTime}, #{useStartDateTime}, #{useEndDateTime}, #{reservationStatus})
     </insert>
 </mapper>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>예약내역 조회</title>
+  <style>
+    body { font-family: sans-serif; background: #f9f9f9; margin: 0; text-align: center; }
+    h1 { background: #27ae60; color: #fff; margin: 0; padding: 20px; }
+    table {
+      margin: 40px auto; border-collapse: collapse; width: 80%; max-width: 800px; background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,.1);
+    }
+    th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+    th { background: #ecf0f1; }
+    a.btn {
+      display: inline-block; margin: 20px; padding: 10px 20px; background: #27ae60;
+      color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<h1>예약내역</h1>
+<table id="reservationTable">
+  <thead>
+  <tr>
+    <th>거래번호</th>
+    <th>패키지명</th>
+    <th>예약자</th>
+    <th>전화번호</th>
+    <th>예약일자</th>
+    <th>결제금액</th>
+    <th>상태</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr><td colspan="7">예약내역을 불러오는 중...</td></tr>
+  </tbody>
+</table>
+<a href="index.html" class="btn">메인으로 돌아가기</a>
+
+<script>
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
+    return null;
+  }
+
+  async function fetchReservations() {
+    console.log('Fetching reservations...');
+    const userId = getCookie('currentUser');
+    const tableBody = document.querySelector('#reservationTable tbody');
+
+    if (!userId) {
+      tableBody.innerHTML = '<tr><td colspan="7">로그인이 필요합니다.</td></tr>';
+      return;
+    }
+
+    try {
+      // ✅ API 경로를 /api/v1/reservations로 수정
+      const response = await fetch(`/api/v1/reservations/${userId}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP 오류: ${response.status} - ${errorText}`);
+      }
+
+      const reservations = await response.json();
+      console.log('Received reservations:', reservations);
+
+      if (reservations.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7">예약내역이 없습니다.</td></tr>';
+      } else {
+        const rowsHtml = reservations.map(res => `
+                        <tr>
+                            <td>${res.transactionNum}</td>
+                            <td>${res.packageName}</td>
+                            <td>${res.userName}</td>
+                            <td>${res.phoneNum}</td>
+                            <td>${res.reservationDateTime}</td>
+                            <td>${res.paymentAmount ? res.paymentAmount.toLocaleString() : '0'}원</td>
+                            <td>${res.reservationStatus === 'Y' ? '예약중' : res.reservationStatus === 'N' ? '이용완료' : '예약취소'}</td>
+                        </tr>
+                    `).join('');
+        tableBody.innerHTML = rowsHtml;
+      }
+    } catch (error) {
+      tableBody.innerHTML = `<tr><td colspan="7">오류: ${error.message}</td></tr>`;
+      console.error('API 호출 중 오류 발생:', error);
+    }
+  }
+
+  fetchReservations();
+</script>
+</body>
+</html>

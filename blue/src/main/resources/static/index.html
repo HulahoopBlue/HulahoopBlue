@@ -28,8 +28,8 @@
         }
 
         .chat-container {
-            width: 680px;
-            height: 680px;
+            width: 380px;
+            height: 720px;
             background-color: #1f1e31;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -194,11 +194,14 @@
 </div>
 
 <script>
-    // URL 파라미터에 error가 있으면 메시지 표시
+
     const params = new URLSearchParams(window.location.search);
-    if (params.get("error")) {
-        document.getElementById("errorMsg").textContent = "아이디 또는 비밀번호가 잘못되었습니다.";
+    const successMessage = params.get("successMessage");
+
+    if (successMessage) {
+        alert(successMessage);
     }
+
 </script>
 <script>
     window.addEventListener('DOMContentLoaded', () => {
