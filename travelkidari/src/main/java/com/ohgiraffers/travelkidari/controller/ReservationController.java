@@ -1,5 +1,4 @@
 package com.ohgiraffers.travelkidari.controller;
-
 import com.ohgiraffers.travelkidari.dto.ReservationRequestDTO;
 import com.ohgiraffers.travelkidari.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/reservations")
+
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -19,6 +19,7 @@ public class ReservationController {
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
+
 
     @PostMapping
     public ResponseEntity<String> createReservation(@RequestBody ReservationRequestDTO requestDTO) {
@@ -31,4 +32,3 @@ public class ReservationController {
             return ResponseEntity.internalServerError().body("An unexpected error occurred.");
         }
     }
-}

@@ -13,4 +13,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // Member 엔티티의 'phone' 필드에 맞춰 findByPhone으로 수정
     Optional<Member> findByPhone(String phone);
+
 }
