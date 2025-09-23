@@ -1,6 +1,6 @@
-package com.ohgiraffers.travelkidari.repository;
+package com.ohgiraffers.bicycle.repository;
 
-import com.ohgiraffers.travelkidari.entity.Member;
+import com.ohgiraffers.bicycle.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +13,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // Member 엔티티의 'phone' 필드에 맞춰 findByPhone으로 수정
     Optional<Member> findByPhone(String phone);
-
 }

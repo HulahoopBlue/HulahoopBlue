@@ -1,17 +1,15 @@
-package com.ohgiraffers.travelkidari.service;
+package com.ohgiraffers.bicycle.service;
 
-import com.ohgiraffers.travelkidari.dto.ReservationRequestDTO;
-import com.ohgiraffers.travelkidari.entity.Member;
-import com.ohgiraffers.travelkidari.entity.Reservation;
-import com.ohgiraffers.travelkidari.repository.MemberRepository;
-
-import com.ohgiraffers.travelkidari.repository.ReservationRepository;
+import com.ohgiraffers.bicycle.dto.ReservationRequestDTO;
+import com.ohgiraffers.bicycle.entity.Member;
+import com.ohgiraffers.bicycle.entity.Reservation;
+import com.ohgiraffers.bicycle.repository.MemberRepository;
+import com.ohgiraffers.bicycle.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 
 @Service
 public class ReservationService {
@@ -30,6 +28,7 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
+    // 기존에 있던 메서드
     public List<Reservation> getReservationsByUserId(String userId) {
         List<Reservation> reservations = reservationRepository.findByUserId(userId);
         System.out.println("Fetched reservations: " + reservations);
