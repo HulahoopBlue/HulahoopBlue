@@ -23,13 +23,9 @@
 
             <div class="header-center">
                 <img src="/img/logo.png" style="width:70%;">
-<!--                <div class="user-info">-->
-<!--                    <p th:text="${loginMember.id}">아이디</p>-->
-<!--                    <p th:text="${loginMember.phoneNum}">전화번호</p>-->
-<!--                    <p th:text="${loginMember.memberNum}">회원번호</p>-->
-<!--                    <p th:text="${loginMember.nm}">이름</p>-->
-<!--                    <p>남은 세션 시간: <span id="session-timer"></span></p>-->
-<!--                </div>-->
+                <div class="user-info">
+                    <p>남은 세션 시간: <span id="session-timer"></span></p>
+                </div>
             </div>
 
             <div class="header-right">
@@ -50,9 +46,8 @@
                 <a th:href="@{/useHistory(reservation_status='Y')}">예약내역</a>
                 <a th:href="@{/useHistory(reservation_status='C')}">취소내역</a>
                 <a href="javascript:alert('이용준비중입니다.')">메세지함</a>
-
-
                 <a th:href="@{member/mypage}">설정</a>
+                <a th:href="@{/logout}">로그아웃</a>
             </div>
         </div>
 
@@ -202,7 +197,7 @@
                 }
 
                 if (msg.toLowerCase().includes('hi') || msg.toLowerCase().includes('hello')) {
-                    addAgentResponse('예약하시고 싶은 것을 말해주시면 예약 진행을 도와드립니다.<br> 예) 자전거, 여행사');
+                    addAgentResponse('예약하시고 싶은 것을 말씀해주시면 예약 진행을 도와드립니다.<br> 예) 자전거, 여행사');
                 } else {
                     addAgentResponse('예약하시고 싶은 것을 정확히 말해주세요!');
                 }
@@ -387,26 +382,7 @@
                         return;
                     });
 
-                reserveBtn.addEventListener('click', async () => {
-                    if (!lastSelected) {
-                        addBotMessage('먼저 지도의 상품을 선택해 주세요 🔎');
-                        return;
-                    }
-
-                    disableBtn(reserveBtn);
-                    reserveBtn.textContent = '예약확인중…';
-                    addBotMessage('결제처리후 예약 완료 됩니다.<br> 결제하기 진행해 주세요.<br> 예약 진행중입니다!');
-                    enableBtn(payBtn);
-                    reserveBtn.textContent = '예약하기';
-
-                });
-
-                var oPay = Naver.Pay.create({
-                    "mode" : "development",
-                    "clientId": "HN3GGCMDdTgGUfl0kFCo",
-                    "chainId": "VlFlWlFJVzB2Z2t"
-                });
-
+                // update 20250924
                 async function getFee(productNum, merchantNum) {
                     const res = await fetch('http://localhost:8001/payment/fee', {
                         method: 'POST',
@@ -422,6 +398,68 @@
                     if (!res.ok) throw new Error('금액 조회 실패');
                     return await res.json();
                 }
+                // update 20250924
+
+                reserveBtn.addEventListener('click', async () => {
+                    if (!lastSelected) {
+                        addBotMessage('먼저 지도의 상품을 선택해 주세요 🔎');
+                        return;
+                    }
+
+                    disableBtn(reserveBtn);
+                    reserveBtn.textContent = '예약확인중…';
+
+                    // update 20250924 가맹점 회원여부 확인및 결제내역 가맹전전달. 실제 결제는 pay 호츌시 결제.
+                    // fail 시는 예약내역 취소 요청을 다시 해야함. 추후 변경 필요
+                    try {
+                        fee = await getFee(lastSelected.productNum, lastSelected.merchantNum);
+
+                        const isoDate = new Date();
+                        const kstDate = new Date(isoDate.getTime() + (9 * 60 * 60 * 1000));
+
+                        // update20250923 가맹점 요청
+                        const merchantPayload = {
+                            phoneNum: '[[${loginMember.phoneNum}]]',
+                            packageName: '상품',
+                            paymentAmount: fee,
+                            reservationDateTime: kstDate.toISOString(),
+                            paymentDateTime: kstDate.toISOString(),
+                            reservationStatus: "Y"
+                        };
+
+                        const res = await fetch('http://localhost:8080/api/v1/reservations', {
+                            method: 'POST',
+                            headers: {
+                                'X-API-KEY': 'your-secret-api-key',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(merchantPayload)
+                        });
+
+                        console.log('HTTP ' + res.status);
+
+                        if (!res.ok) {
+                            throw new Error('HTTP ' + res.status);
+                        }
+
+                        addBotMessage(`결제 처리 후 예약 완료됩니다.<br> 수수료: ${fee}원을 결제해 주세요.<br> 예약 진행중입니다!`);
+
+                        enableBtn(payBtn);
+                        reserveBtn.textContent = '예약하기';
+                    } catch (e) {
+                        addBotMessage('가맹점 회원조회 오류입니다.<br>잠시 후 다시 시도해 주세요.');
+                        enableBtn(reserveBtn);
+                        disableBtn(payBtn);
+                        reserveBtn.textContent = '예약하기';
+                    }
+                    // update 20250924
+                });
+
+                var oPay = Naver.Pay.create({
+                    "mode" : "development",
+                    "clientId": "HN3GGCMDdTgGUfl0kFCo",
+                    "chainId": "VlFlWlFJVzB2Z2t"
+                });
 
                 async function pay() {
                     if (!lastSelected || !lastSelected.productNum || !lastSelected.merchantNum) {
@@ -430,9 +468,7 @@
                     }
 
                     const productNum = lastSelected.productNum;
-                    const merchantNum = lastSelected.merchantNum;
 
-                    const fee = await getFee(productNum, merchantNum);
                     const purchaseNum = Date.now();
 
                     oPay.open({
@@ -445,7 +481,8 @@
                         "returnUrl": `http://localhost:8001/payment/return?clientId=${productNum}`
                     });
 
-                    const payload = {
+                    // update 20250923 내부 insert 문
+                    const innerPayload = {
                         memberNum: '[[${loginMember.memberNum}]]',
                         phoneNum: '[[${loginMember.phoneNum}]]',
                         categoryCd: lastSelected.categoryCd,
@@ -458,7 +495,7 @@
                         const res = await fetch('/reservations', {
                             method: 'POST',
                             headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify(payload)
+                            body: JSON.stringify(innerPayload)
                         });
 
                         if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -466,11 +503,10 @@
 
                     } catch (e) {
                         console.error(e);
-                        addBotMessage('❌ 예약 실패. 잠시 후 다시 시도해줘.');
+                        addBotMessage('예약 실패. 잠시 후 다시 시도해주세요.');
                         enableBtn(reserveBtn);
                         reserveBtn.textContent = '예약하기';
                     }
-
                 }
                 payBtn.addEventListener('click', pay);
             };
