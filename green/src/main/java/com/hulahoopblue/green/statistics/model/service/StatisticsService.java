@@ -1,7 +1,7 @@
 package com.hulahoopblue.green.statistics.model.service;
 
 import com.hulahoopblue.green.statistics.model.dto.StatisticsDTO;
-import com.hulahoopblue.green.statistics.model.mapper.StatisticsMapper;
+import com.hulahoopblue.green.statistics.model.dao.StatisticsMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

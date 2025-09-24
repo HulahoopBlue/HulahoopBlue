@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hulahoopblue.green.statistics.model.mapper.StatisticsMapper">
+<mapper namespace="com.hulahoopblue.green.statistics.model.dao.StatisticsMapper">
     <select id="selectStatisticsByMerchantName" resultType="com.hulahoopblue.green.statistics.model.dto.StatisticsDTO">
         SELECT
         m.merchant_nm AS merchantNm,
