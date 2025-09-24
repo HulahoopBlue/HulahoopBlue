@@ -5,52 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>가맹점 목록</title>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
-    <style>
-        :root {
-            --primary: #2196f3;
-            --primary-glow: rgba(33, 150, 243, 0.4);
-            --background: #0a0a12;
-            --surface: rgba(30, 30, 45, 0.95);
-            --surface-hover: rgba(40, 40, 60, 0.95);
-            --text: #ffffff;
-            --border: rgba(255, 255, 255, 0.1);
-            --shadow: rgba(0, 0, 0, 0.3);
-            --glow: 0 0 10px var(--primary-glow);
-            --glass: saturate(180%) blur(10px);
-            --gradient: linear-gradient(135deg, var(--surface), rgba(40, 40, 60, 0.95));
-            --transition-medium: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --border-radius: 8px;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(180deg, #EDFAFF 0%, #F0FFF5 100%);
-        }
-
-        .container, table, #example_wrapper {
-            background-color: transparent !important;
-        }
-
-        #example th, #example td {
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #f0f0f0;
-            border-bottom: 1px solid #ccc;
-        }
-        .topbar span { font-weight: bold; font-size: 1rem; }
-    </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
@@ -88,8 +42,8 @@
         <label for="merchantNm">가맹점명:</label>
         <input type="text" id="merchantNm" class="w-[10%] border border-gray-300 rounded-xl px-3 py-2 bg-white" placeholder="">
 
-        <label for="businessNum">사업자번호:</label>
-        <input type="text" id="businessNum" class="w-[10%] border border-gray-300 rounded-xl px-3 py-2 bg-white" placeholder="">
+<!--        <label for="businessNum">사업자번호:</label>-->
+<!--        <input type="text" id="businessNum" class="w-[10%] border border-gray-300 rounded-xl px-3 py-2 bg-white" placeholder="">-->
 
         <label for="contractStatus">계약상태:</label>
         <select id="contractStatus" class="border border-gray-300 rounded-xl px-3 py-2 bg-white">
@@ -228,7 +182,7 @@
 
         document.getElementById('categorySelect').value = '';
         document.getElementById('merchantNm').value = '';
-        document.getElementById('businessNum').value = '';
+        // document.getElementById('businessNum').value = '';
         document.getElementById('contractStatus').value = '';
         searchMerchants();
     });
@@ -238,7 +192,7 @@
         const endDate = document.getElementById('endDate').value;
         const categoryCd = document.getElementById('categorySelect').value;
         const merchantNm = document.getElementById('merchantNm').value;
-        const businessNum = document.getElementById('businessNum').value;
+        // const businessNum = document.getElementById('businessNum').value;
         const contractStatus = document.getElementById('contractStatus').value;
 
         const params = new URLSearchParams();
@@ -246,7 +200,7 @@
         if (startDate) params.append('startDate', startDate);
         if (endDate) params.append('endDate', endDate);
         if (merchantNm) params.append('merchantNm', merchantNm);
-        if (businessNum) params.append('businessNum', businessNum);
+        // if (businessNum) params.append('businessNum', businessNum);
         if (contractStatus) params.append('contractStatus', contractStatus);
 
         fetch('/merchant/api/search?' + params.toString())

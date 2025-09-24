@@ -26,86 +26,83 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   }
   return s.join(dec);
 }
+// ===========================
+// 📊 월별 거래금액 차트
+// ===========================
+async function loadMonthlyChart() {
+  try {
+    const res = await fetch("/api/dashboard/brokerageMonthly");
+    const data = await res.json();
 
-// Bar Chart Example
-var ctx = document.getElementById("myBarChart2");
-var myBarChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ["5월", "6월", "7월", "8월", "9월"],
-    datasets: [{
-      label: "금월 거래금액",
-      backgroundColor: "#0ca514",
-      hoverBackgroundColor: "#004e09",
-      borderColor: "#009c12",
-      data: [2312000, 5251000, 4841000,10821000, 12984000],
-    }],
-  },
-  options: {
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        left: 10,
-        right: 25,
-        top: 25,
-        bottom: 0
-      }
-    },
-    scales: {
-      xAxes: [{
-        time: {
-          unit: 'month'
+    // DB에서 넘어온 값 -> {period: "2025-05", total: 12345}
+    const labels = data.map(d => d.period.substring(5, 7) + "월");
+    const totals = data.map(d => d.total);
+
+    var ctx = document.getElementById("myBarChart2");
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,   // ["5월","6월","7월","8월","9월"]
+        datasets: [{
+          label: "금월 거래금액",
+          backgroundColor: "#0ca514",
+          hoverBackgroundColor: "#004e09",
+          borderColor: "#009c12",
+          data: totals,   // DB 합산 값
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        layout: { padding: { left: 10, right: 25, top: 25, bottom: 0 } },
+        scales: {
+          xAxes: [{
+            gridLines: { display: false, drawBorder: false },
+            ticks: { maxTicksLimit: 6 },
+            maxBarThickness: 25,
+          }],
+          yAxes: [{
+            ticks: {
+              min: 0,
+              maxTicksLimit: 5,
+              padding: 10,
+              callback: function(value) { return number_format(value); }
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2]
+            }
+          }],
         },
-        gridLines: {
-          display: false,
-          drawBorder: false
-        },
-        ticks: {
-          maxTicksLimit: 6
-        },
-        maxBarThickness: 25,
-      }],
-      yAxes: [{
-        ticks: {
-          min: 0,
-          max: 15000000,
-          maxTicksLimit: 5,
-          padding: 10,
-          // Include a dollar sign in the ticks
-          callback: function(value, index, values) {
-            return  number_format(value);
+        legend: { display: false },
+        tooltips: {
+          titleMarginBottom: 10,
+          titleFontColor: '#6e707e',
+          titleFontSize: 14,
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          caretPadding: 10,
+          callbacks: {
+            label: function(tooltipItem, chart) {
+              var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+              return datasetLabel + ':' + number_format(tooltipItem.yLabel);
+            }
           }
         },
-        gridLines: {
-          color: "rgb(234, 236, 244)",
-          zeroLineColor: "rgb(234, 236, 244)",
-          drawBorder: false,
-          borderDash: [2],
-          zeroLineBorderDash: [2]
-        }
-      }],
-    },
-    legend: {
-      display: false
-    },
-    tooltips: {
-      titleMarginBottom: 10,
-      titleFontColor: '#6e707e',
-      titleFontSize: 14,
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      caretPadding: 10,
-      callbacks: {
-        label: function(tooltipItem, chart) {
-          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + ':' + number_format(tooltipItem.yLabel);
-        }
       }
-    },
+    });
+  } catch (err) {
+    console.error("월별 차트 로드 실패:", err);
   }
-});
+}
+
+// 페이지 로드 시 실행
+window.addEventListener("DOMContentLoaded", loadMonthlyChart);
+
