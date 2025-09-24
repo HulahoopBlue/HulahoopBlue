@@ -56,12 +56,15 @@
     }
 
     try {
-      const response = await fetch(`/api/reservations/${userId}`);
+      // ✅ API 경로를 /api/v1/reservations로 수정
+      const response = await fetch(`/api/v1/reservations/${userId}`);
       if (!response.ok) {
-        throw new Error('예약내역을 불러오는데 실패했습니다.');
+        const errorText = await response.text();
+        throw new Error(`HTTP 오류: ${response.status} - ${errorText}`);
       }
+
       const reservations = await response.json();
-      console.log('Received reservations:', reservations); // ✅ 응답 데이터 확인용 로그
+      console.log('Received reservations:', reservations);
 
       if (reservations.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="7">예약내역이 없습니다.</td></tr>';
@@ -81,7 +84,7 @@
       }
     } catch (error) {
       tableBody.innerHTML = `<tr><td colspan="7">오류: ${error.message}</td></tr>`;
-      console.error('API 호출 중 오류 발생:', error); // ✅ 오류 메시지 확인용 로그
+      console.error('API 호출 중 오류 발생:', error);
     }
   }
 
