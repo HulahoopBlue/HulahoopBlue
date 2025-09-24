@@ -3,6 +3,7 @@ package com.ohgiraffers.travelkidari.config;
 import com.ohgiraffers.travelkidari.interceptor.ApiKeyInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -14,6 +15,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     public WebMvcConfig(ApiKeyInterceptor apiKeyInterceptor) {
         this.apiKeyInterceptor = apiKeyInterceptor;
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**") // 모든 API 경로에 대해 CORS 허용
+                .allowedOrigins("http://localhost:8001")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 
     @Override

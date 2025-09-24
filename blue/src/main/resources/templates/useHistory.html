@@ -170,7 +170,7 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: #1f1e31;
             color: white;
             padding: 12px 16px;
             border-radius: 20px;
@@ -178,6 +178,13 @@
             opacity: 1;
             transition: opacity 0.3s;
             pointer-events: none;
+        }
+
+        .notification-image {
+            max-width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
         }
 
         @keyframes fadeInOut {
@@ -224,8 +231,9 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
-        .order-card .icon .fa-3x {
-            font-size: 20px;
+        .order-card .icon img {
+            width: 36px;
+            height: 36px;
         }
 
         .order-img img {
@@ -312,7 +320,9 @@
 <body>
 
     <div class="chat-container">
-        <div class="notification" id="notification">HULA HOOP</div>
+        <div class="notification" id="notification">
+            <img src="img/logo.png" alt="HulaHoopBlue" class="notification-image">
+        </div>
         <div class="chat-header">
             <div class="header-info">
                 <div class="header-actions">
@@ -367,7 +377,7 @@
 
             <div th:each="h : ${histories}" class="order-card">
                 <div class="icon">
-                    <i class="fa-solid fa-bicycle fa-3x"></i>
+                    <img src="img/bicycle.png" alt="자전거">
                 </div>
                 <h3 class="order-name" th:text="${h.merchantNm}">가맹점명</h3>
 
