@@ -70,7 +70,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 회원수</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">127,921</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalMembers}"></div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-user fa-2x text-gray-300"></i>
@@ -88,7 +88,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 가맹점수</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">152</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalMerchants}"></div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-store fa-2x text-gray-300"></i>
@@ -108,7 +108,7 @@
                                             </div>
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">4,003</div>
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" th:text="${externalApiCallCount}"></div>
                                                 </div>
                                                 <!--                                                <div class="col">-->
                                                 <!--                                                    <div class="progress progress-sm mr-2">-->
@@ -135,7 +135,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 H/G 처리건수</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">1,323,049</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${gatewayProcessCount}"></div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-check-circle fa-2x text-gray-300"></i>

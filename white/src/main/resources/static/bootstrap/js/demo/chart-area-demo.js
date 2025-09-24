@@ -32,7 +32,7 @@ var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+    labels: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월"],
     datasets: [{
       label: "회원수(단위:천)",
       lineTension: 0.3,
@@ -46,7 +46,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [1, 2, 5, 15, 30, 40, 55, 65, 70, 80, 95, 127],
+      data: [1, 2, 5, 15, 30, 40, 55, 65, 70],
     },
       {
         label: "가맹점수",
@@ -55,7 +55,7 @@ var myLineChart = new Chart(ctx, {
         borderColor: "rgba(28, 200, 138, 1)",
         pointBackgroundColor: "rgba(28, 200, 138, 1)",
         pointBorderColor: "rgba(28, 200, 138, 1)",
-        data: [3, 10, 21, 31, 44, 50, 60, 80, 90, 101, 120, 152],
+        data: [3, 10, 21, 31, 44, 50, 60, 80, 90],
       },
       {
         label: "SMS-C 요건건수(단위:백)",
@@ -64,7 +64,7 @@ var myLineChart = new Chart(ctx, {
         borderColor: "rgba(54, 185, 204, 1)",
         pointBackgroundColor: "rgba(54, 185, 204, 1)",
         pointBorderColor: "rgba(54, 185, 204, 1)",
-        data: [3, 4, 7, 10, 22, 33, 12, 33, 21, 33, 32, 40],
+        data: [3, 4, 7, 10, 22, 33, 12, 33, 21],
       },
       {
         label: "H/G 처리건수(단위:만)",
@@ -73,7 +73,7 @@ var myLineChart = new Chart(ctx, {
         borderColor: "rgba(246, 194, 62, 1)",
         pointBackgroundColor: "rgba(246, 194, 62, 1)",
         pointBorderColor: "rgba(246, 194, 62, 1)",
-        data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 111, 132],
+        data: [10, 20, 30, 40, 50, 60, 70, 80, 90],
       }
       ],
   },
