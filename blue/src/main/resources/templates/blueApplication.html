@@ -42,10 +42,10 @@
                 <div class="nav--open-icon" id="hhClose"><i class="fas fa-times"></i></div>
             </div>
             <div class="nav--open-menu">
-                <a th:href="@{/useHistory(reservation_status='N')}">이용내역</a>
-                <a th:href="@{/useHistory(reservation_status='Y')}">예약내역</a>
-                <a th:href="@{/useHistory(reservation_status='C')}">취소내역</a>
-                <a href="javascript:alert('이용준비중입니다.')">메세지함</a>
+                <a th:href="@{/useHistory(reservationStatus='N')}">이용내역</a>
+                <a th:href="@{/useHistory(reservationStatus='Y')}">예약내역</a>
+                <a th:href="@{/useHistory(reservationStatus='C')}">취소내역</a>
+                <a th:href="@{/useHistory/err}">메세지함</a>
                 <a th:href="@{member/mypage}">설정</a>
                 <a th:href="@{/logout}">로그아웃</a>
             </div>
