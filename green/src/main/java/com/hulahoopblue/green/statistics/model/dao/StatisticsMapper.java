@@ -1,4 +1,4 @@
-package com.hulahoopblue.green.statistics.model.mapper;
+package com.hulahoopblue.green.statistics.model.dao;
 
 import com.hulahoopblue.green.statistics.model.dto.StatisticsDTO;
 import org.apache.ibatis.annotations.Mapper;
