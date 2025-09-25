@@ -1,5 +1,6 @@
 package com.hulahoopblue.blue.controller;
 
+import com.hulahoopblue.blue.model.dto.MemberDTO;
 import com.hulahoopblue.blue.model.dto.UseHistoryViewDTO;
 import com.hulahoopblue.blue.model.service.UseHistoryService;
 import jakarta.servlet.http.HttpSession;
@@ -29,11 +30,15 @@ public class UseHistoryController {
                              @RequestParam(required = false) String reservationStatus,
                              HttpSession session,Model model) {
 
-        String memberNum = (String) session.getAttribute("LOGIN_MEMBER_NUM");
-        if (memberNum == null) {
+        MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+        String memberNum = null;
 
-            memberNum = "U000000001";
+        if (loginMember != null) {
+            memberNum = loginMember.getMemberNum();   // MemberDTO 안에 있는 memberNum 꺼내기
+        } else {
+            memberNum = "U000000001"; // 디폴트
         }
+
 
         List<UseHistoryViewDTO> histories =
                 useHistoryService.getUseHistory(memberNum, categoryCd,merchantNm, fromDate,toDate, reservationStatus);

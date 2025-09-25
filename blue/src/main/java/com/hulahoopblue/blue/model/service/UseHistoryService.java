@@ -1,5 +1,4 @@
 package com.hulahoopblue.blue.model.service;
-
 import com.hulahoopblue.blue.model.dao.UseHistoryMapper;
 import com.hulahoopblue.blue.model.dto.UseHistoryViewDTO;
 import org.springframework.stereotype.Service;
@@ -18,4 +17,6 @@ public class UseHistoryService {
 
         return useHistoryMapper.selectUseHistories(memberNum, categoryCd,merchantNm ,fromDate, toDate, reservationStatus);
     }
+
+
 }

@@ -346,7 +346,6 @@
                             <option value="">전체</option>
                             <option value="B" th:selected="${categoryCd=='B'}">자전거</option>
                             <option value="T" th:selected="${categoryCd=='T'}">여행사</option>
-                            <option value="C" th:selected="${categoryCd=='C'}">헤어샵</option>
                         </select>
                     </div>
 
@@ -354,8 +353,11 @@
                         <label class="filter-label">가맹점</label>
                         <select name="merchantNm" th:value="${merchantNm}" class="pill">
                             <option value="">전체</option>
-                            <option value="카카오" th:selected="${merchantNm=='카카오'}">카카오</option>
-                            <option value="쏘카" th:selected="${merchantNm=='쏘카'}">쏘카</option>
+                            <option value="따릉이" th:selected="${merchantNm=='따릉이'}">따릉이</option>
+                            <option value="쏘카일레클" th:selected="${merchantNm=='쏘카일레클'}">쏘카일레클</option>
+                            <option value="카카오바이크" th:selected="${merchantNm=='카카오바이크'}">카카오바이크</option>
+                            <option value="하나투어" th:selected="${merchantNm=='하나투어'}">하나투어</option>
+                            <option value="모두투어" th:selected="${merchantNm=='모두투어'}">모두투어</option>
                         </select>
                     </div>
 
@@ -377,8 +379,12 @@
 
             <div th:each="h : ${histories}" class="order-card">
                 <div class="icon">
-                    <img src="img/bicycle.png" alt="자전거">
+                    <img th:if="${h.merchantNm == '따릉이' or h.merchantNm == '쏘카일레클' or h.merchantNm == '카카오바이크'}"
+                         src="img/bicycle.png" alt="자전거">
+                    <img th:if="${h.merchantNm == '하나투어' or h.merchantNm == '모두투어'}"
+                         src="img/2-1.png" alt="여행사">
                 </div>
+
                 <h3 class="order-name" th:text="${h.merchantNm}">가맹점명</h3>
 
                 <div class="order-info">
