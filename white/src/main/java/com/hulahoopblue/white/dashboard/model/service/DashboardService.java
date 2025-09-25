@@ -5,6 +5,7 @@ import com.hulahoopblue.white.dashboard.model.dto.DashboardDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DashboardService {
@@ -42,5 +43,10 @@ public class DashboardService {
     public List<DashboardDTO> getMonthlyBrokerage() {
 
         return dashboardMapper.getMonthlyBrokerage();
+    }
+
+    public List<Map<String, Object>> getMerchantStatus() {
+
+        return dashboardMapper.getMerchantStatus();
     }
 }

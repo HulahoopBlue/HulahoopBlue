@@ -4,6 +4,8 @@ import com.hulahoopblue.white.dashboard.model.dto.DashboardDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Mapper
 public interface DashboardMapper {
@@ -18,4 +20,6 @@ public interface DashboardMapper {
     List<DashboardDTO> getDailyBrokerage();
 
     List<DashboardDTO> getMonthlyBrokerage();
+
+    List<Map<String, Object>> getMerchantStatus();
 }

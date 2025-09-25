@@ -27,6 +27,17 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   return s.join(dec);
 }
 
+const totalMembers = parseInt(document.querySelector("#totalMembersCard").innerText.replace(/,/g, ""));
+const totalMerchants = parseInt(document.querySelector("#totalMerchantsCard").innerText.replace(/,/g, ""));
+const externalApiCallCount = parseInt(document.querySelector("#externalApiCallCard").innerText.replace(/,/g, ""));
+const gatewayProcessCount = parseInt(document.querySelector("#gatewayProcessCard").innerText.replace(/,/g, ""));
+
+// 단위 맞추기 (회원수 → 천 단위, 가맹점수 → 천 단위, API → 만 단위, H/G → 십만 단위)
+const memberValue = Math.round(totalMembers / 1000);
+const merchantValue = Math.round(totalMerchants / 1000);
+const apiValue = Math.round(externalApiCallCount / 10000);
+const gatewayValue = Math.round(gatewayProcessCount / 100000);
+
 // Area Chart Example
 var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
@@ -46,34 +57,34 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [1, 2, 5, 15, 30, 40, 55, 65, 70],
+      data: [32, 25, 48, 35, 30, 40, 55, 65, memberValue],
     },
       {
-        label: "가맹점수",
+        label: "가맹점수(단위:천)",
         lineTension: 0.3,
         backgroundColor: "rgba(28, 200, 138, 0.05)",
         borderColor: "rgba(28, 200, 138, 1)",
         pointBackgroundColor: "rgba(28, 200, 138, 1)",
         pointBorderColor: "rgba(28, 200, 138, 1)",
-        data: [3, 10, 21, 31, 44, 50, 60, 80, 90],
+        data: [22, 22, 21, 31, 28, 37, 59, 63, merchantValue],
       },
       {
-        label: "SMS-C 요건건수(단위:백)",
+        label: "외부 api 요청 건수(단위:만)",
         lineTension: 0.3,
         backgroundColor: "rgba(54, 185, 204, 0.05)",
         borderColor: "rgba(54, 185, 204, 1)",
         pointBackgroundColor: "rgba(54, 185, 204, 1)",
         pointBorderColor: "rgba(54, 185, 204, 1)",
-        data: [3, 4, 7, 10, 22, 33, 12, 33, 21],
+        data: [60, 56, 68, 70, 69, 72, 65, 85, apiValue],
       },
       {
-        label: "H/G 처리건수(단위:만)",
+        label: "H/G 처리건수(단위:십만)",
         lineTension: 0.3,
         backgroundColor: "rgba(246, 194, 62, 0.05)",
         borderColor: "rgba(246, 194, 62, 1)",
         pointBackgroundColor: "rgba(246, 194, 62, 1)",
         pointBorderColor: "rgba(246, 194, 62, 1)",
-        data: [10, 20, 30, 40, 50, 60, 70, 80, 90],
+        data: [20, 26, 24, 26, 30, 28, 33, 32, gatewayValue],
       }
       ],
   },
