@@ -60,8 +60,10 @@
             AND uh.payment_date_time &gt;= #{startDate}
         </if>
         <if test="endDate != null">
-            AND uh.payment_date_time &lt;= #{endDate}
+            AND uh.payment_date_time &lt; #{endDate} + interval 1 day
         </if>
+
+
         ORDER BY uh.payment_date_time DESC
     </select>
 

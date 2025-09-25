@@ -34,11 +34,12 @@
         FROM t_usehistory uh
         LEFT JOIN t_merchant mch ON uh.merchant_num = mch.merchant_num
         LEFT JOIN t_member m ON uh.member_num = m.member_num  WHERE uh.merchant_num = #{merchantNum}
+
         <if test="startDate != null">
             AND uh.payment_date_time &gt;= #{startDate}
         </if>
         <if test="endDate != null">
-            AND uh.payment_date_time &lt;= #{endDate}
+            AND uh.payment_date_time &lt; #{endDate} + interval 1 day
         </if>
         ORDER BY uh.payment_date_time DESC
     </select>
