@@ -37,7 +37,7 @@ async function loadDailyChart() {
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: labels,  // → ["22일","22일","23일","24일","26일"]
+        labels: labels,
         datasets: [{
           label: "금일 거래금액",
           backgroundColor: "#316bff",
