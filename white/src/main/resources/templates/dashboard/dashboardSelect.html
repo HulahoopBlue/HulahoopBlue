@@ -23,6 +23,122 @@
     <!--메뉴바 css-->
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
 
+    <style>
+        .select-box {
+              position: relative;
+              display: block;
+              width: 50%;
+              font-family: 'Open Sans', 'Helvetica Neue', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+              font-size: 18px;
+              color: #60666d;
+              margin-left: auto;
+              padding-right: 30px;
+            z-index: 1000;
+          }
+
+        @media (min-width: 768px) {
+            .select-box {
+                width: 70%;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .select-box {
+                width: 50%;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .select-box {
+                width: 30%;
+            }
+        }
+
+        .select-box__current {
+            position: relative;
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            outline: none;
+        }
+
+        .select-box__current:focus + .select-box__list {
+            opacity: 1;
+            animation-name: none;
+        }
+
+        .select-box__current:focus + .select-box__list .select-box__option {
+            cursor: pointer;
+        }
+
+        .select-box__current:focus .select-box__icon {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .select-box__icon {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            width: 20px;
+            opacity: 0.3;
+            transition: 0.2s ease;
+        }
+
+        .select-box__value {
+            display: flex;
+        }
+
+        .select-box__input {
+            display: none;
+        }
+
+        .select-box__input:checked + .select-box__input-text {
+            display: block;
+        }
+
+        .select-box__input-text {
+            display: none;
+            width: 100%;
+            margin: 0;
+            padding: 15px;
+            background-color: #fff;
+        }
+
+        .select-box__list {
+            position: absolute;
+            width: 100%;
+            padding: 0;
+            list-style: none;
+            opacity: 0;
+            animation-name: HideList;
+            animation-duration: 0.5s;
+            animation-delay: 0.5s;
+            animation-fill-mode: forwards;
+            animation-timing-function: step-start;
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        .select-box__option {
+            display: block;
+            padding: 15px;
+            background-color: #fff;
+        }
+
+        .select-box__option:hover,
+        .select-box__option:focus {
+            color: #546c84;
+            background-color: #fbfbfb;
+        }
+
+        @keyframes HideList {
+            from {
+                transform: scaleY(1);
+            }
+            to {
+                transform: scaleY(0);
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50" id="page-top">
@@ -43,6 +159,34 @@
                         <a href="/dashboard/dashboardSelect">
                             <img src="/img/KakaoTalk_20250923_163110071.png" alt="로고" style="height: 30px; cursor: pointer;">
                         </a>
+                    </div>
+
+                    <div class="select-box">
+                        <div class="select-box__current" tabindex="1">
+                            <div class="select-box__value">
+                                <input class="select-box__input" type="radio" id="1" value="1" name="Ben" checked="checked">
+                                <p class="select-box__input-text">3초</p>
+                            </div>
+                            <div class="select-box__value">
+                                <input class="select-box__input" type="radio" id="2" value="2" name="Ben">
+                                <p class="select-box__input-text">10초</p>
+                            </div>
+                            <div class="select-box__value">
+                                <input class="select-box__input" type="radio" id="3" value="3" name="Ben">
+                                <p class="select-box__input-text">30초</p>
+                            </div>
+                            <div class="select-box__value">
+                                <input class="select-box__input" type="radio" id="4" value="4" name="Ben">
+                                <p class="select-box__input-text">새로고침 주기 없음</p>
+                            </div>
+                            <img class="select-box__icon" src="http://cdn.onlinewebfonts.com/svg/img_295694.svg" alt="Arrow Icon" aria-hidden="true">
+                        </div>
+                        <ul class="select-box__list">
+                            <li><label class="select-box__option" for="1" aria-hidden="true">3초</label></li>
+                            <li><label class="select-box__option" for="2" aria-hidden="true">10초</label></li>
+                            <li><label class="select-box__option" for="3" aria-hidden="true">30초</label></li>
+                            <li><label class="select-box__option" for="4" aria-hidden="true">새로고침 주기 없음</label></li>
+                        </ul>
                     </div>
 
                     <!-- 오른쪽: 관리자 이름 + 세션 시간 -->
@@ -293,6 +437,76 @@
     <script src="/bootstrap/js/demo/chart-bar-demo.js"></script>
     <script src="/bootstrap/js/demo/chart-bar-demo2.js"></script>
 
+        <script>
+            let refreshTimer = null;
+            const STORAGE_KEY = 'refreshInterval';
+
+            // 새로고침 interval 적용 함수
+            function applyRefreshInterval(interval) {
+                if (refreshTimer) clearInterval(refreshTimer);
+                if (interval > 0) {
+                    refreshTimer = setInterval(() => location.reload(), interval);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const box = document.querySelector('.select-box');
+                const current = box.querySelector('.select-box__current');
+                const inputs = box.querySelectorAll('.select-box__input');
+                const texts = box.querySelectorAll('.select-box__input-text');
+
+                // 열고 닫기
+                current.addEventListener('click', () => {
+                    box.classList.toggle('open');
+                });
+
+                // 옵션 선택 시
+                inputs.forEach((input, i) => {
+                    input.addEventListener('change', () => {
+                        // 텍스트 갱신
+                        texts.forEach(t => (t.style.display = 'none'));
+                        texts[i].style.display = 'block';
+                        box.classList.remove('open');
+
+                        // 선택값 저장 + 새로고침 적용
+                        let interval = 0;
+                        switch (input.value) {
+                            case '1': interval = 3000; break;   // 3초
+                            case '2': interval = 10000; break;  // 10초
+                            case '3': interval = 30000; break;  // 30초
+                            case '4': interval = 0; break;      // 없음
+                        }
+                        localStorage.setItem(STORAGE_KEY, interval);
+                        applyRefreshInterval(interval);
+                    });
+                });
+
+                // 초기 선택 처리
+                texts.forEach((t, i) => {
+                    if (!inputs[i].checked) t.style.display = 'none';
+                });
+
+                // 저장된 값 복원
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved !== null) {
+                    applyRefreshInterval(parseInt(saved, 10));
+                    // 체크박스 상태 맞추기
+                    let targetInput = null;
+                    switch (saved) {
+                        case '3000': targetInput = inputs[0]; break;
+                        case '10000': targetInput = inputs[1]; break;
+                        case '30000': targetInput = inputs[2]; break;
+                        case '0': targetInput = inputs[3]; break;
+                    }
+                    if (targetInput) {
+                        targetInput.checked = true;
+                        texts.forEach(t => (t.style.display = 'none'));
+                        targetInput.nextElementSibling.style.display = 'block';
+                    }
+                }
+            });
+
+        </script>
         <script>
             async function loadStatus() {
                 try {
