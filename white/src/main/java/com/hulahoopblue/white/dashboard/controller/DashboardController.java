@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class DashboardController {
@@ -74,5 +75,12 @@ public class DashboardController {
     @ResponseBody
     public List<DashboardDTO> getMonthlyBrokerage() {
         return dashboardService.getMonthlyBrokerage();
+    }
+
+    //동작 체크 대시보드
+    @GetMapping("/api/dashboard/status")
+    @ResponseBody
+    public List<Map<String, Object>> getMerchantStatus() {
+        return dashboardService.getMerchantStatus();
     }
 }

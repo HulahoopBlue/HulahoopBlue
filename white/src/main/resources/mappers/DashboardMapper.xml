@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hulahoopblue.white.dashboard.model.dao.DashboardMapper">
+
+    <select id="getTotalMembers" resultType="int">
+        SELECT COUNT(member_num)
+        FROM t_member
+    </select>
+
+    <select id="getTotalMerchants" resultType="int">
+        SELECT COUNT(merchant_num)
+        FROM t_merchant
+    </select>
+
+    <select id="getExternalApiCallCount" resultType="int">
+        SELECT COUNT(*)
+        FROM t_apiaccesshistory
+    </select>
+
+    <select id="getGatewayProcessCount" resultType="int">
+        SELECT COUNT(*)
+        FROM t_usehistory
+    </select>
+
+    <select id="getDailyBrokerage" resultType="com.hulahoopblue.white.dashboard.model.dto.DashboardDTO">
+        SELECT DATE(use_date) AS period,
+        COALESCE(SUM(brokerage), 0) AS total
+        FROM t_statistics
+        WHERE DATE(use_date) BETWEEN '2025-09-20' AND '2025-09-24'
+        GROUP BY DATE(use_date)
+        ORDER BY period
+    </select>
+
+    <select id="getMonthlyBrokerage" resultType="com.hulahoopblue.white.dashboard.model.dto.DashboardDTO">
+        SELECT DATE_FORMAT(use_date, '%Y-%m') AS period,
+        SUM(brokerage) AS total
+        FROM t_statistics
+        where DATE_FORMAT(use_date, '%Y-%m') BETWEEN '2025-05' AND '2025-09'
+        GROUP BY DATE_FORMAT(use_date, '%Y-%m')
+        ORDER BY DATE_FORMAT(use_date, '%Y-%m')
+    </select>
+
+    <select id="getMerchantStatus" resultType="map">
+        SELECT
+        t1.category_cd,
+        t1.merchant_num,
+        t1.status,
+        t1.access_date_time
+        FROM
+        t_statuscheck t1
+        INNER JOIN (
+        SELECT
+        category_cd,
+        merchant_num,
+        MAX(access_date_time) AS max_time
+        FROM
+        t_statuscheck
+        where merchant_num like '%000001'
+        GROUP BY
+        category_cd,
+        merchant_num
+        ) AS latest ON
+        t1.category_cd = latest.category_cd AND
+        t1.merchant_num = latest.merchant_num AND
+        t1.access_date_time = latest.max_time;
+    </select>
+</mapper>

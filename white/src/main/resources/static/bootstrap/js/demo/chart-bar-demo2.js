@@ -65,7 +65,9 @@ async function loadMonthlyChart() {
               min: 0,
               maxTicksLimit: 5,
               padding: 10,
-              callback: function(value) { return number_format(value); }
+              callback: function(value) {
+                return number_format(value);
+              }
             },
             gridLines: {
               color: "rgb(234, 236, 244)",

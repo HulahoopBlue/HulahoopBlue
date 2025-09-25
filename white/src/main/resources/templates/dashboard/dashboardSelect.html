@@ -70,7 +70,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 회원수</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalMembers}"></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalMembersCard" th:text="${totalMembers}"></div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-user fa-2x text-gray-300"></i>
@@ -88,7 +88,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 가맹점수</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalMerchants}"></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalMerchantsCard" th:text="${totalMerchants}"></div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-store fa-2x text-gray-300"></i>
@@ -108,7 +108,7 @@
                                             </div>
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" th:text="${externalApiCallCount}"></div>
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"  id="externalApiCallCard"  th:text="${externalApiCallCount}"></div>
                                                 </div>
                                                 <!--                                                <div class="col">-->
                                                 <!--                                                    <div class="progress progress-sm mr-2">-->
@@ -135,7 +135,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 H/G 처리건수</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${gatewayProcessCount}"></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="gatewayProcessCard"  th:text="${gatewayProcessCount}"></div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-check-circle fa-2x text-gray-300"></i>
@@ -155,7 +155,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 거래금액 (금일)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">1,498,400원</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">15,000원</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -176,7 +176,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 거래금액 (금월)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">12,984,000원</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">361,000원</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -193,23 +193,18 @@
                             <div class="card shadow mb-4 "> <!-- ✅ 흰색 박스 -->
                                 <div class="card-body">
                                     <div class="row justify-content-center text-center" style="height: 330px">
-                                        <!-- 왼쪽 3개 -->
                                         <div class="col-md-4" style="padding-top: 42px">
-                                            <div class="card bg-warning text-white shadow mb-4"><div class="card-body">공공 API</div></div>
-                                            <div class="card bg-warning text-white shadow mb-4"><div class="card-body">Chat GPT</div></div>
-                                            <div class="card bg-danger text-white shadow mb-4"><div class="card-body">비활성화</div></div>
+                                            <div class="card text-white shadow mb-4" id="PUB"><div class="card-body">공공 API</div></div>
+                                            <div class="card text-white shadow mb-4" style="margin-top: 120px" id="AI0"><div class="card-body">Chat GPT</div></div>
                                         </div>
-                                        <!-- 가운데 H/G -->
                                         <div class="col-md-4 d-flex align-items-center justify-content-center">
                                             <div class="card bg-primary text-white shadow w-100">
                                                 <div class="card-body">H/G</div>
                                             </div>
                                         </div>
-                                        <!-- 오른쪽 3개 -->
                                         <div class="col-md-4" style="padding-top: 42px">
-                                            <div class="card bg-warning text-white shadow mb-4"><div class="card-body">따릉이</div></div>
-                                            <div class="card bg-warning text-white shadow mb-4"><div class="card-body">여행사</div></div>
-                                            <div class="card bg-danger text-white shadow mb-4"><div class="card-body">비활성화</div></div>
+                                            <div class="card text-white shadow mb-4"><div class="card-body" id="B01">따릉이</div></div>
+                                            <div class="card text-white shadow mb-4" style="margin-top: 120px" id="T01"><div class="card-body">여행사</div></div>
                                         </div>
                                     </div>
                                 </div>
@@ -298,8 +293,36 @@
     <script src="/bootstrap/js/demo/chart-bar-demo.js"></script>
     <script src="/bootstrap/js/demo/chart-bar-demo2.js"></script>
 
+        <script>
+            async function loadStatus() {
+                try {
+                    const res = await fetch("/api/dashboard/status");
+                    const data = await res.json();
 
-    <script th:inline="javascript">
+                    data.forEach(item => {
+                        const box = document.getElementById(item.category_cd);
+                        if (box) {
+                            // 기존 색상 초기화
+                            box.classList.remove("bg-warning", "bg-danger", "bg-success");
+
+                            // 상태에 따라 색상 변경
+                            if (item.status === "Y") {
+                                box.classList.add("bg-warning");
+                            } else {
+                                box.classList.add("bg-danger");
+                            }
+                        }
+                    });
+                } catch (err) {
+                    console.error("상태 불러오기 실패:", err);
+                }
+            }
+
+            window.addEventListener("DOMContentLoaded", loadStatus);
+
+        </script>
+
+        <script th:inline="javascript">
         const loginMember = /*[[${session.loginMember}]]*/ null;
         let remainingTime = /*[[${session.sessionTimeout}]]*/ 1800;
 
