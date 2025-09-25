@@ -28,7 +28,7 @@
         SELECT DATE(use_date) AS period,
         COALESCE(SUM(brokerage), 0) AS total
         FROM t_statistics
-        WHERE DATE(use_date) BETWEEN '2025-09-20' AND '2025-09-24'
+        WHERE DATE(use_date) BETWEEN '2025-09-22' AND '2025-09-26'
         GROUP BY DATE(use_date)
         ORDER BY period
     </select>

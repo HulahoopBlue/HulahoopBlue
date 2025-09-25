@@ -29,7 +29,7 @@ async function loadDailyChart() {
     const res = await fetch("/api/dashboard/brokerageDaily");
     const data = await res.json();
 
-    // DB에서 넘어온 값 -> {period: "2025-09-20", total: 12345}
+    // DB에서 넘어온 값 -> {period: "2025-09-21", total: 12345}
     const labels = data.map(d => d.period.substring(8, 10) + "일");
     const totals = data.map(d => d.total);
 
@@ -37,7 +37,7 @@ async function loadDailyChart() {
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: labels,  // → ["20일","21일","22일","23일","24일"]
+        labels: labels,  // → ["22일","22일","23일","24일","26일"]
         datasets: [{
           label: "금일 거래금액",
           backgroundColor: "#316bff",

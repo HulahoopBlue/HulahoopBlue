@@ -33,17 +33,6 @@ public class DashboardController {
         // 로그인한 사용자와 세션 유지시간 전달
         Integer remainingTime = (Integer) session.getAttribute("sessionTimeout");
 
-        // 현재 시간 가져오기
-        LocalDateTime now = LocalDateTime.now();
-        int month = now.getMonthValue();
-        int day = now.getDayOfMonth();
-        int hour = now.getHour();
-        int minute = now.getMinute();
-        int second = now.getSecond();
-
-        // 시간 기반 숫자 생성 (예시: 월+일+시+분+초)
-        int dynamicNumber = month * 1000000 + day * 10000 + hour * 100 + minute * 10 + second;
-
         //대시보드 총 이용자 수
         int totalMembers = dashboardService.getTotalMembers();
         //총 가맹점 수
@@ -53,17 +42,17 @@ public class DashboardController {
         //게이트웨이 이용 건수
         int gatewayProcessCount = dashboardService.getGatewayProcessCount();
 
-        model.addAttribute("totalMembers",totalMembers + dynamicNumber%100000);
-        model.addAttribute("totalMerchants",totalMerchants +  dynamicNumber%100000 -3000);
-        model.addAttribute("externalApiCallCount",externalApiCallCount + 1000000 + dynamicNumber%100000);
-        model.addAttribute("gatewayProcessCount", gatewayProcessCount + 3000000 + dynamicNumber%100000);
+        model.addAttribute("totalMembers",totalMembers);
+        model.addAttribute("totalMerchants",totalMerchants);
+        model.addAttribute("externalApiCallCount",externalApiCallCount);
+        model.addAttribute("gatewayProcessCount", gatewayProcessCount);
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("remainingTime", remainingTime);
 
         return "dashboard/dashboardSelect";  // templates/user/main.html
     }
 
-    // 일별 거래금액 API (20~24일 고정)
+    // 일별 거래금액 API (21~25일 고정)
     @GetMapping("/api/dashboard/brokerageDaily")
     @ResponseBody
     public List<DashboardDTO> getDailyBrokerage() {
