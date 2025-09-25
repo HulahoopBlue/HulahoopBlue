@@ -14,9 +14,9 @@
     <div class="dropdown-item" data-target="banner">슬로건</div>
     <div class="dropdown-item" data-target="team">팀 소개</div>
     <div class="dropdown-item" data-target="intro">프로젝트 소개</div>
-    <div class="dropdown-item" data-target="api">API</div>
     <div class="dropdown-item" data-target="services">서비스 개요</div>
     <div class="dropdown-item" data-target="architecture">서비스 구성도</div>
+    <div class="dropdown-item" data-target="api">API</div>
   </div>
 </div>
 
@@ -80,32 +80,7 @@
   </p>
 </section>
 
-<section id="api" class="section api">
-    <h2>일상을 가볍게 잇는 파란고리</h2>
-    <div class="api-content">
-      <div class="api-description">
-        <p>훌라후프 블루의 핵심 API는 <span class="highlight-phone">전화번호</span>만으로 AI와 현실을 연결합니다.</p>
-        <p>다음은 자전거 대여 상태를 조회하는 연동 예시입니다.</p>
-      </div>
-      <pre><code class="language-http">GET /v1/bikes/status?storeId=S001 HTTP/1.1
-          Host: api.hulahoop.blue
-          X-API-Key: [YOUR_API_KEY]
-  
-  <span class="comment">// 응답 예시</span>
-  HTTP/1.1 200 OK
-  Content-Type: application/json
-  
-  {
-      <span class="highlight-phone">"phoneNum": "010-1111-1111",</span>
-      "packageName": "어린이 자전거",
-      "paymentAmount": 1500.00,
-      "reservationDateTime": "2025-09-22T17:30:00",
-      "paymentDateTime": "2025-09-22T17:31:00",
-      "reservationStatus": "Y"
-    }
-        </code></pre>
-    </div>
-  </section>
+
 
 
 <section id="services" class="section services">
@@ -117,7 +92,7 @@
           <path d="M12 2.5a5 5 0 1 0 0 10 5 5 0 0 0 0-10ZM2 19.5h20v2H2v-2Z"/>
         </svg>
       </div>
-      <h3>사용자 요청</h3>
+      <h3>사용자</h3>
       <p>사용자가 AI에게 음성 또는 텍스트로 원하는 행동을 요청합니다.</p>
     </div>
     <div class="flow-step">
@@ -126,7 +101,7 @@
             <path d="M80-120v-80h800v80H80Zm680-160v-560h60v560h-60Zm-600 0 210-560h100l210 560h-96l-50-144H308l-52 144h-96Zm176-224h168l-82-232h-4l-82 232Z"/>
         </svg>
       </div>
-      <h3>AI 처리</h3>
+      <h3>AI</h3>
       <p>AI는 요청을 분석하여 훌라후프 블루 시스템에 실시간으로 전달합니다.</p>
     </div>
     <div class="flow-step">
@@ -135,7 +110,7 @@
             <path d="M680-160v-120H560v-80h120v-120h80v120h120v80H760v120h-80ZM440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm560-40h-80q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480Z"/>
         </svg>
       </div>
-      <h3>훌라후프 블루 처리</h3>
+      <h3>훌라후프 블루 시스템</h3>
       <p>우리 시스템은 AI의 요청을 받아 파트너 시스템과 연동하여 실행 가능한 데이터를 확인합니다.</p>
     </div>
     <div class="flow-step">
@@ -144,8 +119,8 @@
             <path d="M480-440q-58 0-99-41t-41-99q0-58 41-99t99-41q58 0 99 41t41 99q0 58-41 99t-99 41Zm0-80q25 0 42.5-17.5T540-580q0-25-17.5-42.5T480-640q-25 0-42.5 17.5T420-580q0 25 17.5 42.5T480-520Zm0 460L120-280v-400l360-220 360 220v400L480-60Zm0-93 147-91q-34-18-71.5-27t-75.5-9q-38 0-75.5 9T333-244l147 91ZM256-291q50-34 107-51.5T480-360q60 0 117 17.5T704-291l56-33v-311L480-806 200-635v311l56 33Zm224-189Z"/>
         </svg>
       </div>
-      <h3>결과 전달</h3>
-      <p>확인된 정보를 다시 AI에 전달하고, AI는 이를 사용자에게 최종적으로 알려줍니다.</p>
+      <h3>파트너(가맹점)</h3>
+      <p>최종적으로 확인된 결과를 처리하고 AI를 통해 사용자에게 결과를 전달합니다.</p>
     </div>
   </div>
 </section>
@@ -231,6 +206,33 @@
       <div class="connection-line-both horizontal-line" data-from="center-right" data-to="center"></div>
       <div class="connection-line-both diagonal-line" data-from="top-right" data-to="center"></div>
       <div class="connection-line-both diagonal-line" data-from="bottom-right" data-to="center"></div>
+    </div>
+  </section>
+
+  <section id="api" class="section api">
+    <h2>일상을 가볍게 잇는 파란고리</h2>
+    <div class="api-content">
+      <div class="api-description">
+        <p>훌라후프 블루의 핵심 API는 <span class="highlight-phone">전화번호</span>만으로 AI와 현실을 연결합니다.</p>
+        <p>다음은 자전거 대여 상태를 조회하는 연동 예시입니다.</p>
+      </div>
+      <pre><code class="language-http">GET /v1/bikes/status?storeId=S001 HTTP/1.1
+          Host: api.hulahoop.blue
+          X-API-Key: [YOUR_API_KEY]
+  
+  <span class="comment">// 응답 예시</span>
+  HTTP/1.1 200 OK
+  Content-Type: application/json
+  
+  {
+      <span class="highlight-phone">"phoneNum": "010-1111-1111",</span>
+      "packageName": "어린이 자전거",
+      "paymentAmount": 1500.00,
+      "reservationDateTime": "2025-09-22T17:30:00",
+      "paymentDateTime": "2025-09-22T17:31:00",
+      "reservationStatus": "Y"
+    }
+        </code></pre>
     </div>
   </section>
 
